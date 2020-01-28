@@ -1,6 +1,13 @@
 <resources>
     <string name="app_name">Mon Endo</string>
 
+    <string name="facebook_application_id">113729150041447</string>
+    <string name="fb_login_protocol_scheme">fb113729150041447</string>
+
+
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="cancel_login">You have cancelled the authentication process. Please try again.</string>
+    <string name="network_to_login">A network access is required to login</string>
+    <string name="unknown_error_login">An unknown error has occurred. Please try again</string>
 </resources>

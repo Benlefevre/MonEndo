@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1657410093",
+    "firebase_url": "https://monendo-e6eed.firebaseio.com",
+    "project_id": "monendo-e6eed",
+    "storage_bucket": "monendo-e6eed.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1657410093:android:07f96fdfea2172897a9ea4",
+        "android_client_info": {
+          "package_name": "com.benlefevre.monendo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1657410093-8qjic07qc03sovgq9n0csqbpimvhoivt.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.benlefevre.monendo",
+            "certificate_hash": "d4ed552491be0ea0077a711c62d570351973c23a"
+          }
+        },
+        {
+          "client_id": "1657410093-3vr5dqmvujlao4l6mmq6vga86159qgph.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBBBnNmdryedf4pjG0RVVAhScHi7t1etmk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1657410093-3vr5dqmvujlao4l6mmq6vga86159qgph.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

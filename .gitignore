@@ -1,7 +1,6 @@
 *.iml
 .gradle
 /local.properties
-/.idea/navEditor.xml
 /.idea/assetWizardSettings.xml
 .DS_Store
 /build
@@ -10,3 +9,4 @@
 .cxx
 /gradle.properties
 /.idea/
+/google-services.json
