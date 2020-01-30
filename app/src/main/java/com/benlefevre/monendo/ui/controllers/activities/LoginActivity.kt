@@ -4,7 +4,9 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import com.benlefevre.monendo.R
+import com.benlefevre.monendo.ui.viewmodels.LoginActivityViewModel
 import com.benlefevre.monendo.utils.RC_SIGN_IN
 import com.firebase.ui.auth.AuthMethodPickerLayout
 import com.firebase.ui.auth.AuthUI
@@ -16,6 +18,8 @@ import kotlinx.android.synthetic.main.activity_login.*
 
 class LoginActivity : AppCompatActivity() {
 
+    private val loginViewModel by lazy { ViewModelProvider(this).get(LoginActivityViewModel::class.java)}
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (FirebaseAuth.getInstance().currentUser != null)
@@ -24,25 +28,37 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun createSignInIntent() {
-        val providers = listOf(
-            AuthUI.IdpConfig.EmailBuilder().build(),
-            AuthUI.IdpConfig.GoogleBuilder().build(),
-            AuthUI.IdpConfig.FacebookBuilder().build(),
-            AuthUI.IdpConfig.AnonymousBuilder().build())
+        val providers = setupProviders()
 
-        val authMethodPickerLayout = AuthMethodPickerLayout.Builder(R.layout.activity_login)
-            .setEmailButtonId(R.id.login_mail_btn)
-            .setGoogleButtonId(R.id.login_google_btn)
-            .setFacebookButtonId(R.id.login_facebook_btn)
-            .setAnonymousButtonId(R.id.login_anonymous)
-            .build()
+        val authMethodPickerLayout = createAuthMethodPickerLayout()
 
         startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder()
             .setAvailableProviders(providers)
             .enableAnonymousUsersAutoUpgrade()
             .setAuthMethodPickerLayout(authMethodPickerLayout)
             .setTheme(R.style.LoginActivityTheme)
+            .setIsSmartLockEnabled(false)
             .build(), RC_SIGN_IN)
+    }
+
+//    Configure the list of authorized providers
+    private fun setupProviders(): List<AuthUI.IdpConfig> {
+        return listOf(
+            AuthUI.IdpConfig.EmailBuilder().build(),
+            AuthUI.IdpConfig.GoogleBuilder().build(),
+            AuthUI.IdpConfig.FacebookBuilder().build(),
+            AuthUI.IdpConfig.AnonymousBuilder().build()
+        )
+    }
+
+//    Creating AuthMethodPickerLayout to customise the Login Ui
+    private fun createAuthMethodPickerLayout(): AuthMethodPickerLayout {
+        return AuthMethodPickerLayout.Builder(R.layout.activity_login)
+            .setEmailButtonId(R.id.login_mail_btn)
+            .setGoogleButtonId(R.id.login_google_btn)
+            .setFacebookButtonId(R.id.login_facebook_btn)
+            .setAnonymousButtonId(R.id.login_anonymous)
+            .build()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -50,10 +66,15 @@ class LoginActivity : AppCompatActivity() {
         handleResponseAfterSignIn(requestCode,resultCode,data)
     }
 
+//    According to the return of the Sign In intent, creation of a user on Firestore
+//    and opening of the main activity
     private fun handleResponseAfterSignIn(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == RC_SIGN_IN){
             val idpResponse = IdpResponse.fromResultIntent(data)
             if (resultCode == Activity.RESULT_OK &&  idpResponse?.providerType != null) {
+                FirebaseAuth.getInstance().currentUser?.let {
+                    loginViewModel.createUserInFirestore(it)
+                }
                 startActivity(Intent(this, MainActivity::class.java))
                 finish()
             }else{
