@@ -10,4 +10,6 @@
     <string name="cancel_login">You have cancelled the authentication process. Please try again.</string>
     <string name="network_to_login">A network access is required to login</string>
     <string name="unknown_error_login">An unknown error has occurred. Please try again</string>
+    <string name="anonymous">Anonymous</string>
+    <string name="dashboard">Dashboard</string>
 </resources>

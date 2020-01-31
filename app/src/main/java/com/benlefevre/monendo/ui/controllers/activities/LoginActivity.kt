@@ -6,6 +6,8 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.benlefevre.monendo.R
+import com.benlefevre.monendo.injection.Injection
+import com.benlefevre.monendo.mappers.convertFirebaseUserIntoUser
 import com.benlefevre.monendo.ui.viewmodels.LoginActivityViewModel
 import com.benlefevre.monendo.utils.RC_SIGN_IN
 import com.firebase.ui.auth.AuthMethodPickerLayout
@@ -18,7 +20,12 @@ import kotlinx.android.synthetic.main.activity_login.*
 
 class LoginActivity : AppCompatActivity() {
 
-    private val loginViewModel by lazy { ViewModelProvider(this).get(LoginActivityViewModel::class.java)}
+    private val loginViewModel by lazy {
+        ViewModelProvider(
+            this, Injection.providerViewModelFactory(applicationContext)
+            )
+        .get(LoginActivityViewModel::class.java)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,16 +39,18 @@ class LoginActivity : AppCompatActivity() {
 
         val authMethodPickerLayout = createAuthMethodPickerLayout()
 
-        startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder()
-            .setAvailableProviders(providers)
-            .enableAnonymousUsersAutoUpgrade()
-            .setAuthMethodPickerLayout(authMethodPickerLayout)
-            .setTheme(R.style.LoginActivityTheme)
-            .setIsSmartLockEnabled(false)
-            .build(), RC_SIGN_IN)
+        startActivityForResult(
+            AuthUI.getInstance().createSignInIntentBuilder()
+                .setAvailableProviders(providers)
+                .enableAnonymousUsersAutoUpgrade()
+                .setAuthMethodPickerLayout(authMethodPickerLayout)
+                .setTheme(R.style.LoginActivityTheme)
+                .setIsSmartLockEnabled(false)
+                .build(), RC_SIGN_IN
+        )
     }
 
-//    Configure the list of authorized providers
+    //    Configure the list of authorized providers
     private fun setupProviders(): List<AuthUI.IdpConfig> {
         return listOf(
             AuthUI.IdpConfig.EmailBuilder().build(),
@@ -51,7 +60,7 @@ class LoginActivity : AppCompatActivity() {
         )
     }
 
-//    Creating AuthMethodPickerLayout to customise the Login Ui
+    //    Creating AuthMethodPickerLayout to customise the Login Ui
     private fun createAuthMethodPickerLayout(): AuthMethodPickerLayout {
         return AuthMethodPickerLayout.Builder(R.layout.activity_login)
             .setEmailButtonId(R.id.login_mail_btn)
@@ -61,32 +70,52 @@ class LoginActivity : AppCompatActivity() {
             .build()
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        handleResponseAfterSignIn(requestCode,resultCode,data)
+    private fun saveUserInFirestore() {
+        FirebaseAuth.getInstance().currentUser?.let {
+            if (!it.isAnonymous) {
+                val user = convertFirebaseUserIntoUser(it)
+                loginViewModel.createUserInFirestore(user)
+            }
+        }
     }
 
-//    According to the return of the Sign In intent, creation of a user on Firestore
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        handleResponseAfterSignIn(requestCode, resultCode, data)
+    }
+
+    //    According to the return of the Sign In intent, creation of a user on Firestore
 //    and opening of the main activity
     private fun handleResponseAfterSignIn(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == RC_SIGN_IN){
+        if (requestCode == RC_SIGN_IN) {
             val idpResponse = IdpResponse.fromResultIntent(data)
-            if (resultCode == Activity.RESULT_OK &&  idpResponse?.providerType != null) {
-                FirebaseAuth.getInstance().currentUser?.let {
-                    loginViewModel.createUserInFirestore(it)
-                }
+            if (resultCode == Activity.RESULT_OK && idpResponse?.providerType != null) {
+                saveUserInFirestore()
                 startActivity(Intent(this, MainActivity::class.java))
                 finish()
-            }else{
+            } else {
                 if (idpResponse == null)
-                    Snackbar.make(login_root,getString(R.string.cancel_login),Snackbar.LENGTH_SHORT).show()
-                else{
-                    when(idpResponse.error?.errorCode){
-                        ErrorCodes.NO_NETWORK -> Snackbar.make(login_root,getString(R.string.network_to_login),Snackbar.LENGTH_SHORT).show()
-                        ErrorCodes.UNKNOWN_ERROR -> Snackbar.make(login_root,getString(R.string.unknown_error_login),Snackbar.LENGTH_SHORT).show()
+                    Snackbar.make(
+                        login_root,
+                        getString(R.string.cancel_login),
+                        Snackbar.LENGTH_SHORT
+                    ).show()
+                else {
+                    when (idpResponse.error?.errorCode) {
+                        ErrorCodes.NO_NETWORK -> Snackbar.make(
+                            login_root,
+                            getString(R.string.network_to_login),
+                            Snackbar.LENGTH_SHORT
+                        ).show()
+                        ErrorCodes.UNKNOWN_ERROR -> Snackbar.make(
+                            login_root,
+                            getString(R.string.unknown_error_login),
+                            Snackbar.LENGTH_SHORT
+                        ).show()
                     }
                 }
             }
         }
     }
+
 }

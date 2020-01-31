@@ -1,17 +1,12 @@
 package com.benlefevre.monendo.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import com.benlefevre.monendo.data.models.User
 import com.benlefevre.monendo.data.repositories.FirestoreRepo
-import com.google.firebase.auth.FirebaseUser
-import kotlinx.coroutines.launch
 
-class LoginActivityViewModel : ViewModel() {
+class LoginActivityViewModel(private val firestoreRepo : FirestoreRepo) : ViewModel() {
 
-    private val mFirestoreRepo : FirestoreRepo = FirestoreRepo
-
-    fun createUserInFirestore(firestoreUser: FirebaseUser) = viewModelScope.launch{
-        mFirestoreRepo.createUserInFirestore(firestoreUser)
-    }
+    fun createUserInFirestore(user: User) =
+        firestoreRepo.createUserInFirestore(user)
 
 }

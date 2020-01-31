@@ -24,6 +24,7 @@
     <style name="ToolbarStyle" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorControlNormal">@android:color/white</item>
         <item name="android:background">@color/colorPrimary</item>
+        <item name="titleTextColor">@color/colorOnPrimary</item>
     </style>
 
     <style name="BottomStyle" parent="Widget.MaterialComponents.BottomNavigationView">
