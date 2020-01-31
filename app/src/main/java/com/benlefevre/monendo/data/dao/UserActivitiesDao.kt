@@ -17,7 +17,7 @@ interface UserActivitiesDao {
     fun getPainUserActivities(painId : Long) : LiveData<List<UserActivities>>
 
     @Query("SELECT * FROM UserActivities WHERE date BETWEEN :dateBegin AND :dateEnd")
-    fun getUserActivitiesByPeriod(dateBegin : Date, dateEnd : Date)
+    fun getUserActivitiesByPeriod(dateBegin : Date, dateEnd : Date) : LiveData<List<UserActivities>>
 
     @Insert
     fun insertAll(userActivities : List<UserActivities>)

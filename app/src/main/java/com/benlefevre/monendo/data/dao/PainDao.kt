@@ -14,7 +14,7 @@ interface PainDao {
     fun getAllPains(): LiveData<List<Pain>>
 
     @Query("SELECT * FROM Pain WHERE date BETWEEN :dateBegin AND :dateEnd")
-    fun getPainByPeriod(dateBegin : Date, dateEnd : Date)
+    fun getPainByPeriod(dateBegin : Date, dateEnd : Date) : LiveData<List<Pain>>
 
     @Insert
     fun insertPain(pain: Pain)

@@ -17,7 +17,7 @@ interface SymptomDao {
     fun getPainSymptoms(painId : Long) : LiveData<List<Symptom>>
 
     @Query("SELECT * FROM Symptom WHERE date BETWEEN :dateBegin AND :dateEnd")
-    fun getSymptomsByPeriod(dateBegin : Date, dateEnd : Date)
+    fun getSymptomsByPeriod(dateBegin : Date, dateEnd : Date) : LiveData<List<Symptom>>
 
     @Insert
     fun insertAll(symptoms : List<Symptom>)

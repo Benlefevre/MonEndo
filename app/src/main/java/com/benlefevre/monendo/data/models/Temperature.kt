@@ -7,9 +7,9 @@ import java.util.*
 
 @Entity
 data class Temperature(
-    @ColumnInfo(name = "value") val value : Double,
-    @ColumnInfo(name = "date") val date: Date
+    @ColumnInfo(name = "value") var value : Double,
+    @ColumnInfo(name = "date") var date: Date
 ) {
     @PrimaryKey(autoGenerate = true)
-    val id : Long = 0
+    var id : Long = 0
 }
