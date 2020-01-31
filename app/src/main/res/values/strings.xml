@@ -12,4 +12,9 @@
     <string name="unknown_error_login">An unknown error has occurred. Please try again</string>
     <string name="anonymous">Anonymous</string>
     <string name="dashboard">Dashboard</string>
+    <string name="treatment">Treatment</string>
+    <string name="fertility">Fertility</string>
+    <string name="doctor">Doctor</string>
+    <string name="settings">Settings</string>
+    <string name="sign_out">Sign out</string>
 </resources>

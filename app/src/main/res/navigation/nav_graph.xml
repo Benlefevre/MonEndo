@@ -9,4 +9,7 @@
         android:name="com.benlefevre.monendo.ui.controllers.fragments.DashboardFragment"
         android:label="fragment_dashboard"
         tools:layout="@layout/fragment_dashboard" />
+    <activity
+        android:id="@+id/logOut"
+        android:name="com.benlefevre.monendo.ui.controllers.activities.LoginActivity" />
 </navigation>
