@@ -18,6 +18,7 @@ abstract class EndoDatabase : RoomDatabase() {
     abstract fun moodDao() : MoodDao
     abstract fun userActivitiesDao() : UserActivitiesDao
     abstract fun temperatureDao() : TemperatureDao
+    abstract fun painRelationDao() : PainWithRelationsDao
 
     companion object{
         @Volatile

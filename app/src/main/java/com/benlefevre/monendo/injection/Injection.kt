@@ -28,6 +28,10 @@ abstract class Injection {
             return TemperatureRepo(EndoDatabase.getDatabase(context).temperatureDao())
         }
 
+        private fun providePainWithRelationDataSource(context : Context) : PainWithRelationsRepo{
+            return PainWithRelationsRepo(EndoDatabase.getDatabase(context).painRelationDao())
+        }
+
         fun providerViewModelFactory(context: Context): ViewModelFactory {
             val firestoreRepo: FirestoreRepo = FirestoreRepo.getInstance()
             val painRepo = providePainDataSource(context)
@@ -35,13 +39,15 @@ abstract class Injection {
             val moodRepo = provideMoodDataSource(context)
             val userActivitiesRepo = provideUserActivitiesDataSource(context)
             val temperatureRepo = provideTemperatureDataSource(context)
+            val painRelationRepo = providePainWithRelationDataSource(context)
             return ViewModelFactory(
                 firestoreRepo,
                 painRepo,
                 symptomRepo,
                 moodRepo,
                 userActivitiesRepo,
-                temperatureRepo
+                temperatureRepo,
+                painRelationRepo
             )
         }
     }
