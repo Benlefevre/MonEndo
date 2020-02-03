@@ -22,7 +22,7 @@ interface UserActivitiesDao {
     @Insert
     fun insertAll(userActivities : List<UserActivities>)
 
-    @Query("DELETE FROM UserActivities WHERE name = :name")
+    @Query("DELETE FROM UserActivities WHERE NOT name = :name")
     fun deleteAllUserActivities(name : String)
 
     @Query("DELETE FROM UserActivities WHERE name = :name")

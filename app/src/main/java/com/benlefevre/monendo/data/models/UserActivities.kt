@@ -9,7 +9,7 @@ import java.util.*
 
 @Entity(foreignKeys = [ForeignKey(entity = Pain::class,parentColumns = ["id"],childColumns = ["painId"],onDelete = CASCADE)])
 data class UserActivities(
-    @ColumnInfo(name = "painId") var painId : Long,
+    @ColumnInfo(name = "painId", index = true) var painId : Long,
     @ColumnInfo(name = "name") var name : String,
     @ColumnInfo(name = "duration") var duration : Int,
     @ColumnInfo(name = "intensity") var instensity : Int,

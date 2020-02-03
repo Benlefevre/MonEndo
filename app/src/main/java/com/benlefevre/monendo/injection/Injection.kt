@@ -8,23 +8,23 @@ abstract class Injection {
 
     companion object {
 
-        fun providePainDataSource(context: Context): PainRepo {
+        private fun providePainDataSource(context: Context): PainRepo {
             return PainRepo(EndoDatabase.getDatabase(context).painDao())
         }
 
-        fun provideSymptomDataSource(context: Context): SymptomRepo {
+        private fun provideSymptomDataSource(context: Context): SymptomRepo {
             return SymptomRepo(EndoDatabase.getDatabase(context).symptomDao())
         }
 
-        fun provideMoodDataSource(context: Context): MoodRepo {
+        private fun provideMoodDataSource(context: Context): MoodRepo {
             return MoodRepo(EndoDatabase.getDatabase(context).moodDao())
         }
 
-        fun provideUserActivitiesDataSource(context: Context): UserActivitiesRepo {
+        private fun provideUserActivitiesDataSource(context: Context): UserActivitiesRepo {
             return UserActivitiesRepo(EndoDatabase.getDatabase(context).userActivitiesDao())
         }
 
-        fun provideTemperatureDataSource(context: Context): TemperatureRepo {
+        private fun provideTemperatureDataSource(context: Context): TemperatureRepo {
             return TemperatureRepo(EndoDatabase.getDatabase(context).temperatureDao())
         }
 
