@@ -41,4 +41,54 @@
         <item name="android:windowBackground">@color/colorBackground</item>
     </style>
 
+    <style name="CardViewTheme" parent="@style/Widget.MaterialComponents.CardView">
+        <item name="cardCornerRadius">25dp</item>
+        <item name="android:padding">8dp</item>
+        <item name="android:layout_marginStart">8dp</item>
+        <item name="android:layout_marginEnd">8dp</item>
+        <item name="android:layout_marginTop">8dp</item>
+    </style>
+
+    <style name="CardTitle" parent="@style/Widget.MaterialComponents.TextView">
+        <item name="android:background">@color/colorPrimaryVariant</item>
+        <item name="android:textAppearance">@style/TextAppearance.MaterialComponents.Headline6</item>
+        <item name="android:textColor">@color/colorOnPrimary</item>
+        <item name="android:gravity">center_horizontal|center_vertical</item>
+        <item name="android:padding">8dp</item>
+    </style>
+
+    <style name="CustomChip" parent="@style/Widget.MaterialComponents.Chip.Filter">
+        <item name="chipBackgroundColor">@color/background_color_chip</item>
+        <item name="chipStrokeColor">@color/colorPrimary</item>
+        <item name="android:textColor">@color/text_color_chip</item>
+        <item name="checkedIcon">@drawable/ic_check_24dp</item>
+        <item name="checkedIconVisible">true</item>
+        <item name="rippleColor">@color/colorSecondary</item>
+        <item name="chipStrokeWidth">1dp</item>
+        <item name="android:textAlignment">center</item>
+        <item name="chipMinHeight">35dp</item>
+    </style>
+
+    <style name="CustomChipChoice" parent="@style/Widget.MaterialComponents.Chip.Choice">
+        <item name="chipBackgroundColor">@color/background_color_chip</item>
+        <item name="chipStrokeColor">@color/colorPrimary</item>
+        <item name="android:textColor">@color/text_color_chip</item>
+        <item name="checkedIcon">@drawable/ic_check_24dp</item>
+        <item name="checkedIconVisible">true</item>
+        <item name="rippleColor">@color/colorSecondary</item>
+        <item name="chipStrokeWidth">1dp</item>
+        <item name="android:textAlignment">center</item>
+        <item name="chipMinHeight">35dp</item>
+    </style>
+
+    <style name="CustomMoodChip" parent="CustomChipChoice">
+        <item name="checkedIconEnabled">false</item>
+        <item name="checkedIconVisible">false</item>
+        <item name="chipIconSize">40dp</item>
+        <item name="chipIconTint">@color/text_color_chip</item>
+        <item name="chipIconVisible">true</item>
+        <item name="android:layout_height">60dp</item>
+        <item name="android:layout_width">wrap_content</item>
+    </style>
+
 </resources>

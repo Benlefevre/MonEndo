@@ -7,9 +7,14 @@
     <fragment
         android:id="@+id/dashboardFragment"
         android:name="com.benlefevre.monendo.ui.controllers.fragments.DashboardFragment"
-        android:label="fragment_dashboard"
+        android:label="@string/dashboard"
         tools:layout="@layout/fragment_dashboard" />
     <activity
         android:id="@+id/logOut"
         android:name="com.benlefevre.monendo.ui.controllers.activities.LoginActivity" />
+    <fragment
+        android:id="@+id/painFragment"
+        android:name="com.benlefevre.monendo.ui.controllers.fragments.PainFragment"
+        android:label="@string/my_pain"
+        tools:layout="@layout/fragment_pain" />
 </navigation>

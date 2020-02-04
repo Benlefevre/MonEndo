@@ -6,13 +6,23 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.benlefevre.monendo.R
+import com.benlefevre.monendo.injection.Injection
+import com.benlefevre.monendo.ui.viewmodels.DashboardViewModel
+import kotlinx.android.synthetic.main.fragment_dashboard.*
 
-class DashboardFragment : Fragment() {
+class DashboardFragment : Fragment(), View.OnClickListener {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    val viewModel: DashboardViewModel by lazy {
+        ViewModelProvider(
+            this,
+            Injection.providerViewModelFactory(activity!!.applicationContext)
+        ).get(DashboardViewModel::class.java)
     }
+
+    private val navController by lazy { findNavController() }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -20,5 +30,20 @@ class DashboardFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_dashboard, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setupOnClickListener()
+    }
+
+    private fun setupOnClickListener() {
+        dashboard_fab.setOnClickListener(this)
+    }
+
+    override fun onClick(view: View){
+        when(view.id){
+            R.id.dashboard_fab -> navController.navigate(R.id.painFragment)
+        }
     }
 }

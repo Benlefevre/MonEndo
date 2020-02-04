@@ -5,7 +5,6 @@
     <string name="fb_login_protocol_scheme">fb113729150041447</string>
 
 
-
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="cancel_login">You have cancelled the authentication process. Please try again.</string>
     <string name="network_to_login">A network access is required to login</string>
@@ -17,4 +16,41 @@
     <string name="doctor">Doctor</string>
     <string name="settings">Settings</string>
     <string name="sign_out">Sign out</string>
+    <string name="my_pain">My pain</string>
+    <string name="on_a_scale_of_0_to_10_how_do_you_rate_the_pain_today">On a scale of 0 to 10,how do you rate the pain today?</string>
+    <string name="where_do_you_mainly_find_pain">Where do you mainly find pain?</string>
+    <string name="lower_abdomen">Lower abdomen</string>
+    <string name="bladder">Bladder</string>
+    <string name="back">Back</string>
+    <string name="head">Head</string>
+    <string name="intestine">Intestine</string>
+    <string name="breast">Breast</string>
+    <string name="vagina">Vagina</string>
+    <string name="what_are_the_main_symptoms">What are the main symptoms</string>
+    <string name="burns">Burns</string>
+    <string name="cramps">Cramps</string>
+    <string name="bleeding">Bleeding</string>
+    <string name="fever">Fever</string>
+    <string name="chills">Chills</string>
+    <string name="bloating">Bloating</string>
+    <string name="hot_flush">Hot flush</string>
+    <string name="diarrhea">Diarrhea</string>
+    <string name="constipation">Constipation</string>
+    <string name="nausea">Nausea</string>
+    <string name="tired">Tired</string>
+    <string name="activities">Activities</string>
+    <string name="what_have_you_done_today_and_what_are_the_factors_that_can_cause_pain">What have you done today and what are the factors that can cause pain?</string>
+    <string name="sport">Sport</string>
+    <string name="sleep">Sleep</string>
+    <string name="stress">Stress</string>
+    <string name="relaxation">Relaxation</string>
+    <string name="sex">Sex</string>
+    <string name="other">Other</string>
+    <string name="mood">Mood</string>
+    <string name="sad">Sad</string>
+    <string name="sick">Sick</string>
+    <string name="irritated">Irritated</string>
+    <string name="happy">Happy</string>
+    <string name="very_happy">Very happy</string>
+    <string name="save">Save</string>
 </resources>

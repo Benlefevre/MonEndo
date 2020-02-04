@@ -2,6 +2,7 @@ package com.benlefevre.monendo.ui.controllers.activities
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View.GONE
 import android.view.View.VISIBLE
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageView
@@ -72,12 +73,10 @@ class MainActivity : AppCompatActivity() {
         NavigationUI.setupWithNavController(main_nav_view, navController)
         NavigationUI.setupWithNavController(toolbar, navController, main_drawer)
 
-        navController.addOnDestinationChangedListener { controller, destination, arguments ->
+        navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
-                R.id.dashboardFragment -> {
-                    bottomNav.visibility = VISIBLE
-                    toolbar.title = getString(R.string.dashboard)
-                }
+                R.id.dashboardFragment -> bottomNav.visibility = VISIBLE
+                R.id.painFragment -> bottomNav.visibility = GONE
             }
         }
     }
