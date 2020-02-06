@@ -20,11 +20,11 @@ interface UserActivitiesDao {
     fun getUserActivitiesByPeriod(dateBegin : Date, dateEnd : Date) : LiveData<List<UserActivities>>
 
     @Insert
-    fun insertAll(userActivities : List<UserActivities>)
+    suspend fun insertAll(userActivities : List<UserActivities>)
 
     @Query("DELETE FROM UserActivities WHERE NOT name = :name")
-    fun deleteAllUserActivities(name : String)
+    suspend fun deleteAllUserActivities(name : String)
 
     @Query("DELETE FROM UserActivities WHERE name = :name")
-    fun deleteAllSleepDatas(name : String)
+    suspend fun deleteAllSleepDatas(name : String)
 }

@@ -8,7 +8,7 @@ import androidx.room.PrimaryKey
 
 @Entity(foreignKeys = [ForeignKey(entity = Pain::class, parentColumns = ["id"], childColumns = ["painId"],onDelete = CASCADE)])
 data class Mood(
-    @ColumnInfo(name = "painId",index = true) var painId : Long,
+    @ColumnInfo(name = "painId",index = true) var painId : Long = 0,
     @ColumnInfo(name = "value") var value : String
 ) {
     @PrimaryKey(autoGenerate = true)

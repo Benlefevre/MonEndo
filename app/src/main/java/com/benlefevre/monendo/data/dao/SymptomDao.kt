@@ -20,8 +20,8 @@ interface SymptomDao {
     fun getSymptomsByPeriod(dateBegin : Date, dateEnd : Date) : LiveData<List<Symptom>>
 
     @Insert
-    fun insertAll(symptoms : List<Symptom>)
+    suspend fun insertAll(symptoms : List<Symptom>)
 
     @Query("DELETE FROM Symptom")
-    fun deleteAllSymptoms()
+    suspend fun deleteAllSymptoms()
 }

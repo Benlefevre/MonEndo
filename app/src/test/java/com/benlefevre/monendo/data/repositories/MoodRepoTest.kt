@@ -6,6 +6,8 @@ import com.benlefevre.monendo.data.models.Mood
 import com.nhaarman.mockitokotlin2.argumentCaptor
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -13,6 +15,7 @@ import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.junit.MockitoJUnitRunner
 
+@ExperimentalCoroutinesApi
 @RunWith(MockitoJUnitRunner::class)
 class MoodRepoTest {
 
@@ -36,7 +39,7 @@ class MoodRepoTest {
     }
 
     @Test
-    fun insertMood_moodDaoInteraction() {
+    fun insertMood_moodDaoInteraction() = runBlockingTest {
         val mood = Mood(0, "happy")
         SUT.insertMood(mood)
         argumentCaptor<Mood>().apply {
@@ -46,7 +49,7 @@ class MoodRepoTest {
     }
 
     @Test
-    fun deleteMood_success_moodDaoInteraction() {
+    fun deleteMood_success_moodDaoInteraction() = runBlockingTest {
         SUT.deleteAllMoods()
         verify(moodDao).deleteAllMoods()
     }

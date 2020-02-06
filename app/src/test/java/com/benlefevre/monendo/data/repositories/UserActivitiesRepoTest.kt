@@ -7,6 +7,8 @@ import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.argumentCaptor
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -15,6 +17,7 @@ import org.mockito.Mock
 import org.mockito.junit.MockitoJUnitRunner
 import java.util.*
 
+@ExperimentalCoroutinesApi
 @RunWith(MockitoJUnitRunner::class)
 class UserActivitiesRepoTest {
 
@@ -67,7 +70,7 @@ class UserActivitiesRepoTest {
     }
 
     @Test
-    fun insertAllUserActivities_success_correctDataPassed() {
+    fun insertAllUserActivities_success_correctDataPassed() = runBlockingTest {
         val userActivities = listOf(UserActivities(0, "sport", 15, 5, 5, Date()))
         SUT.insertAllUserActivities(userActivities)
         argumentCaptor<List<UserActivities>>().apply {
@@ -77,7 +80,7 @@ class UserActivitiesRepoTest {
     }
 
     @Test
-    fun deleteAllUserActivities_success_correctDataPassed() {
+    fun deleteAllUserActivities_success_correctDataPassed() = runBlockingTest{
         SUT.deleteAllUserActivities("sport")
         argumentCaptor<String>().apply {
             verify(userActivitiesDao).deleteAllUserActivities(capture())
@@ -86,7 +89,7 @@ class UserActivitiesRepoTest {
     }
 
     @Test
-    fun deleteAllSleepDatas_success_correctDataPassed() {
+    fun deleteAllSleepDatas_success_correctDataPassed() = runBlockingTest{
         SUT.deleteAllSleepDatas("sleep")
         argumentCaptor<String>().apply {
             verify(userActivitiesDao).deleteAllSleepDatas(capture())

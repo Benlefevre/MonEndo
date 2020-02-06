@@ -7,6 +7,8 @@ import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.argumentCaptor
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -15,6 +17,7 @@ import org.mockito.Mock
 import org.mockito.junit.MockitoJUnitRunner
 import java.util.*
 
+@ExperimentalCoroutinesApi
 @RunWith(MockitoJUnitRunner::class)
 class SymptomRepoTest{
 
@@ -59,9 +62,9 @@ class SymptomRepoTest{
     }
 
     @Test
-    fun insertSymptoms_success_correctDataPassed() {
+    fun insertSymptoms_success_correctDataPassed() = runBlockingTest {
         val symptoms = listOf(Symptom(0,"fever",Date()), Symptom(1,"bloating",Date()))
-        SUT.insertSymptoms(symptoms)
+        SUT.insertAllSymptoms(symptoms)
         argumentCaptor<List<Symptom>>().apply {
             verify(symptomDao).insertAll(capture())
             assertEquals(symptoms,firstValue)
@@ -70,7 +73,7 @@ class SymptomRepoTest{
     }
 
     @Test
-    fun deleteAllSymptoms_success_symptomDaoInteraction() {
+    fun deleteAllSymptoms_success_symptomDaoInteraction() = runBlockingTest {
         SUT.deleteAllSymptoms()
         verify(symptomDao).deleteAllSymptoms()
     }

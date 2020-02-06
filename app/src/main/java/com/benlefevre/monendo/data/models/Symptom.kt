@@ -9,7 +9,7 @@ import java.util.*
 
 @Entity(foreignKeys = [ForeignKey(entity = Pain::class,parentColumns = ["id"], childColumns = ["painId"], onDelete = CASCADE)])
 data class Symptom (
-    @ColumnInfo(name = "painId", index = true) var painId : Long,
+    @ColumnInfo(name = "painId", index = true) var painId : Long = 0,
     @ColumnInfo(name = "name") var name : String,
     @ColumnInfo(name = "date") var date : Date
 ) {

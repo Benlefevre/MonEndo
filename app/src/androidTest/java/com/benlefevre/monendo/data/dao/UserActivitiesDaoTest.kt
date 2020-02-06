@@ -8,6 +8,7 @@ import com.benlefevre.monendo.data.database.EndoDatabase
 import com.benlefevre.monendo.data.models.Pain
 import com.benlefevre.monendo.data.models.UserActivities
 import com.benlefevre.monendo.utils.getOrAwaitValue
+import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
@@ -26,9 +27,9 @@ class UserActivitiesDaoTest {
     var rowId2 : Long = 0
     lateinit var date: Date
 
-    @Rule
-    @JvmField
+    @get:Rule
     var instantTaskExecutorRule  = InstantTaskExecutorRule()
+
 
     @Before
     fun setUp() {
@@ -37,8 +38,10 @@ class UserActivitiesDaoTest {
             EndoDatabase::class.java)
             .allowMainThreadQueries()
             .build()
-        rowId = endoDatabase.painDao().insertPain(Pain(Date(),5,"head"))
-        rowId2 = endoDatabase.painDao().insertPain(Pain(Date(),10,"bladder"))
+        runBlocking {
+            rowId = endoDatabase.painDao().insertPain(Pain(Date(),5,"head"))
+            rowId2 = endoDatabase.painDao().insertPain(Pain(Date(),10,"bladder"))
+        }
 
         userActivitiesDao = endoDatabase.userActivitiesDao()
         date = Date()
@@ -50,7 +53,7 @@ class UserActivitiesDaoTest {
     }
 
     @Test
-    fun insertAndGetAllUserActivities_success_correctDataReturned() {
+    fun insertAndGetAllUserActivities_success_correctDataReturned() = runBlocking {
         val userActivity = UserActivities(rowId,"sport",30,8,5,date)
         val userActivity2 = UserActivities(rowId2,"sleep",200,8,5,date)
         val activitiesList = listOf(userActivity,userActivity2)
@@ -64,7 +67,7 @@ class UserActivitiesDaoTest {
     }
 
     @Test
-    fun getPainUserActivities_success_correctDataReturned() {
+    fun getPainUserActivities_success_correctDataReturned() = runBlocking{
         val userActivity = UserActivities(rowId,"sport",30,8,5,date)
         val userActivity2 = UserActivities(rowId2,"sleep",200,8,5,date)
         val activitiesList = listOf(userActivity,userActivity2)
@@ -84,7 +87,7 @@ class UserActivitiesDaoTest {
     }
 
     @Test
-    fun deleteAllActivities_success_noDataWithNameReturned() {
+    fun deleteAllActivities_success_noDataWithNameReturned() = runBlocking {
         insertAndGetAllUserActivities_success_correctDataReturned()
         var userActivitiesReturned = endoDatabase.userActivitiesDao().getAllUserActivities().getOrAwaitValue()
         assertEquals(2,userActivitiesReturned.size)
@@ -98,7 +101,7 @@ class UserActivitiesDaoTest {
     }
 
     @Test
-    fun deleteAllSleepData_success_noDataWithNameReturned() {
+    fun deleteAllSleepData_success_noDataWithNameReturned() = runBlocking{
         insertAndGetAllUserActivities_success_correctDataReturned()
         var userActivitiesReturned = endoDatabase.userActivitiesDao().getAllUserActivities().getOrAwaitValue()
         assertEquals(2,userActivitiesReturned.size)
@@ -112,7 +115,8 @@ class UserActivitiesDaoTest {
     }
 
     @Test
-    fun getUserActivitiesByPeriod_success_correctDataReturned() {val date1 = with(Calendar.getInstance()){
+    fun getUserActivitiesByPeriod_success_correctDataReturned() = runBlocking {
+        val date1 = with(Calendar.getInstance()){
         set(Calendar.MONTH,2)
         set(Calendar.YEAR,2018)
         time

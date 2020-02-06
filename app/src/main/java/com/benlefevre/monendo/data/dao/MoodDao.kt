@@ -16,8 +16,8 @@ interface MoodDao {
     fun getPainMood(painId : Long) : LiveData<Mood>
 
     @Insert
-    fun insert(mood: Mood)
+    suspend fun insert(mood: Mood)
 
     @Query("DELETE FROM Mood")
-    fun deleteAllMoods()
+    suspend fun deleteAllMoods()
 }

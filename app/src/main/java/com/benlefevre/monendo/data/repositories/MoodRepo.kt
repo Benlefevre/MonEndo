@@ -12,7 +12,7 @@ class MoodRepo(private val moodDao: MoodDao) {
         return moodDao.getPainMood(painId)
     }
 
-    fun insertMood(mood: Mood) = moodDao.insert(mood)
+    suspend fun insertMood(mood: Mood) = moodDao.insert(mood)
 
-    fun deleteAllMoods() = moodDao.deleteAllMoods()
+    suspend fun deleteAllMoods() = moodDao.deleteAllMoods()
 }

@@ -17,8 +17,8 @@ interface PainDao {
     fun getPainByPeriod(dateBegin : Date, dateEnd : Date) : LiveData<List<Pain>>
 
     @Insert
-    fun insertPain(pain: Pain) : Long
+    suspend fun insertPain(pain: Pain) : Long
 
     @Query("DELETE FROM Pain")
-    fun deleteAllPain()
+    suspend fun deleteAllPain()
 }

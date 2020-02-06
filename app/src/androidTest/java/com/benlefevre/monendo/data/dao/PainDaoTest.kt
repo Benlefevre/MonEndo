@@ -7,6 +7,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.benlefevre.monendo.data.database.EndoDatabase
 import com.benlefevre.monendo.data.models.Pain
 import com.benlefevre.monendo.utils.getOrAwaitValue
+import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -44,7 +45,7 @@ class PainDaoTest {
     }
 
     @Test
-    fun insertAndGetPain_success_correctDataReturned() {
+    fun insertAndGetPain_success_correctDataReturned() = runBlocking {
         val pain1 = Pain(date,5,"head")
         val pain2 = Pain(date,10,"bladder")
 
@@ -57,7 +58,7 @@ class PainDaoTest {
     }
 
     @Test
-    fun deleteAllPains_success_noPainsInDb() {
+    fun deleteAllPains_success_noPainsInDb() = runBlocking {
         insertAndGetPain_success_correctDataReturned()
 
         var painReturned = endoDatabase.painDao().getAllPains().getOrAwaitValue()
@@ -70,7 +71,7 @@ class PainDaoTest {
     }
 
     @Test
-    fun getPainByPeriod_success_returnedCorrectData() {
+    fun getPainByPeriod_success_returnedCorrectData() = runBlocking {
         val date1 = with(Calendar.getInstance()){
             set(Calendar.MONTH,2)
             set(Calendar.YEAR,2018)

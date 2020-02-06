@@ -17,9 +17,9 @@ class UserActivitiesRepo(val userActivitiesDao: UserActivitiesDao) {
         return userActivitiesDao.getUserActivitiesByPeriod(dateBegin, dateEnd)
     }
 
-    fun insertAllUserActivities(userActivities : List<UserActivities>) = userActivitiesDao.insertAll(userActivities)
+    suspend fun insertAllUserActivities(userActivities : List<UserActivities>) = userActivitiesDao.insertAll(userActivities)
 
-    fun deleteAllUserActivities(name : String) = userActivitiesDao.deleteAllUserActivities(name)
+    suspend fun deleteAllUserActivities(name : String) = userActivitiesDao.deleteAllUserActivities(name)
 
-    fun deleteAllSleepDatas(name : String) = userActivitiesDao.deleteAllSleepDatas(name)
+    suspend fun deleteAllSleepDatas(name : String) = userActivitiesDao.deleteAllSleepDatas(name)
 }

@@ -7,6 +7,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.benlefevre.monendo.data.database.EndoDatabase
 import com.benlefevre.monendo.data.models.*
 import com.benlefevre.monendo.utils.getOrAwaitValue
+import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -27,8 +28,7 @@ class PainWithRelationDaoTest {
     lateinit var date: Date
     var rowId : Long = 0
 
-    @Rule
-    @JvmField
+    @get:Rule
     var instantTaskExecutorRule  = InstantTaskExecutorRule()
 
     @Before
@@ -44,10 +44,12 @@ class PainWithRelationDaoTest {
         painWithRelationsDao = endoDatabase.painRelationDao()
 
         date = Date()
-        rowId = painDao.insertPain(Pain(date,5,"head"))
-        moodDao.insert(Mood(rowId,"happy"))
-        symptomDao.insertAll(listOf(Symptom(rowId,"fever",date)))
-        userActivitiesDao.insertAll(listOf(UserActivities(rowId,"sleep",60,5,5,date)))
+        runBlocking {
+            rowId = painDao.insertPain(Pain(date,5,"head"))
+            moodDao.insert(Mood(rowId,"happy"))
+            symptomDao.insertAll(listOf(Symptom(rowId,"fever",date)))
+            userActivitiesDao.insertAll(listOf(UserActivities(rowId,"sleep",60,5,5,date)))
+        }
     }
 
     @After

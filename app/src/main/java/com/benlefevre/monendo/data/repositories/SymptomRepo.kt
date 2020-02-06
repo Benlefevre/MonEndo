@@ -17,7 +17,7 @@ class SymptomRepo(val symptomDao: SymptomDao) {
         return symptomDao.getPainSymptoms(painId)
     }
 
-    fun insertSymptoms(symptoms : List<Symptom>) = symptomDao.insertAll(symptoms)
+    suspend fun insertAllSymptoms(symptoms : List<Symptom>) = symptomDao.insertAll(symptoms)
 
-    fun deleteAllSymptoms() = symptomDao.deleteAllSymptoms()
+    suspend fun deleteAllSymptoms() = symptomDao.deleteAllSymptoms()
 }

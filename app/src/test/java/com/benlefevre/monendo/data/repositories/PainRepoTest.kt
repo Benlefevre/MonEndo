@@ -4,6 +4,8 @@ import com.benlefevre.monendo.data.dao.PainDao
 import com.benlefevre.monendo.data.models.Pain
 import com.nhaarman.mockitokotlin2.argumentCaptor
 import com.nhaarman.mockitokotlin2.verify
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -12,11 +14,11 @@ import org.mockito.Mock
 import org.mockito.junit.MockitoJUnitRunner
 import java.util.*
 
+@ExperimentalCoroutinesApi
 @RunWith(MockitoJUnitRunner::class)
 class PainRepoTest{
 
     lateinit var SUT : PainRepo
-
 
     @Mock
     lateinit var painDao: PainDao
@@ -45,7 +47,7 @@ class PainRepoTest{
     }
 
     @Test
-    fun insertPain_success_painDaoInteraction() {
+    fun insertPain_success_painDaoInteraction() = runBlockingTest {
         val pain = Pain(Date(),5,"head")
         SUT.insertPain(pain)
         argumentCaptor<Pain>().apply {
@@ -55,7 +57,7 @@ class PainRepoTest{
     }
 
     @Test
-    fun deleteAllPains_success_painDaoInteraction() {
+    fun deleteAllPains_success_painDaoInteraction() = runBlockingTest {
         SUT.deleteAllPains()
         verify(painDao).deleteAllPain()
     }

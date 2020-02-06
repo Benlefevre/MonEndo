@@ -12,7 +12,7 @@ class PainRepo(private val painDao: PainDao) {
     fun getPainsByPeriod(dateBegin: Date, dateEnd: Date): LiveData<List<Pain>> =
         painDao.getPainByPeriod(dateBegin, dateEnd)
 
-    fun insertPain(pain : Pain) = painDao.insertPain(pain)
+    suspend fun insertPain(pain : Pain) : Long = painDao.insertPain(pain)
 
-    fun deleteAllPains() = painDao.deleteAllPain()
+    suspend fun deleteAllPains() = painDao.deleteAllPain()
 }
