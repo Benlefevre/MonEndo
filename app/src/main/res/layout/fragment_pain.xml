@@ -7,6 +7,7 @@
     tools:context=".ui.controllers.fragments.PainFragment">
 
     <LinearLayout
+        android:id="@+id/pain_root"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
@@ -86,7 +87,7 @@
                         android:id="@+id/pain_location_chipgroup"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:chipSpacing="4dp"
+                        app:chipSpacingHorizontal="4dp"
                         app:singleLine="false"
                         app:singleSelection="true">
 
@@ -171,7 +172,7 @@
                         android:id="@+id/pain_symptom_chipgroup"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:chipSpacing="4dp"
+                        app:chipSpacingHorizontal="4dp"
                         app:singleLine="false">
 
                         <com.google.android.material.chip.Chip
@@ -318,7 +319,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:text="@string/sport"
-                        android:textColor="@color/colorOnPrimary" />
+                        android:textColor="@color/colorPrimary" />
                 </LinearLayout>
                 <!--__________________________End card sport_____________________________________-->
 
@@ -350,7 +351,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:text="@string/sleep"
-                        android:textColor="@color/colorOnPrimary" />
+                        android:textColor="@color/colorPrimary" />
                 </LinearLayout>
                 <!--________________________End card sleep_______________________________________-->
 
@@ -381,7 +382,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:text="@string/stress"
-                        android:textColor="@color/colorOnPrimary" />
+                        android:textColor="@color/colorPrimary" />
                 </LinearLayout>
                 <!--________________________End card stress______________________________________-->
 
@@ -396,7 +397,6 @@
                     android:elevation="5dp"
                     android:orientation="vertical"
                     android:padding="8dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/pain_card_sex"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="parent"
@@ -414,7 +414,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:text="@string/relaxation"
-                        android:textColor="@color/colorOnPrimary" />
+                        android:textColor="@color/colorPrimary" />
                 </LinearLayout>
                 <!--________________________End card relaxation__________________________________-->
 
@@ -445,7 +445,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:text="@string/sex"
-                        android:textColor="@color/colorOnPrimary" />
+                        android:textColor="@color/colorPrimary" />
                 </LinearLayout>
                 <!--________________________End card sex_________________________________________-->
 
@@ -476,9 +476,19 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:text="@string/other"
-                        android:textColor="@color/colorOnPrimary" />
+                        android:textColor="@color/colorPrimary" />
                 </LinearLayout>
                 <!--________________________End card other_______________________________________-->
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/pain_activity_chipgroup"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    app:layout_constraintTop_toBottomOf="@id/pain_card_relaxation"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

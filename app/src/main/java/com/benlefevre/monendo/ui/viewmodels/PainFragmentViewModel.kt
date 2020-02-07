@@ -1,5 +1,7 @@
 package com.benlefevre.monendo.ui.viewmodels
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.benlefevre.monendo.data.models.Mood
@@ -20,9 +22,23 @@ class PainFragmentViewModel(
     private val userActivitiesRepo: UserActivitiesRepo
 ) : ViewModel() {
 
+    private val activities = mutableListOf<UserActivities>()
+    private val _activitiesLiveData = MutableLiveData<List<UserActivities>>()
+
+    val activitiesLiveData: LiveData<List<UserActivities>>
+        get() = _activitiesLiveData
+
+    fun addActivities(userActivities: UserActivities) {
+        activities.add(userActivities)
+        _activitiesLiveData.value = activities
+    }
+
+    fun removeActivities(userActivities: UserActivities) {
+        activities.remove(userActivities)
+        _activitiesLiveData.value = activities
+    }
 
     suspend fun insertPain(pain: Pain): Long = withContext(viewModelScope.coroutineContext) { painRepo.insertPain(pain) }
-
 
     suspend fun insertMood(mood: Mood, rowId: Long) {
         mood.painId = rowId
@@ -36,7 +52,7 @@ class PainFragmentViewModel(
         symptomRepo.insertAllSymptoms(symptoms)
     }
 
-    suspend fun insertUserActivities(activities: List<UserActivities>,rowId : Long) {
+    suspend fun insertUserActivities(activities: List<UserActivities>, rowId: Long) {
         for (activity in activities)
             activity.painId = rowId
         userActivitiesRepo.insertAllUserActivities(activities)
@@ -45,6 +61,7 @@ class PainFragmentViewModel(
     fun insertUserInput(pain: Pain, mood: Mood?, symptoms: List<Symptom>) = viewModelScope.launch {
         val row = insertPain(pain)
         mood?.let { insertMood(mood, row) }
-        if(!symptoms.isNullOrEmpty()) insertSymptoms(symptoms, row)
+        if (!symptoms.isNullOrEmpty()) insertSymptoms(symptoms, row)
+        if (!activities.isNullOrEmpty()) insertUserActivities(activities, row)
     }
 }

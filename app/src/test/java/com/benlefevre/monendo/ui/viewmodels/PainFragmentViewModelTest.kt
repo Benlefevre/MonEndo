@@ -175,4 +175,17 @@ class PainFragmentViewModelTest {
 
         verifyNoMoreInteractions(symptomRepo)
     }
+
+    @Test
+    fun insertAllUserInput_emptyUserActivitiesList_noUserActivitiesDaoInteraction() = runBlockingTest {
+        val date = Date()
+        val pain = Pain(date,5,"head")
+        val mood = Mood(value = "sad")
+        val symptoms = listOf<Symptom>()
+        whenever(painRepo.insertPain(any())).thenReturn(1)
+
+        SUT.insertUserInput(pain,mood,symptoms)
+
+        verifyNoMoreInteractions(userActivitiesRepo)
+    }
 }

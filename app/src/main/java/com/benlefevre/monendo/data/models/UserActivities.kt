@@ -12,7 +12,7 @@ data class UserActivities(
     @ColumnInfo(name = "painId", index = true) var painId : Long,
     @ColumnInfo(name = "name") var name : String,
     @ColumnInfo(name = "duration") var duration : Int,
-    @ColumnInfo(name = "intensity") var instensity : Int,
+    @ColumnInfo(name = "intensity") var intensity : Int,
     @ColumnInfo(name = "painValue") var painValue : Int,
     @ColumnInfo(name = "date") var date : Date
 ) {

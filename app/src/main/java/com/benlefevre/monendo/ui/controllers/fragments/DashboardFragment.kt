@@ -35,6 +35,15 @@ class DashboardFragment : Fragment(), View.OnClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupOnClickListener()
+//        val dateBegin = with(Calendar.getInstance()){
+//            set(Calendar.DAY_OF_YEAR,-7)
+//            time
+//        }
+//        viewModel.getPainRelationsByPeriod(dateBegin,Date()).observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+//            it.forEach {
+//                Log.i("benoit","$it")
+//            }
+//        })
     }
 
     private fun setupOnClickListener() {

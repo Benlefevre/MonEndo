@@ -4,6 +4,26 @@
     <string name="facebook_application_id">113729150041447</string>
     <string name="fb_login_protocol_scheme">fb113729150041447</string>
 
+    <string-array name="sport">
+        <item>BasketBall</item>
+        <item>Bike</item>
+        <item>Climbing</item>
+        <item>Combat sport</item>
+        <item>Dance</item>
+        <item>Fencing</item>
+        <item>Fitness</item>
+        <item>Football</item>
+        <item>Gymnastic</item>
+        <item>HandBall</item>
+        <item>Horse riding</item>
+        <item>Rugby</item>
+        <item>Running</item>
+        <item>Swimming</item>
+        <item>Tennis</item>
+        <item>Volleyball</item>
+        <item>Walking</item>
+        <item>Yoga</item>
+    </string-array>
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="cancel_login">You have cancelled the authentication process. Please try again.</string>
@@ -53,4 +73,16 @@
     <string name="happy">Happy</string>
     <string name="very_happy">Very happy</string>
     <string name="save">Save</string>
+    <string name="some_precisions_please">Some precisions please</string>
+    <string name="what_activities_did_you_practiced">What activities did you practiced?</string>
+    <string name="how_long_in_minutes">How long in minutes?</string>
+    <string name="with_what_intensity_on_a_scale_from_0_to_10">With what intensity on a scale from 0 to 10</string>
+    <string name="cancel">Cancel</string>
+    <string name="rate_sleep_quality">How do you rate your sleep quality?</string>
+    <string name="activity_name">Activity name :</string>
+    <string name="activity_duration">Activity duration :</string>
+    <string name="activity_instensity">Activity instensity :</string>
+    <string name="delete">Delete</string>
+
+
 </resources>
