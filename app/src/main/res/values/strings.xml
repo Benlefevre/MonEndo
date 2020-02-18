@@ -83,6 +83,16 @@
     <string name="activity_duration">Activity duration :</string>
     <string name="activity_instensity">Activity instensity :</string>
     <string name="delete">Delete</string>
+    <string name="evolution_of_pain_over_the_last_7_days">Evolution of pain over the last 7 days</string>
+    <string name="recurrence_of_symptoms_over_the_last_7_days">Recurrence of symptoms over the last 7 days</string>
+    <string name="practiced_activities_over_the_last_7_days">Practiced activities over the last 7 days</string>
+    <string name="sleep_quality_over_the_last_7_days">Sleep quality over the last 7 days</string>
+    <string name="mood_repartition_over_the_last_7_days">Mood repartition over the last 7 days</string>
+    <string name="pain_history_appear">Your pain history will appear here</string>
+    <string name="symptom_history_appear">Your symptom history will appear here</string>
+    <string name="activities_history_appear">Your activities history will appear here</string>
+    <string name="sleep_quality_history_appear">You sleep quality history will appear here</string>
+    <string name="mood_history_appear">Your mood history will appear here</string>
 
 
 </resources>

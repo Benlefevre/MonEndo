@@ -2,8 +2,12 @@ package com.benlefevre.monendo.ui.controllers.fragments
 
 
 import android.os.Bundle
-import android.view.*
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
 import android.widget.ArrayAdapter
+import androidx.core.content.ContextCompat.getColor
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -24,7 +28,7 @@ import kotlinx.android.synthetic.main.fragment_pain.*
 import java.util.*
 
 
-class PainFragment : Fragment() {
+class PainFragment : Fragment(R.layout.fragment_pain) {
 
     private lateinit var customView: View
     private lateinit var intensitySlider: Slider
@@ -44,15 +48,6 @@ class PainFragment : Fragment() {
     private lateinit var symptoms: MutableList<Symptom>
     private var activityChoice: String = ""
     private val date = Date()
-
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_pain, container, false)
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -102,7 +97,7 @@ class PainFragment : Fragment() {
     fun createSymptomsList() {
         symptoms = mutableListOf()
         if (pain_chip_burns.isChecked) symptoms.add(Symptom(name = getString(R.string.burns), date = date))
-        if (pain_chip_cramps.isChecked) symptoms.add(Symptom(name = getString(R.string.burns), date = date))
+        if (pain_chip_cramps.isChecked) symptoms.add(Symptom(name = getString(R.string.cramps), date = date))
         if (pain_chip_bleeding.isChecked) symptoms.add(Symptom(name = getString(R.string.bleeding), date = date))
         if (pain_chip_fever.isChecked) symptoms.add(Symptom(name = getString(R.string.fever), date = date))
         if (pain_chip_bloating.isChecked) symptoms.add(Symptom(name = getString(R.string.bloating), date = date))
@@ -187,7 +182,7 @@ class PainFragment : Fragment() {
                 val chip = Chip(context)
                 chip.apply {
                     text = activity.name
-                    setTextColor(resources.getColor(R.color.colorOnPrimary))
+                    setTextColor(getColor(context,R.color.colorOnPrimary))
                     setChipBackgroundColorResource(R.color.colorSecondary)
                     setOnClickListener {
                         Snackbar.make(pain_root, "${activity.name} during ${activity.duration} min with an intensity of ${activity.intensity}", Snackbar.LENGTH_SHORT)

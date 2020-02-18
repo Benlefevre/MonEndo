@@ -6,7 +6,16 @@ import java.util.*
 
 class DashboardViewModel(private val painWithRelationsRepo: PainWithRelationsRepo) : ViewModel() {
 
-    fun getPainRelationsByPeriod(dateBegin: Date, dateEnd: Date) =
-        painWithRelationsRepo.getPainWithRelationByPeriod(dateBegin, dateEnd)
+
+    val date7 = with(Calendar.getInstance()){
+        add(Calendar.DAY_OF_YEAR,-7)
+        time
+    }
+
+    val today = Date()
+
+    fun getPainRelationsByPeriod() =
+        painWithRelationsRepo.getPainWithRelationByPeriod(date7, today)
+
 
 }

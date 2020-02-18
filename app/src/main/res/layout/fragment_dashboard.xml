@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/dashboard_coordinator"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/dashboard_coordinator"
     tools:context=".ui.controllers.fragments.DashboardFragment">
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -23,8 +23,163 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_marginBottom="8dp">
+
+            <!--________________________________Begin pain chart_________________________________-->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/dashboard_card_pain"
+                style="@style/CardViewTheme"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <com.github.mikephil.charting.charts.LineChart
+                        android:id="@+id/dashboard_chart_pain"
+                        android:layout_width="match_parent"
+                        android:layout_height="200dp"
+                        android:layout_margin="8dp" />
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/dashboard_chart_pain_legend"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_margin="8dp"
+                        android:text="@string/evolution_of_pain_over_the_last_7_days" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+            </androidx.cardview.widget.CardView>
+            <!--________________________________Begin pain chart_________________________________-->
+
+            <!--________________________________Begin symptoms chart_____________________________-->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/dashboard_card_symptom"
+                style="@style/CardViewTheme"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <com.github.mikephil.charting.charts.BarChart
+                        android:id="@+id/dashboard_chart_symptom"
+                        android:layout_width="match_parent"
+                        android:layout_height="200dp"
+                        android:layout_margin="8dp" />
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/dashboard_chart_symptom_legend"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_margin="8dp"
+                        android:text="@string/recurrence_of_symptoms_over_the_last_7_days" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+            </androidx.cardview.widget.CardView>
+            <!--________________________________End symptoms chart_______________________________-->
+
+            <!--________________________________Begin activities chart___________________________-->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/dashboard_card_activities"
+                style="@style/CardViewTheme"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <com.github.mikephil.charting.charts.BarChart
+                        android:id="@+id/dashboard_chart_activities"
+                        android:layout_width="match_parent"
+                        android:layout_height="200dp"
+                        android:layout_margin="8dp" />
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/dashboard_chart_activities_legend"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_margin="8dp"
+                        android:text="@string/practiced_activities_over_the_last_7_days" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+            </androidx.cardview.widget.CardView>
+            <!--________________________________End activities chart_____________________________-->
+
+            <!--________________________________Begin sleep chart________________________________-->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/dashboard_card_sleep"
+                style="@style/CardViewTheme"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <com.github.mikephil.charting.charts.LineChart
+                        android:id="@+id/dashboard_chart_sleep"
+                        android:layout_width="match_parent"
+                        android:layout_height="200dp"
+                        android:layout_margin="8dp" />
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/dashboard_chart_sleep_legend"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_margin="8dp"
+                        android:text="@string/sleep_quality_over_the_last_7_days" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+            </androidx.cardview.widget.CardView>
+            <!--________________________________End sleep chart__________________________________-->
+
+            <!--________________________________Begin mood chart_________________________________-->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/dashboard_card_mood"
+                style="@style/CardViewTheme"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <com.github.mikephil.charting.charts.PieChart
+                        android:id="@+id/dashboard_chart_mood"
+                        android:layout_width="match_parent"
+                        android:layout_height="200dp"
+                        android:layout_margin="8dp" />
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/dashboard_chart_mood_legend"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_margin="8dp"
+                        android:text="@string/mood_repartition_over_the_last_7_days" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+            </androidx.cardview.widget.CardView>
+            <!--________________________________End mood chart___________________________________-->
+        </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>
-
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
