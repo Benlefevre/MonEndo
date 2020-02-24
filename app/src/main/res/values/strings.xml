@@ -93,6 +93,9 @@
     <string name="activities_history_appear">Your activities history will appear here</string>
     <string name="sleep_quality_history_appear">You sleep quality history will appear here</string>
     <string name="mood_history_appear">Your mood history will appear here</string>
-
+    <string name="activity_session">Number of %1$s sessions</string>
+    <string name="activity_duration_chart">Average duration of %1$s</string>
+    <string name="activity_intensity_chart">Average intensity of %1$s</string>
+    <string name="sleep_quality">Sleep quality</string>
 
 </resources>
