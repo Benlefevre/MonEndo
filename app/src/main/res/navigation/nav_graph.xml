@@ -16,5 +16,11 @@
         android:id="@+id/painFragment"
         android:name="com.benlefevre.monendo.ui.controllers.fragments.PainFragment"
         android:label="@string/my_pain"
-        tools:layout="@layout/fragment_pain" />
+        tools:layout="@layout/fragment_pain" >
+    </fragment>
+    <fragment
+        android:id="@+id/painDetailFragment"
+        android:name="com.benlefevre.monendo.ui.controllers.fragments.PainDetailFragment"
+        android:label="@string/pain_details"
+        tools:layout="@layout/fragment_pain_detail" />
 </navigation>

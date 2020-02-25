@@ -77,6 +77,7 @@ class MainActivity : AppCompatActivity() {
             when (destination.id) {
                 R.id.dashboardFragment -> bottomNav.visibility = VISIBLE
                 R.id.painFragment -> bottomNav.visibility = GONE
+                R.id.painDetailFragment -> bottomNav.visibility = GONE
             }
         }
     }

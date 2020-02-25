@@ -26,7 +26,7 @@ import com.github.mikephil.charting.formatter.PercentFormatter
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
 import kotlinx.android.synthetic.main.fragment_dashboard.*
 
-class DashboardFragment : Fragment(R.layout.fragment_dashboard), View.OnClickListener {
+class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
 
     private val viewModel: DashboardViewModel by lazy {
         ViewModelProvider(
@@ -85,7 +85,7 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard), View.OnClickLis
     }
 
     private fun getLast7DaysUserInputs() {
-        viewModel.getPainRelationsByPeriod().observe(viewLifecycleOwner, Observer { list ->
+        viewModel.getPainRelationsBy7LastDays().observe(viewLifecycleOwner, Observer { list ->
             clearLists()
             list.forEach {
                 pains.add(it.pain)
@@ -175,8 +175,10 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard), View.OnClickLis
             Pair(symptoms.count { it.name == getString(R.string.tired) }.toFloat(), getString(R.string.tired))
 
         val symptomsCount =
-            arrayOf(burns, cramps, bleeding, chills, fever, bloating, hotFlush, diarrhea,
-                constipation, nausea, tired)
+            arrayOf(
+                burns, cramps, bleeding, chills, fever, bloating, hotFlush, diarrhea,
+                constipation, nausea, tired
+            )
 
         symptomsCount.forEach {
             if (it.first != 0f) {
@@ -244,13 +246,17 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard), View.OnClickLis
             }
         }
         val sportData =
-            Pair(Triple(sportNb, sportDuration / sportNb, sportIntensity / sportNb),
-                getString(R.string.sport))
+            Pair(
+                Triple(sportNb, sportDuration / sportNb, sportIntensity / sportNb),
+                getString(R.string.sport)
+            )
         val stressData =
             Pair(Triple(stressNb, 0f, stressIntensity / stressNb), getString(R.string.stress))
         val relaxationData =
-            Pair(Triple(relaxationNb, relaxationDuration / relaxationNb, relaxationIntensity / relaxationNb),
-                getString(R.string.relaxation))
+            Pair(
+                Triple(relaxationNb, relaxationDuration / relaxationNb, relaxationIntensity / relaxationNb),
+                getString(R.string.relaxation)
+            )
         val sexData =
             Pair(Triple(sexNb, sexDuration / sexNb, sexIntensity / sexNb), getString(R.string.sex))
 
@@ -266,8 +272,10 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard), View.OnClickLis
         activitiesCount.forEach {
             if (it.first.first != 0f) {
                 val barSet =
-                    BarDataSet(listOf(BarEntry(indexDataSet, it.first.first)),
-                        getString(R.string.activity_session, it.second))
+                    BarDataSet(
+                        listOf(BarEntry(indexDataSet, it.first.first)),
+                        getString(R.string.activity_session, it.second)
+                    )
                 barSet.apply {
                     color = getColor(context!!, this@DashboardFragment.colors[colorCounter])
                     axisDependency = YAxis.AxisDependency.RIGHT
@@ -278,8 +286,10 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard), View.OnClickLis
                 dataSet.add(barSet)
                 if (it.first.second != 0f) {
                     val barSetDuration =
-                        BarDataSet(listOf(BarEntry(indexDataSet, it.first.second)),
-                            getString(R.string.activity_duration_chart, it.second))
+                        BarDataSet(
+                            listOf(BarEntry(indexDataSet, it.first.second)),
+                            getString(R.string.activity_duration_chart, it.second)
+                        )
                     barSetDuration.apply {
                         color = getColor(context!!, this@DashboardFragment.colors[colorCounter])
                         axisDependency = YAxis.AxisDependency.LEFT
@@ -291,8 +301,10 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard), View.OnClickLis
                 }
                 if (it.first.third != 0f) {
                     val barSetIntensity =
-                        BarDataSet(listOf(BarEntry(indexDataSet, it.first.third)),
-                            getString(R.string.activity_intensity_chart, it.second))
+                        BarDataSet(
+                            listOf(BarEntry(indexDataSet, it.first.third)),
+                            getString(R.string.activity_intensity_chart, it.second)
+                        )
                     barSetIntensity.apply {
                         color = getColor(context!!, this@DashboardFragment.colors[colorCounter])
                         axisDependency = YAxis.AxisDependency.RIGHT
@@ -358,20 +370,30 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard), View.OnClickLis
 
     private fun calculateMoodData(): Array<Pair<Float, String>> {
         val sad =
-            Pair(moods.count { it.value == getString(R.string.sad) }.toFloat() / moods.size.toFloat(),
-                getString(R.string.sad))
+            Pair(
+                moods.count { it.value == getString(R.string.sad) }.toFloat() / moods.size.toFloat(),
+                getString(R.string.sad)
+            )
         val sick =
-            Pair(moods.count { it.value == getString(R.string.sick) }.toFloat() / moods.size.toFloat(),
-                getString(R.string.sick))
+            Pair(
+                moods.count { it.value == getString(R.string.sick) }.toFloat() / moods.size.toFloat(),
+                getString(R.string.sick)
+            )
         val irritated =
-            Pair(moods.count { it.value == getString(R.string.irritated) }.toFloat() / moods.size.toFloat(),
-                getString(R.string.irritated))
+            Pair(
+                moods.count { it.value == getString(R.string.irritated) }.toFloat() / moods.size.toFloat(),
+                getString(R.string.irritated)
+            )
         val happy =
-            Pair(moods.count { it.value == getString(R.string.happy) }.toFloat() / moods.size.toFloat(),
-                getString(R.string.happy))
+            Pair(
+                moods.count { it.value == getString(R.string.happy) }.toFloat() / moods.size.toFloat(),
+                getString(R.string.happy)
+            )
         val veryHappy =
-            Pair(moods.count { it.value == getString(R.string.very_happy) }.toFloat() / moods.size.toFloat(),
-                getString(R.string.very_happy))
+            Pair(
+                moods.count { it.value == getString(R.string.very_happy) }.toFloat() / moods.size.toFloat(),
+                getString(R.string.very_happy)
+            )
 
         return arrayOf(sad, sick, irritated, happy, veryHappy)
     }
@@ -415,12 +437,11 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard), View.OnClickLis
     }
 
     private fun setupOnClickListener() {
-        dashboard_fab.setOnClickListener(this)
-    }
-
-    override fun onClick(view: View) {
-        when (view.id) {
-            R.id.dashboard_fab -> navController.navigate(R.id.painFragment)
+        dashboard_fab.setOnClickListener {
+            navController.navigate(R.id.painFragment)
+        }
+        dashboard_card_pain.setOnClickListener {
+            navController.navigate(R.id.painDetailFragment)
         }
     }
 }

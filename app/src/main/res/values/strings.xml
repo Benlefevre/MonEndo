@@ -97,5 +97,19 @@
     <string name="activity_duration_chart">Average duration of %1$s</string>
     <string name="activity_intensity_chart">Average intensity of %1$s</string>
     <string name="sleep_quality">Sleep quality</string>
+    <string name="pain_details">Detailed history of recorded pain</string>
+    <string name="click_on_a_value_to_see_all_information_you_saved_that_day">Click on a value to see all information you saved that day</string>
+    <string name="week">Week</string>
+    <string name="month">Month</string>
+    <string name="_6_months">6 Months</string>
+    <string name="year">Year</string>
+    <string name="date">Date</string>
+    <string name="pain_value">Pain value</string>
+    <string name="location">Location</string>
+    <string name="symptoms">Symptoms</string>
+    <string name="practiced_activities">Practiced activities</string>
+    <string name="sleep_detail_activity">%1$s with a quality value of %2$d</string>
+    <string name="stress_detail_activity">%1$s with an intensity exposure of %2$d</string>
+    <string name="other_detail_activity">%1$s during %2$d minutes and with an intensity of %3$d</string>
 
 </resources>

@@ -1,7 +1,7 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryVariant">@color/colorPrimaryVariant</item>
@@ -111,6 +111,11 @@
         <item name="boxCornerRadiusBottomStart">15dp</item>
         <item name="boxCornerRadiusTopEnd">15dp</item>
         <item name="boxCornerRadiusTopStart">15dp</item>
+    </style>
+
+    <style name="CustomSubItem" parent="@style/Widget.MaterialComponents.TextView">
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:layout_margin">8dp</item>
     </style>
 
 </resources>
