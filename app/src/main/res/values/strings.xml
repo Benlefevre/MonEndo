@@ -111,5 +111,7 @@
     <string name="sleep_detail_activity">%1$s with a quality value of %2$d</string>
     <string name="stress_detail_activity">%1$s with an intensity exposure of %2$d</string>
     <string name="other_detail_activity">%1$s during %2$d minutes and with an intensity of %3$d</string>
+    <string name="click_on_a_pie_chart_s_value_to_see_the_symptom_evolution_in_time">Click on a pie chart\'s value to see the symptom evolution in time</string>
+    <string name="symptom_details">Detailed history of recorded symptoms</string>
 
 </resources>

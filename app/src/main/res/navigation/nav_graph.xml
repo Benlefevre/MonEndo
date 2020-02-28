@@ -23,4 +23,9 @@
         android:name="com.benlefevre.monendo.ui.controllers.fragments.PainDetailFragment"
         android:label="@string/pain_details"
         tools:layout="@layout/fragment_pain_detail" />
+    <fragment
+        android:id="@+id/symptomDetailFragment"
+        android:name="com.benlefevre.monendo.ui.controllers.fragments.SymptomDetailFragment"
+        android:label="@string/symptom_details"
+        tools:layout="@layout/fragment_symptom_detail" />
 </navigation>

@@ -25,7 +25,7 @@ class PainDetailFragment : Fragment(R.layout.fragment_pain_detail) {
     private val viewModel: DashboardViewModel by lazy {
         ViewModelProvider(
             this,
-            Injection.providerViewModelFactory(activity!!.applicationContext)
+            Injection.providerViewModelFactory(requireActivity().applicationContext)
         ).get(DashboardViewModel::class.java)
     }
 
@@ -36,6 +36,10 @@ class PainDetailFragment : Fragment(R.layout.fragment_pain_detail) {
         setupChipListener()
     }
 
+    /**
+     * Sets a checked listener on each chip to call the correct ViewModel's function
+     * to fetch user's input in locale DB.
+     */
     private fun setupChipListener() {
         chip_week.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
@@ -68,6 +72,9 @@ class PainDetailFragment : Fragment(R.layout.fragment_pain_detail) {
         chip_week.isChecked = true
     }
 
+    /**
+     * Sets the line chart with the user pain and defines the user's value click behavior
+     */
     private fun setupPainChart(pains: List<PainWithRelations>) {
         val painChart = pain_details_chart
         painRelations.clear()
@@ -84,8 +91,8 @@ class PainDetailFragment : Fragment(R.layout.fragment_pain_detail) {
 
         val dataSet = LineDataSet(entries, getString(R.string.my_pain)).apply {
             lineWidth = 2f
-            color = getColor(context!!, R.color.colorSecondary)
-            setCircleColor(getColor(context!!, R.color.colorSecondary))
+            color = getColor(requireContext(), R.color.colorSecondary)
+            setCircleColor(getColor(requireContext(), R.color.colorSecondary))
             setDrawValues(false)
         }
 
@@ -112,6 +119,9 @@ class PainDetailFragment : Fragment(R.layout.fragment_pain_detail) {
         }
     }
 
+    /**
+     * Binds the user's input into corresponding fields when user clicks on a value
+     */
     private fun displaySelectedPain(x: Int) {
         val pain = painRelations[x]
         var symptomText = ""

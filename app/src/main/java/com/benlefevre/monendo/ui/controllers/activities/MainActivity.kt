@@ -44,6 +44,9 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Binds user information into the nav header views
+     */
     private fun updateDrawerHeader(user: User) {
         val header = main_nav_view.getHeaderView(0)
         val headerName = header.findViewById<MaterialTextView>(R.id.drawer_user_name)
@@ -63,6 +66,10 @@ class MainActivity : AppCompatActivity() {
             Glide.with(this).load(R.drawable.ic_girl).into(headerPhoto)
     }
 
+    /**
+     * Configures the NavigationDrawer, the Toolbar and the BottomNavigation with the NavController
+     *  that navigate to destinations defined into the nav_graph.xml
+     */
     private fun setupNavigation() {
         val toolbar = main_toolbar
         val bottomNav = main_bottom_bar

@@ -31,7 +31,7 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
     private val viewModel: DashboardViewModel by lazy {
         ViewModelProvider(
             this,
-            Injection.providerViewModelFactory(activity!!.applicationContext)
+            Injection.providerViewModelFactory(requireActivity().applicationContext)
         ).get(DashboardViewModel::class.java)
     }
 
@@ -61,6 +61,9 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
         getLast7DaysUserInputs()
     }
 
+    /**
+     * Initializes the empty data text for each chart
+     */
     private fun initAllCharts() {
         painChart = dashboard_chart_pain.apply {
             setNoDataText(getString(R.string.pain_history_appear))
@@ -84,6 +87,9 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
         }
     }
 
+    /**
+     * Fetches the user's inputs from locale room db and add them into MutableList
+     */
     private fun getLast7DaysUserInputs() {
         viewModel.getPainRelationsBy7LastDays().observe(viewLifecycleOwner, Observer { list ->
             clearLists()
@@ -98,6 +104,9 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
         })
     }
 
+    /**
+     * Initializes charts if the fetched user's inputs in Db or not empty or null
+     */
     private fun setupAllCharts() {
         if (!pains.isNullOrEmpty()) setupPainChart()
         if (!symptoms.isNullOrEmpty()) setupSymptomsChart()
@@ -114,6 +123,9 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
         moods.clear()
     }
 
+    /**
+     * Setup the line chart that represented the pain over the last 7 days
+     */
     private fun setupPainChart() {
         var counter = 0
         val entries: MutableList<Entry> = mutableListOf()
@@ -125,8 +137,8 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
         val dataSet = LineDataSet(entries, getString(R.string.my_pain))
         with(dataSet) {
             lineWidth = 2.0f
-            color = getColor(context!!, R.color.colorSecondary)
-            setCircleColor(getColor(context!!, R.color.colorSecondary))
+            color = getColor(requireContext(), R.color.colorSecondary)
+            setCircleColor(getColor(requireContext(), R.color.colorSecondary))
             setDrawValues(false)
         }
 
@@ -146,6 +158,9 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
         }
     }
 
+    /**
+     * Setup the bar chart that represented the recurrence of symptoms over the last 7 days
+     */
     private fun setupSymptomsChart() {
         val dataSet: MutableList<IBarDataSet> = mutableListOf()
         var indexDataSet = 0.0f
@@ -184,7 +199,7 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
             if (it.first != 0f) {
                 val barSet = BarDataSet(listOf(BarEntry(indexDataSet, it.first)), it.second)
                 barSet.apply {
-                    color = getColor(context!!, this@DashboardFragment.colors[colorCounter])
+                    color = getColor(requireContext(), this@DashboardFragment.colors[colorCounter])
                     setDrawValues(false)
                 }
                 indexDataSet++
@@ -209,6 +224,9 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
 
     }
 
+    /**
+     * Counts the number of session for each practiced activity and calculates average data
+     */
     private fun calculateActivitiesData(): Array<Pair<Triple<Float, Float, Float>, String>> {
         var stressNb = 0f
         var stressIntensity = 0f
@@ -263,6 +281,9 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
         return arrayOf(sportData, stressData, relaxationData, sexData)
     }
 
+    /**
+     * Setup the multiBar chart that represented all practiced activities by user for the 7 last days
+     */
     private fun setupActivitiesChart() {
         val dataSet: MutableList<IBarDataSet> = mutableListOf()
         var indexDataSet = 0.0f
@@ -277,7 +298,7 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
                         getString(R.string.activity_session, it.second)
                     )
                 barSet.apply {
-                    color = getColor(context!!, this@DashboardFragment.colors[colorCounter])
+                    color = getColor(requireContext(), this@DashboardFragment.colors[colorCounter])
                     axisDependency = YAxis.AxisDependency.RIGHT
                     valueTextSize = 10f
                 }
@@ -291,7 +312,7 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
                             getString(R.string.activity_duration_chart, it.second)
                         )
                     barSetDuration.apply {
-                        color = getColor(context!!, this@DashboardFragment.colors[colorCounter])
+                        color = getColor(requireContext(), this@DashboardFragment.colors[colorCounter])
                         axisDependency = YAxis.AxisDependency.LEFT
                         valueTextSize = 10f
                     }
@@ -306,7 +327,7 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
                             getString(R.string.activity_intensity_chart, it.second)
                         )
                     barSetIntensity.apply {
-                        color = getColor(context!!, this@DashboardFragment.colors[colorCounter])
+                        color = getColor(requireContext(), this@DashboardFragment.colors[colorCounter])
                         axisDependency = YAxis.AxisDependency.RIGHT
                         valueTextSize = 10f
                     }
@@ -335,6 +356,9 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
         }
     }
 
+    /**
+     * Setup the line chart that represented the sleep quality over last 7 days
+     */
     private fun setupSleepChart() {
         var counter = 0f
         val entries: MutableList<Entry> = mutableListOf()
@@ -349,8 +373,8 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
         val dataSet = LineDataSet(entries, getString(R.string.sleep_quality))
         with(dataSet) {
             lineWidth = 2.0f
-            color = getColor(context!!, R.color.graph2)
-            setCircleColor(getColor(context!!, R.color.graph2))
+            color = getColor(requireContext(), R.color.graph2)
+            setCircleColor(getColor(requireContext(), R.color.graph2))
             setDrawValues(false)
         }
 
@@ -368,6 +392,9 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
         }
     }
 
+    /**
+     * Computes the repartition of user's mood of 7 days
+     */
     private fun calculateMoodData(): Array<Pair<Float, String>> {
         val sad =
             Pair(
@@ -398,6 +425,10 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
         return arrayOf(sad, sick, irritated, happy, veryHappy)
     }
 
+
+    /**
+     * Setup the pie chart that represented the mood repartition for over last 7 days
+     */
     private fun setupMoodChart() {
         val entries: MutableList<PieEntry> = mutableListOf()
         val moodsPercent = calculateMoodData()
@@ -419,7 +450,7 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
         val pieDataSet = PieDataSet(entries, "")
         pieDataSet.apply {
             valueFormatter = PercentFormatter()
-            valueTextColor = getColor(context!!, R.color.colorOnPrimary)
+            valueTextColor = getColor(requireContext(), R.color.colorOnPrimary)
             valueTextSize = 10f
             setColors(moodColor.toIntArray(), context)
         }
@@ -442,6 +473,9 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
         }
         dashboard_card_pain.setOnClickListener {
             navController.navigate(R.id.painDetailFragment)
+        }
+        dashboard_card_symptom.setOnClickListener {
+            navController.navigate(R.id.symptomDetailFragment)
         }
     }
 }
