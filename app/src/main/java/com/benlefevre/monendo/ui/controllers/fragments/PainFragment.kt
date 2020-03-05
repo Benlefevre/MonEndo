@@ -38,7 +38,7 @@ class PainFragment : Fragment(R.layout.fragment_pain) {
     private val viewModel by lazy {
         ViewModelProvider(
             this, Injection.providerViewModelFactory(
-                activity!!.applicationContext
+                requireActivity().applicationContext
             )
         ).get(PainFragmentViewModel::class.java)
     }
@@ -162,8 +162,10 @@ class PainFragment : Fragment(R.layout.fragment_pain) {
             setCancelable(false)
             setView(customView)
             setPositiveButton(getString(R.string.save)) { _, _ ->
-                if (view.tag == getString(R.string.other)) activityChoice =
+                if (view.tag == getString(R.string.other)) activityChoice = getString(
+                    R.string.other_activities,
                     otherTextInput.text.toString().capitalize()
+                )
                 val activity = UserActivities(
                     0, activityChoice, durationSlider.value.toInt(),
                     intensitySlider.value.toInt(), pain_slider.value.toInt(), date
@@ -182,7 +184,7 @@ class PainFragment : Fragment(R.layout.fragment_pain) {
                 val chip = Chip(context)
                 chip.apply {
                     text = activity.name
-                    setTextColor(getColor(context,R.color.colorOnPrimary))
+                    setTextColor(getColor(context, R.color.colorOnPrimary))
                     setChipBackgroundColorResource(R.color.colorSecondary)
                     setOnClickListener {
                         Snackbar.make(pain_root, "${activity.name} during ${activity.duration} min with an intensity of ${activity.intensity}", Snackbar.LENGTH_SHORT)

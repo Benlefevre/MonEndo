@@ -42,6 +42,9 @@ android {
         sourceCompatibility = 1.8
         targetCompatibility = 1.8
     }
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
+    }
 }
 
 dependencies {
@@ -84,9 +87,9 @@ dependencies {
     implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
 
 //    Firebase
-    implementation "com.google.firebase:firebase-analytics:17.2.2"
+    implementation "com.google.firebase:firebase-analytics:17.2.3"
     implementation "com.google.firebase:firebase-auth:19.2.0"
-    implementation 'com.google.firebase:firebase-firestore-ktx:21.4.0'
+    implementation 'com.google.firebase:firebase-firestore-ktx:21.4.1'
     implementation "com.firebaseui:firebase-ui-auth:6.1.0"
 
 //    Facebook SDK

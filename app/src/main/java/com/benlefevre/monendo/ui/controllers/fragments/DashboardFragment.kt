@@ -48,14 +48,11 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
     private lateinit var sleepChart: LineChart
     private lateinit var moodChart: PieChart
 
-    private val colors = arrayOf(
-        R.color.colorSecondary, R.color.colorPrimary, R.color.colorBackground,
-        R.color.colorPrimaryVariant, R.color.graph1, R.color.graph2, R.color.graph3, R.color.graph4,
-        R.color.graph5, R.color.graph6, R.color.graph7
-    )
+    private lateinit var colorsChart : IntArray
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        colorsChart = resources.getIntArray(R.array.chartColors)
         setupOnClickListener()
         initAllCharts()
         getLast7DaysUserInputs()
@@ -199,7 +196,7 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
             if (it.first != 0f) {
                 val barSet = BarDataSet(listOf(BarEntry(indexDataSet, it.first)), it.second)
                 barSet.apply {
-                    color = getColor(requireContext(), this@DashboardFragment.colors[colorCounter])
+                    color = colorsChart[colorCounter]
                     setDrawValues(false)
                 }
                 indexDataSet++
@@ -298,7 +295,7 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
                         getString(R.string.activity_session, it.second)
                     )
                 barSet.apply {
-                    color = getColor(requireContext(), this@DashboardFragment.colors[colorCounter])
+                    color = colorsChart[colorCounter]
                     axisDependency = YAxis.AxisDependency.RIGHT
                     valueTextSize = 10f
                 }
@@ -312,7 +309,7 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
                             getString(R.string.activity_duration_chart, it.second)
                         )
                     barSetDuration.apply {
-                        color = getColor(requireContext(), this@DashboardFragment.colors[colorCounter])
+                        color = colorsChart[colorCounter]
                         axisDependency = YAxis.AxisDependency.LEFT
                         valueTextSize = 10f
                     }
@@ -327,7 +324,7 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
                             getString(R.string.activity_intensity_chart, it.second)
                         )
                     barSetIntensity.apply {
-                        color = getColor(requireContext(), this@DashboardFragment.colors[colorCounter])
+                        color = colorsChart[colorCounter]
                         axisDependency = YAxis.AxisDependency.RIGHT
                         valueTextSize = 10f
                     }
@@ -438,11 +435,11 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
             if (it.first != 0f) {
                 entries.add(PieEntry(it.first, it.second))
                 when (it.second) {
-                    getString(R.string.sad) -> moodColor.add(colors[2])
-                    getString(R.string.sick) -> moodColor.add(colors[6])
-                    getString(R.string.irritated) -> moodColor.add(colors[8])
-                    getString(R.string.happy) -> moodColor.add(colors[5])
-                    getString(R.string.very_happy) -> moodColor.add(colors[4])
+                    getString(R.string.sad) -> moodColor.add(colorsChart[2])
+                    getString(R.string.sick) -> moodColor.add(colorsChart[6])
+                    getString(R.string.irritated) -> moodColor.add(colorsChart[8])
+                    getString(R.string.happy) -> moodColor.add(colorsChart[5])
+                    getString(R.string.very_happy) -> moodColor.add(colorsChart[4])
                 }
             }
         }
@@ -452,7 +449,7 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
             valueFormatter = PercentFormatter()
             valueTextColor = getColor(requireContext(), R.color.colorOnPrimary)
             valueTextSize = 10f
-            setColors(moodColor.toIntArray(), context)
+            colors = moodColor
         }
 
         moodChart.apply {
@@ -476,6 +473,9 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
         }
         dashboard_card_symptom.setOnClickListener {
             navController.navigate(R.id.symptomDetailFragment)
+        }
+        dashboard_card_activities.setOnClickListener {
+            navController.navigate(R.id.activitiesDetailFragment)
         }
     }
 }

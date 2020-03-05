@@ -28,4 +28,9 @@
         android:name="com.benlefevre.monendo.ui.controllers.fragments.SymptomDetailFragment"
         android:label="@string/symptom_details"
         tools:layout="@layout/fragment_symptom_detail" />
+    <fragment
+        android:id="@+id/activitiesDetailFragment"
+        android:name="com.benlefevre.monendo.ui.controllers.fragments.ActivitiesDetailFragment"
+        android:label="@string/activities_detailed_history"
+        tools:layout="@layout/fragment_activities_detail" />
 </navigation>

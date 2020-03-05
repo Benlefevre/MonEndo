@@ -85,6 +85,8 @@ class MainActivity : AppCompatActivity() {
                 R.id.dashboardFragment -> bottomNav.visibility = VISIBLE
                 R.id.painFragment -> bottomNav.visibility = GONE
                 R.id.painDetailFragment -> bottomNav.visibility = GONE
+                R.id.symptomDetailFragment -> bottomNav.visibility = GONE
+                R.id.activitiesDetailFragment -> bottomNav.visibility = GONE
             }
         }
     }

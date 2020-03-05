@@ -113,5 +113,9 @@
     <string name="other_detail_activity">%1$s during %2$d minutes and with an intensity of %3$d</string>
     <string name="click_on_a_pie_chart_s_value_to_see_the_symptom_evolution_in_time">Click on a pie chart\'s value to see the symptom evolution in time</string>
     <string name="symptom_details">Detailed history of recorded symptoms</string>
+    <string name="click_on_a_pie_chart_value_to_see_the_evolution_of_pain_with_activities">Click on a pie chart value to see the evolution of pain with activities</string>
+    <string name="activities_detailed_history">Detailed history of activities</string>
+    <string name="other_activities">"Other : %1$s</string>
+    <string name="click_on_a_value_to_see_the_detail_of_the_chosen_practiced_activity">Click on a value to see the detail of the chosen practiced activity</string>
 
 </resources>

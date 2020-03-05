@@ -20,4 +20,18 @@
     <color name="graph5">#CD0402</color>
     <color name="graph6">#ef5350</color>
     <color name="graph7">#FC3EC7</color>
+
+    <integer-array name="chartColors">
+        <item>@color/colorSecondary</item>
+        <item>@color/colorPrimary</item>
+        <item>@color/colorBackground</item>
+        <item>@color/colorPrimaryVariant</item>
+        <item>@color/graph1</item>
+        <item>@color/graph2</item>
+        <item>@color/graph3</item>
+        <item>@color/graph4</item>
+        <item>@color/graph5</item>
+        <item>@color/graph6</item>
+        <item>@color/graph7</item>
+    </integer-array>
 </resources>
