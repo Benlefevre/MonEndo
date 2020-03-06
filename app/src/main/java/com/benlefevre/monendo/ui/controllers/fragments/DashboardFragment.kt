@@ -390,7 +390,7 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
     }
 
     /**
-     * Computes the repartition of user's mood of 7 days
+     * Calculates the repartition of user's mood of 7 days
      */
     private fun calculateMoodData(): Array<Pair<Float, String>> {
         val sad =
@@ -464,6 +464,9 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
         }
     }
 
+    /**
+     * Configures the NavController's destination when user clicks on a card.
+     */
     private fun setupOnClickListener() {
         dashboard_fab.setOnClickListener {
             navController.navigate(R.id.painFragment)
@@ -479,6 +482,9 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
         }
         dashboard_card_sleep.setOnClickListener {
             navController.navigate(R.id.sleepDetailFragment)
+        }
+        dashboard_card_mood.setOnClickListener {
+            navController.navigate(R.id.moodDetailFragment)
         }
     }
 }

@@ -38,4 +38,9 @@
         android:name="com.benlefevre.monendo.ui.controllers.fragments.SleepDetailFragment"
         android:label="@string/sleep_detail_history"
         tools:layout="@layout/fragment_sleep_detail" />
+    <fragment
+        android:id="@+id/moodDetailFragment"
+        android:name="com.benlefevre.monendo.ui.controllers.fragments.MoodDetailFragment"
+        android:label="@string/mood_detail_history"
+        tools:layout="@layout/fragment_mood_detail" />
 </navigation>

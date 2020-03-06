@@ -8,7 +8,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.benlefevre.monendo.R
 import com.benlefevre.monendo.data.models.PainWithRelations
-import com.benlefevre.monendo.data.models.UserActivities
 import com.benlefevre.monendo.injection.Injection
 import com.benlefevre.monendo.ui.viewmodels.DashboardViewModel
 import com.benlefevre.monendo.utils.formatDate
@@ -28,7 +27,6 @@ class SleepDetailFragment : Fragment(R.layout.fragment_sleep_detail) {
     }
 
     private val painRelations = mutableListOf<PainWithRelations>()
-    private val sleeps = mutableListOf<UserActivities>()
     private val dates = mutableListOf<String>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -80,17 +78,18 @@ class SleepDetailFragment : Fragment(R.layout.fragment_sleep_detail) {
         clearList()
         painRelations.addAll(pains)
         pains.forEach { pain ->
-            sleeps.addAll(pain.userActivities.filter { it.name == getString(R.string.sleep) })
             dates.add(formatDate(pain.pain.date))
         }
     }
 
     private fun clearList() {
         painRelations.clear()
-        sleeps.clear()
         dates.clear()
     }
 
+    /**
+     * Configures a CombinedChart to see the sleep quality vs pain evolution in time
+     */
     private fun setupSleepChart(){
         val painEntries = mutableListOf<Entry>()
         val sleepEntries = mutableListOf<BarEntry>()

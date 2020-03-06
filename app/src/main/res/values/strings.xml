@@ -119,5 +119,8 @@
     <string name="click_on_a_value_to_see_the_detail_of_the_chosen_practiced_activity">Click on a value to see the detail of the chosen practiced activity</string>
     <string name="click_on_a_value_to_see_the_detail_of_the_chosen_symptom">Click on a value to see the detail of the chosen symptom</string>
     <string name="sleep_detail_history">Detailed history of your sleep</string>
+    <string name="mood_detail_history">Detailed history of your mood</string>
+    <string name="click_on_a_pie_chart_s_value_to_see_the_mood_s_evolution_in_time">Click on a pie chart\'s value to see the mood\'s evolution in time</string>
+    <string name="click_on_a_value_to_see_the_detail_of_the_chosen_mood">Click on a value to see the detail of the chosen mood</string>
 
 </resources>
