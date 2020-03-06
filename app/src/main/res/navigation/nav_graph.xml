@@ -33,4 +33,9 @@
         android:name="com.benlefevre.monendo.ui.controllers.fragments.ActivitiesDetailFragment"
         android:label="@string/activities_detailed_history"
         tools:layout="@layout/fragment_activities_detail" />
+    <fragment
+        android:id="@+id/sleepDetailFragment"
+        android:name="com.benlefevre.monendo.ui.controllers.fragments.SleepDetailFragment"
+        android:label="@string/sleep_detail_history"
+        tools:layout="@layout/fragment_sleep_detail" />
 </navigation>

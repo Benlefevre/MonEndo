@@ -48,9 +48,11 @@
             style="@style/CardViewTheme"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/symptom_details_rep_card">
+            app:layout_constraintTop_toBottomOf="@id/symptom_details_rep_card"
+            app:layout_constraintBottom_toBottomOf="parent">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -62,6 +64,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="300dp"
                     android:layout_margin="8dp"/>
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:text="@string/click_on_a_value_to_see_the_detail_of_the_chosen_symptom"
+                    android:textColor="@color/colorPrimary" />
 
             </LinearLayout>
         </androidx.cardview.widget.CardView>

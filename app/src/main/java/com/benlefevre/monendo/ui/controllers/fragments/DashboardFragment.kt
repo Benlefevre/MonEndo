@@ -477,5 +477,8 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
         dashboard_card_activities.setOnClickListener {
             navController.navigate(R.id.activitiesDetailFragment)
         }
+        dashboard_card_sleep.setOnClickListener {
+            navController.navigate(R.id.sleepDetailFragment)
+        }
     }
 }
