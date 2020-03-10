@@ -43,4 +43,9 @@
         android:name="com.benlefevre.monendo.ui.controllers.fragments.MoodDetailFragment"
         android:label="@string/mood_detail_history"
         tools:layout="@layout/fragment_mood_detail" />
+    <fragment
+        android:id="@+id/treatmentFragment"
+        android:name="com.benlefevre.monendo.ui.controllers.fragments.TreatmentFragment"
+        android:label="@string/treatment"
+        tools:layout="@layout/fragment_treatment" />
 </navigation>

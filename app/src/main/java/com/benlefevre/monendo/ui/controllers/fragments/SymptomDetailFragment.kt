@@ -12,7 +12,7 @@ import com.benlefevre.monendo.data.models.PainWithRelations
 import com.benlefevre.monendo.data.models.Symptom
 import com.benlefevre.monendo.injection.Injection
 import com.benlefevre.monendo.ui.viewmodels.DashboardViewModel
-import com.benlefevre.monendo.utils.formatDate
+import com.benlefevre.monendo.utils.formatDateWithoutYear
 import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
@@ -95,7 +95,7 @@ class SymptomDetailFragment : Fragment(R.layout.fragment_symptom_detail) {
         clearList()
         painRelations.addAll(pains)
         pains.forEach {
-            dates.add(formatDate(it.pain.date))
+            dates.add(formatDateWithoutYear(it.pain.date))
             symptoms.addAll(it.symptoms)
         }
     }

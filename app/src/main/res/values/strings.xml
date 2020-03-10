@@ -122,5 +122,7 @@
     <string name="mood_detail_history">Detailed history of your mood</string>
     <string name="click_on_a_pie_chart_s_value_to_see_the_mood_s_evolution_in_time">Click on a pie chart\'s value to see the mood\'s evolution in time</string>
     <string name="click_on_a_value_to_see_the_detail_of_the_chosen_mood">Click on a value to see the detail of the chosen mood</string>
+    <string name="your_contraceptive_pill">Your contraceptive pill</string>
+    <string name="the_first_day_of_your_last_menstruation">The first day of your last menstruation</string>
 
 </resources>

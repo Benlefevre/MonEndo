@@ -15,7 +15,7 @@ import com.benlefevre.monendo.data.models.Symptom
 import com.benlefevre.monendo.data.models.UserActivities
 import com.benlefevre.monendo.injection.Injection
 import com.benlefevre.monendo.ui.viewmodels.DashboardViewModel
-import com.benlefevre.monendo.utils.formatDate
+import com.benlefevre.monendo.utils.formatDateWithoutYear
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.charts.PieChart
@@ -92,7 +92,7 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
             clearLists()
             list.forEach {
                 pains.add(it.pain)
-                dates.add(formatDate(it.pain.date))
+                dates.add(formatDateWithoutYear(it.pain.date))
                 symptoms.addAll(it.symptoms)
                 activities.addAll(it.userActivities)
                 moods.addAll(it.moods)
@@ -363,7 +363,7 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
 
         for (userActivities in activities.filter { it.name == getString(R.string.sleep) }) {
             entries.add(Entry(counter, userActivities.intensity.toFloat()))
-            dates.add(formatDate(userActivities.date))
+            dates.add(formatDateWithoutYear(userActivities.date))
             counter++
         }
 

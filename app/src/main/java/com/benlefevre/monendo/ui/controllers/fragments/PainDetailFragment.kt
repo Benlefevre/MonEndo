@@ -10,7 +10,7 @@ import com.benlefevre.monendo.R
 import com.benlefevre.monendo.data.models.PainWithRelations
 import com.benlefevre.monendo.injection.Injection
 import com.benlefevre.monendo.ui.viewmodels.DashboardViewModel
-import com.benlefevre.monendo.utils.formatDate
+import com.benlefevre.monendo.utils.formatDateWithoutYear
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
@@ -85,7 +85,7 @@ class PainDetailFragment : Fragment(R.layout.fragment_pain_detail) {
 
         painRelations.forEach {
             entries.add(Entry(index, it.pain.intensity.toFloat()))
-            dates.add(formatDate(it.pain.date))
+            dates.add(formatDateWithoutYear(it.pain.date))
             index++
         }
 
@@ -142,7 +142,7 @@ class PainDetailFragment : Fragment(R.layout.fragment_pain_detail) {
             }
         }
 
-        pain_details_date_txt.text = formatDate(pain.pain.date)
+        pain_details_date_txt.text = formatDateWithoutYear(pain.pain.date)
         pain_details_value_txt.text = pain.pain.intensity.toString()
         pain_details_location_txt.text = pain.pain.location
         pain_details_mood_txt.text = pain.moods[0].value
