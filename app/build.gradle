@@ -69,7 +69,7 @@ dependencies {
     testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0"
 
 //    Mockk
-    def mockk_version = '1.9.3.kotlin12'
+    def mockk_version = '1.9.2'
     androidTestImplementation "io.mockk:mockk-android:$mockk_version"
     testImplementation "io.mockk:mockk:$mockk_version"
 
