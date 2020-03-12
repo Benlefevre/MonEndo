@@ -68,6 +68,11 @@ dependencies {
     testImplementation "org.mockito:mockito-core:3.2.4"
     testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0"
 
+//    Mockk
+    def mockk_version = '1.9.3'
+    androidTestImplementation "io.mockk:mockk-android:$mockk_version"
+    testImplementation "io.mockk:mockk:$mockk_version"
+
 //    Fragment
     def fragment_version = '1.2.2'
     implementation "androidx.fragment:fragment-ktx:$fragment_version"
@@ -114,6 +119,14 @@ dependencies {
 //    MPAndroidChart
     implementation "com.github.PhilJay:MPAndroidChart:v3.1.0"
 
-    //    Gson
+//    Gson
     implementation 'com.google.code.gson:gson:2.8.6'
+
+//    WorkManager
+    def work_version = '2.3.3'
+    implementation "androidx.work:work-runtime:$work_version"
+    androidTestImplementation "androidx.work:work-testing:$work_version"
+
+//    To resolve conflict between guava files
+    implementation 'com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava'
 }

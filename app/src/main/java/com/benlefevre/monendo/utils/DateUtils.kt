@@ -17,3 +17,8 @@ fun parseStringInDate(string: String) : Date{
     val dateFormat = SimpleDateFormat("dd/MM/yy", Locale.getDefault())
     return dateFormat.parse(string) ?: Date(-1L)
 }
+
+fun formatTime(date: Date) : String {
+    val dateFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
+    return dateFormat.format(date)
+}

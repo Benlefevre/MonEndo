@@ -13,7 +13,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
-        android:background="@color/colorSecondary"
         android:src="@drawable/ic_add_24dp"
         app:layout_anchor="@id/dashboard_scrollview"
         app:layout_anchorGravity="bottom|end" />

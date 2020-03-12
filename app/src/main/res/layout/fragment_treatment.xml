@@ -50,6 +50,23 @@
 
                 </com.google.android.material.textfield.TextInputLayout>
 
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/treatment_mens_notif_label"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    style="@style/CustomTextInputLayout"
+                    android:hint="@string/the_time_you_want_to_be_notified_of_taking_your_pill">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/treatment_mens_notif_txt"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:cursorVisible="false"
+                        android:focusable="false"/>
+
+                </com.google.android.material.textfield.TextInputLayout>
+
             </LinearLayout>
 
         </com.google.android.material.card.MaterialCardView>

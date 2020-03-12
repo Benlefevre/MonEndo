@@ -7,7 +7,7 @@ import org.junit.runners.JUnit4
 import java.util.*
 
 @RunWith(JUnit4::class)
-class UtilsTest{
+class DateUtilsTest{
 
     @Test
     fun formatDateWithoutYear_success_correctDataReturned(){
@@ -36,4 +36,13 @@ class UtilsTest{
         assertEquals(date, parseStringInDate("10/03/20"))
     }
 
+    @Test
+    fun formatTime_success_correctDataReturned() {
+        val date = with(Calendar.getInstance()){
+            set(Calendar.HOUR_OF_DAY,12)
+            set(Calendar.MINUTE,0)
+            time
+        }
+        assertEquals("12:00", formatTime(date))
+    }
 }

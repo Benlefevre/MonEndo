@@ -11,3 +11,6 @@ const val LONG_DATE : Long = 1580490706
 const val PREFERENCES = "preferences"
 const val NEED_CLEAR = "needClear"
 const val CHECKED_PILLS = "checked Pills"
+const val PILL_HOUR_NOTIF = "pillHourNotif"
+const val PILL_TAG = "pillTag"
+const val TREATMENT = "treatment"

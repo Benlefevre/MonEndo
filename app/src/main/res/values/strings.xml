@@ -124,5 +124,10 @@
     <string name="click_on_a_value_to_see_the_detail_of_the_chosen_mood">Click on a value to see the detail of the chosen mood</string>
     <string name="your_contraceptive_pill">Your contraceptive pill</string>
     <string name="the_first_day_of_your_last_menstruation">The first day of your last menstruation</string>
+    <string name="contra_pill_notif_id">Contraceptive Pill notification</string>
+    <string name="contra_pill_notif_name">Contraceptive pill Channel</string>
+    <string name="dont_forget_pill">Don\'t forget, it\'s time to take your contraceptive pill</string>
+    <string name="check_pill">Check the according pill in the tablet</string>
+    <string name="the_time_you_want_to_be_notified_of_taking_your_pill">The time you want to be notified of taking your pill</string>
 
 </resources>
