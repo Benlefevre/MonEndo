@@ -7,14 +7,14 @@ import androidx.work.WorkManager
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-fun configurePillNotification(context: Context, data: Data, hour: String) {
-    val pillWorker =
-        PeriodicWorkRequest.Builder(NotificationWorker::class.java, 1, TimeUnit.DAYS).apply {
-            setInputData(data)
-            setInitialDelay(setDelayDuration(hour), TimeUnit.MILLISECONDS)
-            addTag(PILL_TAG)
-        }.build()
-    WorkManager.getInstance(context).enqueue(pillWorker)
+fun configureTreatmentNotification(context: Context, data: Data, hour: String, tag: String = PILL_TAG) {
+    val treatmentWorker =
+        PeriodicWorkRequest.Builder(NotificationWorker::class.java, 1, TimeUnit.DAYS)
+            .setInputData(data)
+            .setInitialDelay(setDelayDuration(hour), TimeUnit.MILLISECONDS)
+            .addTag(tag)
+            .build()
+    WorkManager.getInstance(context).enqueue(treatmentWorker)
 }
 
 fun setDelayDuration(hour: String): Long {

@@ -181,8 +181,7 @@ class PainFragment : Fragment(R.layout.fragment_pain) {
         viewModel.activitiesLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             pain_activity_chipgroup.removeAllViews()
             it.forEach { activity ->
-                val chip = Chip(context)
-                chip.apply {
+                val chip = Chip(context).apply {
                     text = activity.name
                     setTextColor(getColor(context, R.color.colorOnPrimary))
                     setChipBackgroundColorResource(R.color.colorSecondary)

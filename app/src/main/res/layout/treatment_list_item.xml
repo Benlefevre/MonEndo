@@ -5,64 +5,70 @@
     android:layout_height="wrap_content">
 
     <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/activity_item_name_legend"
-        android:layout_width="0dp"
+        android:id="@+id/treatment_item_name"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
-        android:text="@string/activity_name"
-        app:layout_constraintEnd_toStartOf="@id/guideline2"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+        android:textColor="@color/colorPrimary"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/activity_item_name"
+        android:id="@+id/treatment_item_duration_legend"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
-        app:layout_constraintBottom_toBottomOf="@+id/activity_item_name_legend"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/guideline2"
-        app:layout_constraintTop_toTopOf="@+id/activity_item_name_legend" />
-
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/activity_item_duration_legend"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:text="@string/activity_duration"
+        android:text="@string/until"
+        android:textColor="@color/colorPrimary"
         app:layout_constraintEnd_toStartOf="@id/guideline2"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/activity_item_name_legend" />
+        app:layout_constraintTop_toBottomOf="@id/treatment_item_name" />
 
     <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/activity_duration_time"
+        android:id="@+id/treatment_duration_time"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
-        app:layout_constraintBottom_toBottomOf="@+id/activity_item_duration_legend"
+        app:layout_constraintBottom_toBottomOf="@+id/treatment_item_duration_legend"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/guideline2"
-        app:layout_constraintTop_toTopOf="@+id/activity_item_duration_legend" />
+        app:layout_constraintTop_toTopOf="@+id/treatment_item_duration_legend" />
 
     <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/activity_item_intensity_legend"
+        android:id="@+id/treatment_item_hour_legend"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
-        android:text="@string/activity_instensity"
+        android:text="@string/notification_s_times"
+        android:textColor="@color/colorPrimary"
         app:layout_constraintEnd_toStartOf="@id/guideline2"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/activity_item_duration_legend" />
+        app:layout_constraintTop_toBottomOf="@id/treatment_item_duration_legend" />
 
     <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/activity_item_intensity_value"
+        android:id="@+id/treatment_item_hour_value"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
-        app:layout_constraintBottom_toBottomOf="@+id/activity_item_intensity_legend"
+        app:layout_constraintBottom_toBottomOf="@+id/treatment_item_hour_legend"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/guideline2"
-        app:layout_constraintTop_toTopOf="@+id/activity_item_intensity_legend" />
+        app:layout_constraintTop_toTopOf="@+id/treatment_item_hour_legend" />
+
+    <ImageButton
+        android:id="@+id/treatment_item_delete_btn"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_marginEnd="16dp"
+        android:src="@drawable/ic_delete_24dp"
+        android:tint="@color/colorPrimary"
+        android:background="@android:color/transparent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:contentDescription="@string/delete_icon"/>
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline2"
@@ -77,6 +83,6 @@
         android:layout_height="1dp"
         android:layout_marginTop="8dp"
         android:background="?android:attr/listDivider"
-        app:layout_constraintTop_toBottomOf="@id/activity_item_intensity_legend"
+        app:layout_constraintTop_toBottomOf="@id/treatment_item_hour_legend"
         app:layout_constraintBottom_toBottomOf="parent"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

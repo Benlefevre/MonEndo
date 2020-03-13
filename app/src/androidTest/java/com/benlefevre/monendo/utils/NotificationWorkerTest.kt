@@ -28,7 +28,7 @@ class NotificationWorkerTest {
     }
 
     @Test
-    fun doWork_success_correctResultReturned() {
+    fun doWorkPill_success_correctResultReturned() {
         val notificationWorker = spyk(
             TestWorkerBuilder<NotificationWorker>(
                 context = context,
@@ -42,12 +42,31 @@ class NotificationWorkerTest {
     }
 
     @Test
+    fun doWorkTreatment_success_correctResultReturned() {
+        val notificationWorker = spyk(
+            TestWorkerBuilder<NotificationWorker>(
+                context = context,
+                executor = executor,
+                inputData = workDataOf(
+                    TREATMENT to TREATMENT_TAG, TREATMENT_NAME to "Dolipranne",
+                    TREATMENT_DOSAGE to "2", TREATMENT_FORMAT to "pills"
+                )
+            ).build()
+        )
+        val result = notificationWorker.doWork()
+        verify { notificationWorker.sendTreatmentNotification(any()) }
+        assertEquals(ListenableWorker.Result.success(), result)
+    }
+
+    @Test
     fun doWork_failure_correctResultReturned() {
-        val notificationWorker = spyk(TestWorkerBuilder<NotificationWorker>(
-            context = context,
-            executor = executor,
-            inputData = workDataOf(TREATMENT to "")
-        ).build())
+        val notificationWorker = spyk(
+            TestWorkerBuilder<NotificationWorker>(
+                context = context,
+                executor = executor,
+                inputData = workDataOf(TREATMENT to "")
+            ).build()
+        )
         val result = notificationWorker.doWork()
         verify(exactly = 0) { notificationWorker.sendPillNotification() }
         assertEquals(ListenableWorker.Result.failure(), result)

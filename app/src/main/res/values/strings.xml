@@ -25,6 +25,32 @@
         <item>Yoga</item>
     </string-array>
 
+    <string-array name="format">
+        <item>pill</item>
+        <item>spoon</item>
+        <item>milliliters</item>
+        <item>milligrams</item>
+    </string-array>
+
+    <string-array name="duration">
+        <item>Permanent</item>
+        <item>1 day</item>
+        <item>2 days</item>
+        <item>3 days</item>
+        <item>4 days</item>
+        <item>5 days</item>
+        <item>6 days</item>
+        <item>7 days</item>
+        <item>8 days</item>
+        <item>9 days</item>
+        <item>10 days</item>
+        <item>11 days</item>
+        <item>12 days</item>
+        <item>13 days</item>
+        <item>14 days</item>
+        <item>15 days</item>
+    </string-array>
+
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="cancel_login">You have cancelled the authentication process. Please try again.</string>
     <string name="network_to_login">A network access is required to login</string>
@@ -127,7 +153,27 @@
     <string name="contra_pill_notif_id">Contraceptive Pill notification</string>
     <string name="contra_pill_notif_name">Contraceptive pill Channel</string>
     <string name="dont_forget_pill">Don\'t forget, it\'s time to take your contraceptive pill</string>
-    <string name="check_pill">Check the according pill in the tablet</string>
+    <string name="check_pill">Check the corresponding pill in the tablet</string>
     <string name="the_time_you_want_to_be_notified_of_taking_your_pill">The time you want to be notified of taking your pill</string>
+    <string name="others_treatments">Others treatments</string>
+    <string name="add_treatment_button">Add treatment button</string>
+    <string name="add_a_treatment">Add a treatment</string>
+    <string name="treatment_s_name">Treatment\'s name</string>
+    <string name="treatment_s_duration">Treatment\'s duration</string>
+    <string name="dosage">Dosage</string>
+    <string name="format">Format</string>
+    <string name="click_on_the_day_s_period_to_define_the_notification_s_hour_of_taking_treatment">Click to define the notification\'s hour of taking treatment</string>
+    <string name="morning">Morning</string>
+    <string name="noon">Noon</string>
+    <string name="afternoon">Afternoon</string>
+    <string name="evening">Evening</string>
+    <string name="permanent">Permanent</string>
+    <string name="treatment_channel_id">Treatment notification</string>
+    <string name="treatment_channel_name">Treatment Channel</string>
+    <string name="treatment_notif_title">Don\'t forget, it\'s time to take %1$s</string>
+    <string name="treatment_notif_dosage">You must take %1$s %2$s</string>
+    <string name="notification_s_times">Notification\'s times</string>
+    <string name="delete_icon">Delete icon</string>
+    <string name="until">Until</string>
 
 </resources>

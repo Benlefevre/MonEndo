@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.controllers.fragments.TreatmentFragment">
 
     <LinearLayout
@@ -10,10 +11,11 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+        <!--______________________________Begin of contraception card____________________________-->
         <com.google.android.material.card.MaterialCardView
+            style="@style/CardViewTheme"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@style/CardViewTheme">
+            android:layout_height="wrap_content">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -22,23 +24,23 @@
 
                 <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/treatment_pill_title"
+                    style="@style/CardTitle"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    style="@style/CardTitle"
-                    android:text="@string/your_contraceptive_pill"/>
+                    android:text="@string/your_contraceptive_pill" />
 
                 <com.benlefevre.monendo.ui.customview.ContraceptiveTablet
                     android:id="@+id/pill_tablet"
                     android:layout_width="match_parent"
                     android:layout_height="250dp"
-                    android:layout_margin="8dp"/>
+                    android:layout_margin="8dp" />
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/treatment_mens_txt_label"
+                    style="@style/CustomTextInputLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="8dp"
-                    style="@style/CustomTextInputLayout"
                     android:hint="@string/the_first_day_of_your_last_menstruation">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -46,16 +48,16 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:cursorVisible="false"
-                        android:focusable="false"/>
+                        android:focusable="false" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/treatment_mens_notif_label"
+                    style="@style/CustomTextInputLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="8dp"
-                    style="@style/CustomTextInputLayout"
                     android:hint="@string/the_time_you_want_to_be_notified_of_taking_your_pill">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -63,7 +65,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:cursorVisible="false"
-                        android:focusable="false"/>
+                        android:focusable="false" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -71,6 +73,55 @@
 
         </com.google.android.material.card.MaterialCardView>
 
+        <!--______________________________End of contraception card______________________________-->
+
+        <!--___________________________Begin of other treatments card____________________________-->
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            style="@style/CardViewTheme">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/treatment_other_treatment_title"
+                    style="@style/CardTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:text="@string/others_treatments"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"/>
+
+                <ImageButton
+                    android:id="@+id/treatment_add_button"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:background="@color/fui_transparent"
+                    android:contentDescription="@string/add_treatment_button"
+                    android:src="@drawable/ic_add_24dp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="@id/treatment_other_treatment_title"
+                    android:layout_marginEnd="16dp"/>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/treatment_recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@id/treatment_other_treatment_title"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.card.MaterialCardView>
+        <!--_____________________________End of other treatments card____________________________-->
     </LinearLayout>
 
 </androidx.core.widget.NestedScrollView>
