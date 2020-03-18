@@ -9,14 +9,12 @@ import android.view.View
 import android.widget.ArrayAdapter
 import androidx.core.content.ContextCompat.getColor
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.benlefevre.monendo.R
 import com.benlefevre.monendo.data.models.Mood
 import com.benlefevre.monendo.data.models.Pain
 import com.benlefevre.monendo.data.models.Symptom
 import com.benlefevre.monendo.data.models.UserActivities
-import com.benlefevre.monendo.injection.Injection
 import com.benlefevre.monendo.ui.viewmodels.PainFragmentViewModel
 import com.google.android.material.chip.Chip
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -25,8 +23,8 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 import kotlinx.android.synthetic.main.custom_dialog_user_activities.view.*
 import kotlinx.android.synthetic.main.fragment_pain.*
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.*
-
 
 class PainFragment : Fragment(R.layout.fragment_pain) {
 
@@ -35,13 +33,8 @@ class PainFragment : Fragment(R.layout.fragment_pain) {
     private lateinit var durationSlider: Slider
     private lateinit var otherTextInput: TextInputEditText
 
-    private val viewModel by lazy {
-        ViewModelProvider(
-            this, Injection.providerViewModelFactory(
-                requireActivity().applicationContext
-            )
-        ).get(PainFragmentViewModel::class.java)
-    }
+    private val viewModel : PainFragmentViewModel by viewModel()
+
     private val navController by lazy { findNavController() }
     private lateinit var pain: Pain
     var mood: Mood? = null

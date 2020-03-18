@@ -6,11 +6,9 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat.getColor
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import com.benlefevre.monendo.R
 import com.benlefevre.monendo.data.models.PainWithRelations
 import com.benlefevre.monendo.data.models.Symptom
-import com.benlefevre.monendo.injection.Injection
 import com.benlefevre.monendo.ui.viewmodels.DashboardViewModel
 import com.benlefevre.monendo.utils.formatDateWithoutYear
 import com.github.mikephil.charting.components.YAxis
@@ -21,15 +19,11 @@ import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import kotlinx.android.synthetic.main.chipgroup_duration.*
 import kotlinx.android.synthetic.main.fragment_symptom_detail.*
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SymptomDetailFragment : Fragment(R.layout.fragment_symptom_detail) {
 
-    private val viewModel: DashboardViewModel by lazy {
-        ViewModelProvider(
-            this,
-            Injection.providerViewModelFactory(requireActivity().applicationContext)
-        ).get(DashboardViewModel::class.java)
-    }
+    private val viewModel : DashboardViewModel by viewModel()
 
     private lateinit var colorsChart : IntArray
     private val painRelations = mutableListOf<PainWithRelations>()

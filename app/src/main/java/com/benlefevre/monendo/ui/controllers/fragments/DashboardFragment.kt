@@ -6,14 +6,12 @@ import android.view.View
 import androidx.core.content.ContextCompat.getColor
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.benlefevre.monendo.R
 import com.benlefevre.monendo.data.models.Mood
 import com.benlefevre.monendo.data.models.Pain
 import com.benlefevre.monendo.data.models.Symptom
 import com.benlefevre.monendo.data.models.UserActivities
-import com.benlefevre.monendo.injection.Injection
 import com.benlefevre.monendo.ui.viewmodels.DashboardViewModel
 import com.benlefevre.monendo.utils.formatDateWithoutYear
 import com.github.mikephil.charting.charts.BarChart
@@ -25,15 +23,11 @@ import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.github.mikephil.charting.formatter.PercentFormatter
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
 import kotlinx.android.synthetic.main.fragment_dashboard.*
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
 
-    private val viewModel: DashboardViewModel by lazy {
-        ViewModelProvider(
-            this,
-            Injection.providerViewModelFactory(requireActivity().applicationContext)
-        ).get(DashboardViewModel::class.java)
-    }
+    private val viewModel : DashboardViewModel by viewModel()
 
     private val navController by lazy { findNavController() }
 

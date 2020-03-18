@@ -4,9 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import com.benlefevre.monendo.R
-import com.benlefevre.monendo.injection.Injection
 import com.benlefevre.monendo.mappers.convertFirebaseUserIntoUser
 import com.benlefevre.monendo.ui.viewmodels.LoginActivityViewModel
 import com.benlefevre.monendo.utils.RC_SIGN_IN
@@ -17,15 +15,11 @@ import com.firebase.ui.auth.IdpResponse
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_login.*
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class LoginActivity : AppCompatActivity() {
 
-    private val loginViewModel by lazy {
-        ViewModelProvider(
-            this, Injection.providerViewModelFactory(applicationContext)
-            )
-        .get(LoginActivityViewModel::class.java)
-    }
+    private val loginViewModel : LoginActivityViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

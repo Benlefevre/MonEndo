@@ -38,15 +38,16 @@ class TreatmentFragment : Fragment(R.layout.fragment_treatment) {
     private lateinit var customDialog: View
     private lateinit var dialog: androidx.appcompat.app.AlertDialog
     private lateinit var treatment: Treatment
+
     private val treatmentList: MutableList<Treatment> by lazy {
         mutableListOf<Treatment>()
+    }
+    private val checkedPills: MutableList<Pill> by lazy {
+        mutableListOf<Pill>()
     }
 
     private lateinit var sharedPreferences: SharedPreferences
     private val gson by lazy { Gson() }
-    private val checkedPills: MutableList<Pill> by lazy {
-        mutableListOf<Pill>()
-    }
     private lateinit var calendar: Calendar
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: TreatmentAdapter
@@ -132,7 +133,8 @@ class TreatmentFragment : Fragment(R.layout.fragment_treatment) {
         adapter.setOnClickListener(View.OnClickListener { it ->
             val holder = it.tag as TreatmentViewHolder
             val position = holder.adapterPosition
-            WorkManager.getInstance(requireContext()).cancelAllWorkByTag(treatmentList[position].name)
+            WorkManager.getInstance(requireContext())
+                .cancelAllWorkByTag(treatmentList[position].name)
             treatmentList.removeAt(position)
             adapter.notifyDataSetChanged()
         })
@@ -364,6 +366,9 @@ class TreatmentFragment : Fragment(R.layout.fragment_treatment) {
         return isNameCorrect && isDurationCorrect && isDosageCorrect && isFormatCorrect
     }
 
+    /**
+     * Verifies if the format field is correctly filled and configures the field's error label
+     */
     private fun verifyTreatmentFormat(): Boolean {
         return if (customDialog.custom_treatment_format.text.isNullOrBlank()) {
             customDialog.custom_treatment_format_label.error = "Please enter the treatment's format"
@@ -374,6 +379,9 @@ class TreatmentFragment : Fragment(R.layout.fragment_treatment) {
         }
     }
 
+    /**
+     * Verifies if the dosage field is correctly filled and configures the field's error label
+     */
     private fun verifyTreatmentDosage(): Boolean {
         return if (customDialog.custom_treatment_dosage.text.isNullOrBlank()) {
             customDialog.custom_treatment_dosage_label.error = "Please enter the treatment's dosage"
@@ -384,6 +392,9 @@ class TreatmentFragment : Fragment(R.layout.fragment_treatment) {
         }
     }
 
+    /**
+     * Verifies if the duration field is correctly filled and configures the field's error label
+     */
     private fun verifyTreatmentDuration(): Boolean {
         return if (customDialog.custom_treatment_duration.text.isNullOrBlank()) {
             customDialog.custom_treatment_duration_label.error = "Please enter treatment's duration"
@@ -394,6 +405,9 @@ class TreatmentFragment : Fragment(R.layout.fragment_treatment) {
         }
     }
 
+    /**
+     * Verifies if the name field is correctly filled and configures the field's error label
+     */
     private fun verifyTreatmentName(): Boolean {
         return if (customDialog.custom_treatment_name.text.isNullOrBlank()) {
             customDialog.custom_treatment_name_label.error = "Please enter the treatment's name"
@@ -405,7 +419,7 @@ class TreatmentFragment : Fragment(R.layout.fragment_treatment) {
     }
 
     /**
-     *
+     * Sets a OnTimeSetListener with updateTreatmentHour() ans shows a TimePickerDialog
      */
     private fun openTreatmentTimePicker(hour: String) {
         val timeListener = TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->

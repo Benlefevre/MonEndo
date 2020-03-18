@@ -5,10 +5,8 @@ import android.view.View
 import androidx.core.content.ContextCompat.getColor
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import com.benlefevre.monendo.R
 import com.benlefevre.monendo.data.models.PainWithRelations
-import com.benlefevre.monendo.injection.Injection
 import com.benlefevre.monendo.ui.viewmodels.DashboardViewModel
 import com.benlefevre.monendo.utils.formatDateWithoutYear
 import com.github.mikephil.charting.components.YAxis
@@ -16,15 +14,11 @@ import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import kotlinx.android.synthetic.main.chipgroup_duration.*
 import kotlinx.android.synthetic.main.fragment_sleep_detail.*
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SleepDetailFragment : Fragment(R.layout.fragment_sleep_detail) {
 
-    private val viewModel: DashboardViewModel by lazy {
-        ViewModelProvider(
-            this,
-            Injection.providerViewModelFactory(requireActivity().applicationContext)
-        ).get(DashboardViewModel::class.java)
-    }
+    private val viewModel : DashboardViewModel by viewModel()
 
     private val painRelations = mutableListOf<PainWithRelations>()
     private val dates = mutableListOf<String>()
