@@ -46,4 +46,13 @@ class DateUtilsTest {
         }
         assertEquals("12:00", formatTime(date))
     }
+
+    @Test
+    fun formatDateToDayName_success_correctDataReturned() {
+        val date = with(Calendar.getInstance()){
+            set(Calendar.DAY_OF_WEEK,Calendar.SUNDAY)
+            time
+        }
+        assertEquals("Sun", formatDateToDayName(date))
+    }
 }

@@ -15,17 +15,17 @@ import com.benlefevre.monendo.utils.PREFERENCES
 
 class ContraceptiveTablet(context: Context, attrs: AttributeSet) : View(context, attrs) {
 
-    var dividedWidth = 0f
-    var dividedHeight = 0f
-    var day = -1
-    var needClear = false
+    private var dividedWidth = 0f
+    private var dividedHeight = 0f
+    private var day = -1
+    private var needClear = false
 
-    lateinit var rectF: RectF
-    var triangle: Path = Path()
-    var backPaint: Paint
-    var circlePaint: Paint
-    var linePaint: Paint
-    var shadowPaint: Paint
+    private lateinit var rectF: RectF
+    private var triangle: Path = Path()
+    private var backPaint: Paint
+    private var circlePaint: Paint
+    private var linePaint: Paint
+    private var shadowPaint: Paint
     var pills: MutableList<Pill> = mutableListOf()
 
     init {

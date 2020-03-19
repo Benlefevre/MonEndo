@@ -13,6 +13,11 @@ fun formatDateWithYear(date: Date) : String{
     return dateFormat.format(date)
 }
 
+fun formatDateToDayName(date: Date) : String{
+    val dateFormat = SimpleDateFormat("E",Locale.US)
+    return dateFormat.format(date)
+}
+
 fun parseStringInDate(string: String) : Date{
     val dateFormat = SimpleDateFormat("dd/MM/yy", Locale.getDefault())
     return dateFormat.parse(string) ?: Date(-1L)

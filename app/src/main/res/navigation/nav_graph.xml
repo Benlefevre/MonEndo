@@ -48,4 +48,9 @@
         android:name="com.benlefevre.monendo.ui.controllers.fragments.TreatmentFragment"
         android:label="@string/treatment"
         tools:layout="@layout/fragment_treatment" />
+    <fragment
+        android:id="@+id/fertilityFragment"
+        android:name="com.benlefevre.monendo.ui.controllers.fragments.FertilityFragment"
+        android:label="@string/fertility"
+        tools:layout="@layout/fragment_fertility" />
 </navigation>
