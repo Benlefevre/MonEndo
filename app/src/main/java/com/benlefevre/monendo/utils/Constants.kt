@@ -23,3 +23,9 @@ const val MORNING = "morning"
 const val NOON = "noon"
 const val AFTERNOON = "afternoon"
 const val EVENING = "evening"
+
+const val DURATION = "duration"
+
+const val MENS = "mens"
+const val OVUL = "ovul"
+const val FERTI = "fertilization"

@@ -175,5 +175,9 @@
     <string name="notification_s_times">Notification\'s times</string>
     <string name="delete_icon">Delete icon</string>
     <string name="until">Until</string>
+    <string name="menstruation">Menstruation</string>
+    <string name="ovulation">Ovulation</string>
+    <string name="fertilization_period">Fertilization period</string>
+    <string name="the_duration_of_your_menstruation_s_cycle">The duration of your menstruation\'s cycle</string>
 
 </resources>

@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.controllers.fragments.FertilityFragment">
 
     <LinearLayout
@@ -26,6 +27,96 @@
                     android:layout_width="match_parent"
                     android:layout_height="250dp"
                     android:layout_marginBottom="8dp"/>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp">
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/fertility_chip_mens"
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:focusable="false"
+                        android:text="@string/menstruation"
+                        android:textAlignment="center"
+                        android:textColor="@color/colorOnPrimary"
+                        app:chipBackgroundColor="@color/graph4"
+                        app:layout_constraintEnd_toStartOf="@+id/fertility_chip_ovul"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/fertility_chip_ovul"
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:focusable="false"
+                        android:text="@string/ovulation"
+                        android:textAlignment="center"
+                        android:textColor="@color/colorOnPrimary"
+                        app:chipBackgroundColor="@color/graph2"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintStart_toEndOf="@+id/fertility_chip_mens"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/fertility_chip_ferti"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:focusable="false"
+                        android:text="@string/fertilization_period"
+                        android:textAlignment="center"
+                        android:textColor="@color/colorOnPrimary"
+                        app:chipBackgroundColor="@color/graph1"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/fertility_chip_mens"/>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/fertility_day_mens_label"
+                    style="@style/CustomTextInputLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="4dp"
+                    android:hint="@string/the_first_day_of_your_last_menstruation"
+                    app:errorEnabled="true">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/fertility_day_mens_txt"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:cursorVisible="false"
+                        android:focusable="false" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/fertility_duration_mens_label"
+                    style="@style/CustomTextInputLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:hint="@string/the_duration_of_your_menstruation_s_cycle"
+                    app:errorEnabled="true">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/fertility_duration_mens_txt"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:focusableInTouchMode="false"
+                        android:inputType="number" />
+
+                </com.google.android.material.textfield.TextInputLayout>
 
             </LinearLayout>
 

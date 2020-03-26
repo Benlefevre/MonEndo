@@ -6,11 +6,11 @@ import android.graphics.Paint
 import android.graphics.RectF
 import android.text.TextPaint
 import android.util.AttributeSet
-import android.util.Log
 import android.view.View
 import androidx.core.content.ContextCompat.getColor
 import com.benlefevre.monendo.R
 import com.benlefevre.monendo.utils.formatDateToDayName
+import timber.log.Timber
 import java.util.*
 
 class FertilityCalendar(context: Context, attrs: AttributeSet) : View(context, attrs) {
@@ -23,7 +23,7 @@ class FertilityCalendar(context: Context, attrs: AttributeSet) : View(context, a
     private var maxDays = 0
     private var previousMaxDays = 0
 
-    var calendarDays: MutableList<CalendarDay> = mutableListOf()
+    private var calendarDays: MutableList<CalendarDay> = mutableListOf()
 
     private lateinit var rectF: RectF
     private lateinit var dayRectF: RectF
@@ -47,6 +47,7 @@ class FertilityCalendar(context: Context, attrs: AttributeSet) : View(context, a
             isFakeBoldText = true
         }
         initCalendar()
+        createCalendarDays()
     }
 
     private fun initCalendar() {
@@ -94,7 +95,7 @@ class FertilityCalendar(context: Context, attrs: AttributeSet) : View(context, a
         textSize = dividedHeight * 0.30f
         textPaint.textSize = textSize
 
-        createCalendarDays()
+        configureCalendarDays()
     }
 
     /**
@@ -117,6 +118,17 @@ class FertilityCalendar(context: Context, attrs: AttributeSet) : View(context, a
     }
 
     /**
+     * Configures each CalendarDay with the right width and height
+     */
+    private fun configureCalendarDays() {
+        calendarDays.forEach {
+            it.width = dividedWidth
+            it.height = dividedHeight
+            it.setRectF()
+        }
+    }
+
+    /**
      * Configures the CalendarDay's number and text color for the next month
      */
     private fun configureNextMonth() {
@@ -125,7 +137,7 @@ class FertilityCalendar(context: Context, attrs: AttributeSet) : View(context, a
             calendarDays[index].apply {
                 numberDay = dayIndex
                 textColor = getColor(context, R.color.colorBackground)
-                color = getColor(context,R.color.colorOnPrimary)
+                color = getColor(context, R.color.colorOnPrimary)
             }
             dayIndex++
         }
@@ -139,7 +151,7 @@ class FertilityCalendar(context: Context, attrs: AttributeSet) : View(context, a
             calendarDays[index].apply {
                 numberDay = previousMaxDays
                 textColor = getColor(context, R.color.colorBackground)
-                color = getColor(context,R.color.colorOnPrimary)
+                color = getColor(context, R.color.colorOnPrimary)
             }
             previousMaxDays--
         }
@@ -151,11 +163,11 @@ class FertilityCalendar(context: Context, attrs: AttributeSet) : View(context, a
     private fun configureCurrentMonth() {
         var dayIndex = 1
         var index = firstDayCalendar
-        while (dayIndex <= maxDays){
+        while (dayIndex <= maxDays) {
             calendarDays[index].apply {
                 numberDay = dayIndex
-                textColor = getColor(context,R.color.colorPrimary)
-                color = getColor(context,R.color.colorOnPrimary)
+                textColor = getColor(context, R.color.colorPrimary)
+                color = getColor(context, R.color.colorOnPrimary)
             }
             dayIndex++
             index++
@@ -165,7 +177,7 @@ class FertilityCalendar(context: Context, attrs: AttributeSet) : View(context, a
     /**
      * Resets all CalendarDays with the correct textColor
      */
-    private fun clearAllCalendarDays() {
+    fun clearAllCalendarDays() {
         calendarDays.forEach {
             it.color = getColor(context, R.color.colorOnPrimary)
         }
@@ -181,14 +193,15 @@ class FertilityCalendar(context: Context, attrs: AttributeSet) : View(context, a
     }
 
     fun drawCycleInCalendar(firstDay: Int, durationCycle: Int) {
-        val previousMens = firstDayCalendar + (firstDay - 1)
-        val lastDayPreviousMens = previousMens + 5
-        val previousMonthMens = previousMens - durationCycle
-        val previousMonthLastDay = previousMonthMens + 5
-        val nextMens = previousMens + durationCycle
+        Timber.i("$firstDay")
+        val lastMens = firstDayCalendar + (firstDay - 1)
+        val lastDayLastMens = lastMens + 5
+        val previousMens = lastMens - durationCycle
+        val previousLastDay = previousMens + 5
+        val nextMens = lastMens + durationCycle
         val lastDayNextMens = nextMens + 5
         val ovulDay = nextMens - 14
-        val previousOvulDay = previousMens - 14
+        val previousOvulDay = lastMens - 14
         val fertiBegin = ovulDay - 3
         val fertiEnd = ovulDay + 1
         val previousFertiBegin = previousOvulDay - 3
@@ -197,8 +210,8 @@ class FertilityCalendar(context: Context, attrs: AttributeSet) : View(context, a
         clearAllCalendarDays()
 
         drawMenstruationInCalendar(
-            previousMonthMens, previousMonthLastDay, previousMens,
-            lastDayPreviousMens, lastDayNextMens, nextMens
+            previousMens, previousLastDay, lastMens,
+            lastDayLastMens, lastDayNextMens, nextMens
         )
 
         drawFertilizationInCalendar(previousFertiBegin, previousFertiEnd, fertiBegin, fertiEnd)
@@ -250,20 +263,23 @@ class FertilityCalendar(context: Context, attrs: AttributeSet) : View(context, a
     }
 
     private fun drawMenstruationInCalendar(
-        previousMonthMens: Int, previousMonthLastDay: Int, previousMens: Int,
-        lastDayPreviousMens: Int, lastDayNextMens: Int, nextMens: Int
+        previousMens: Int, previousLastDay: Int, lastMens: Int,
+        lastDayLastMens: Int, lastDayNextMens: Int, nextMens: Int
     ) {
         //        draw previous month menstruation
-        if (previousMonthMens >= 0) {
-            for (index in previousMonthMens until previousMonthLastDay)
+        if (previousMens >= 0) {
+            for (index in previousMens until previousLastDay)
+                drawMenstruation(index)
+        }else{
+            for (index in 0 until previousLastDay)
                 drawMenstruation(index)
         }
         //        draw last menstruation
-        if (previousMens >= 0) {
-            for (index in previousMens until lastDayPreviousMens)
+        if (lastMens >= 0) {
+            for (index in lastMens until lastDayLastMens)
                 drawMenstruation(index)
         } else {
-            for (index in 0 until lastDayPreviousMens)
+            for (index in 0 until lastDayLastMens)
                 drawMenstruation(index)
         }
         //        draw next menstruation
@@ -311,7 +327,6 @@ class FertilityCalendar(context: Context, attrs: AttributeSet) : View(context, a
         canvas.drawText("Sun", (dividedWidth / 2 * 13), (dividedHeight / 2) + (textSize / 2), textPaint)
 
         calendarDays.forEach {
-            Log.i("benoit","$it + ${it.textColor} + ${it.color}")
             backPaint.color = it.color
             textPaint.color = it.textColor
             canvas.drawRect(it.rectF, backPaint)

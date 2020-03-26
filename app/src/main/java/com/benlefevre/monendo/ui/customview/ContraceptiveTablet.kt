@@ -49,6 +49,7 @@ class ContraceptiveTablet(context: Context, attrs: AttributeSet) : View(context,
             style = Paint.Style.STROKE
             strokeWidth = 5f
         }
+        createPills()
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -70,7 +71,7 @@ class ContraceptiveTablet(context: Context, attrs: AttributeSet) : View(context,
             pills.forEach {
                 it.apply {
                     width = dividedWidth
-                    heigth = dividedHeight
+                    height = dividedHeight
                     setShadow()
                 }
             }

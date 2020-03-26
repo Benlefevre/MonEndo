@@ -7,6 +7,9 @@ data class CalendarDay(var width: Float, var multiWidth: Int, var height: Float,
 
     var textColor: Int = R.color.colorPrimary
     var color: Int = R.color.colorOnPrimary
-    var rectF: RectF =
-        RectF(width * (multiWidth - 1), height * multiHeight, width * multiWidth, height * (multiHeight + 1))
+    var rectF: RectF = RectF()
+
+    fun setRectF(){
+        rectF = RectF(width * (multiWidth - 1), height * multiHeight, width * multiWidth, height * (multiHeight + 1))
+    }
 }

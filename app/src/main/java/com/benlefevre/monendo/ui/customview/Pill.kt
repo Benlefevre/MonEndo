@@ -2,7 +2,18 @@ package com.benlefevre.monendo.ui.customview
 
 import android.graphics.RectF
 
-data class Pill(var width: Float, var multiWith: Int, var heigth: Float, var multiHeight: Int, var radius: Float, var color: Int) {
+class Pill(width: Float, var multiWith: Int, height: Float, var multiHeight: Int, var radius: Float, var color: Int) {
+
+    var width = width
+        set(value) {
+            field = value
+            x = value * multiWith
+        }
+    var height = height
+        set(value) {
+            field = value
+            y = value * multiHeight
+        }
 
     var x = 0f
     var y = 0f
@@ -11,8 +22,6 @@ data class Pill(var width: Float, var multiWith: Int, var heigth: Float, var mul
     var shadowRectF: RectF = RectF()
 
     init {
-        x = width * multiWith
-        y = heigth * multiHeight
         shadowRectF =
             RectF(x - radius / 1.2f, y - radius / 1.2f, x + radius / 1.2f, y + radius / 1.2f)
     }
