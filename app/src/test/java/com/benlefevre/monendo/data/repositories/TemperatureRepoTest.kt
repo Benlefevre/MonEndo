@@ -4,6 +4,8 @@ import com.benlefevre.monendo.data.dao.TemperatureDao
 import com.benlefevre.monendo.data.models.Temperature
 import com.nhaarman.mockitokotlin2.argumentCaptor
 import com.nhaarman.mockitokotlin2.verify
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -12,6 +14,7 @@ import org.mockito.Mock
 import org.mockito.junit.MockitoJUnitRunner
 import java.util.*
 
+@ExperimentalCoroutinesApi
 @RunWith(MockitoJUnitRunner::class)
 class TemperatureRepoTest{
 
@@ -44,8 +47,8 @@ class TemperatureRepoTest{
     }
 
     @Test
-    fun insertTemperature_success_correctDataPassed() {
-        val temp = Temperature(12.5,Date())
+    fun insertTemperature_success_correctDataPassed() = runBlockingTest {
+        val temp = Temperature(12.5f,Date())
         SUT.insertTemperature(temp)
         argumentCaptor<Temperature>().apply {
             verify(temperatureDao).insert(capture())
@@ -54,7 +57,7 @@ class TemperatureRepoTest{
     }
 
     @Test
-    fun deleteTemperature_success_temperatureDaoInteraction() {
+    fun deleteTemperature_success_temperatureDaoInteraction() = runBlockingTest {
         SUT.deleteAllTemperatures()
         verify(temperatureDao).deleteAllTemperatures()
     }
