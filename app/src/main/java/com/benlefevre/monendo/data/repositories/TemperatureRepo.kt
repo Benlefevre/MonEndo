@@ -13,7 +13,7 @@ class TemperatureRepo(private val temperatureDao: TemperatureDao) {
         return temperatureDao.getTemperaturesByPeriod(dateBegin, dateEnd)
     }
 
-    fun insertTemperature(temperature: Temperature) = temperatureDao.insert(temperature)
+    suspend fun insertTemperature(temperature: Temperature) = temperatureDao.insert(temperature)
 
-    fun deleteAllTemperatures() = temperatureDao.deleteAllTemperatures()
+    suspend fun deleteAllTemperatures() = temperatureDao.deleteAllTemperatures()
 }

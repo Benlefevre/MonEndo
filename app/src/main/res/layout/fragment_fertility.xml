@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.controllers.fragments.FertilityFragment">
 
     <LinearLayout
@@ -26,7 +26,7 @@
                     android:id="@+id/fertility_calendar"
                     android:layout_width="match_parent"
                     android:layout_height="250dp"
-                    android:layout_marginBottom="8dp"/>
+                    android:layout_marginBottom="8dp" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
@@ -70,9 +70,9 @@
                         android:textAlignment="center"
                         android:textColor="@color/colorOnPrimary"
                         app:chipBackgroundColor="@color/graph1"
-                        app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/fertility_chip_mens"/>
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/fertility_chip_mens" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -102,9 +102,9 @@
                     style="@style/CustomTextInputLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
                     android:layout_marginTop="4dp"
                     android:layout_marginEnd="8dp"
-                    android:layout_marginStart="8dp"
                     android:layout_marginBottom="8dp"
                     android:hint="@string/the_duration_of_your_menstruation_s_cycle"
                     app:errorEnabled="true">
@@ -123,6 +123,61 @@
         </com.google.android.material.card.MaterialCardView>
 
         <!--______________________________End Calendar card______________________________________-->
+
+        <!--______________________________Begin temperature card_________________________________-->
+
+        <com.google.android.material.card.MaterialCardView
+            style="@style/CardViewTheme"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <com.google.android.material.textview.MaterialTextView
+                    style="@style/CardTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/body_temperature_monitoring" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:text="@string/for_more_precision_you_can_save_your_daily_body_s_temperature_to_see_precisely_your_ovulation_s_period"
+                    android:textAlignment="center"
+                    android:textColor="@color/colorPrimary"/>
+
+                <com.google.android.material.slider.Slider
+                    android:id="@+id/fertility_temp_slider"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:valueFrom="36.0"
+                    android:valueTo="39.5"
+                    android:value="37.0"
+                    android:stepSize="0.1"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/fertility_temp_save_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:text="@string/save_my_temperature"
+                    android:layout_gravity="center_horizontal"/>
+
+                <com.github.mikephil.charting.charts.LineChart
+                    android:id="@+id/fertility_temp_chart"
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp"
+                    android:layout_margin="8dp"/>
+
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+        <!--________________________________End temperature card_________________________________-->
     </LinearLayout>
 
 </androidx.core.widget.NestedScrollView>

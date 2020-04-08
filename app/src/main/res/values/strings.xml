@@ -179,5 +179,9 @@
     <string name="ovulation">Ovulation</string>
     <string name="fertilization_period">Fertilization period</string>
     <string name="the_duration_of_your_menstruation_s_cycle">The duration of your menstruation\'s cycle</string>
+    <string name="body_temperature_monitoring">Body temperature monitoring</string>
+    <string name="for_more_precision_you_can_save_your_daily_body_s_temperature_to_see_precisely_your_ovulation_s_period">For more precision, you can save your daily body\'s temperature to see precisely your ovulation\'s period</string>
+    <string name="save_my_temperature">Save my temperature</string>
+    <string name="my_body_temp">My body\'s temperatures</string>
 
 </resources>

@@ -5,13 +5,24 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
+import androidx.core.content.ContextCompat.getColor
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import com.benlefevre.monendo.R
+import com.benlefevre.monendo.data.models.Temperature
+import com.benlefevre.monendo.ui.viewmodels.FertilityViewModel
 import com.benlefevre.monendo.utils.*
+import com.github.mikephil.charting.animation.Easing
+import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.data.LineData
+import com.github.mikephil.charting.data.LineDataSet
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputEditText
 import kotlinx.android.synthetic.main.fragment_fertility.*
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import timber.log.Timber
 import java.util.*
 
 class FertilityFragment : Fragment(R.layout.fragment_fertility) {
@@ -22,14 +33,18 @@ class FertilityFragment : Fragment(R.layout.fragment_fertility) {
     private val mensDates: MutableList<String> by lazy { mutableListOf<String>() }
     private val ovulDays: MutableList<String> by lazy { mutableListOf<String>() }
     private val fertiPeriods: MutableList<String> by lazy { mutableListOf<String>() }
+    private val temperatures: MutableList<Temperature> by lazy { mutableListOf<Temperature>() }
     var calendar: Calendar = Calendar.getInstance()
     private var monthLabel: Int = -1
+
+    private val viewModel: FertilityViewModel by viewModel()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         sharedPreferences = requireContext().getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)
         initViews()
         getUserInput()
+        getUserTemperature()
         initCalendar()
         setListener()
     }
@@ -72,8 +87,8 @@ class FertilityFragment : Fragment(R.layout.fragment_fertility) {
         fertiPeriods.clear()
         var monthLabelTemp = monthLabel
         var day = parseStringInDate(mensDay.text.toString())
-        mensDates.add(formatDateWithYear(day))
         if (day != Date(-1L)) {
+            mensDates.add(formatDateWithYear(day))
             val calendar = Calendar.getInstance().apply {
                 time = day
                 add(Calendar.DAY_OF_YEAR, durationMens.text.toString().toInt())
@@ -97,7 +112,7 @@ class FertilityFragment : Fragment(R.layout.fragment_fertility) {
                     add(Calendar.DAY_OF_MONTH, 4)
                     time
                 }
-                day = with(calendar){
+                day = with(calendar) {
                     time = day
                     add(Calendar.DAY_OF_YEAR, durationMens.text.toString().toInt())
                     time
@@ -179,6 +194,48 @@ class FertilityFragment : Fragment(R.layout.fragment_fertility) {
             .show()
     }
 
+    private fun getUserTemperature() {
+        viewModel.getAllTemperatures().observe(viewLifecycleOwner, Observer {
+            temperatures.clear()
+            temperatures.addAll(it)
+            initTempChart()
+        })
+    }
+
+    private fun initTempChart() {
+        Timber.i("$temperatures")
+        val entries = mutableListOf<Entry>()
+        val dates = mutableListOf<String>()
+        var index = 0f
+
+        temperatures.forEach {
+            entries.add(Entry(index, it.value))
+            dates.add(formatDateWithoutYear(it.date))
+            index++
+        }
+
+        val lineDataSet = LineDataSet(entries, getString(R.string.my_body_temp)).apply {
+            lineWidth = 2f
+            setCircleColor(getColor(requireContext(), R.color.colorSecondary))
+            color = getColor(requireContext(), R.color.colorSecondary)
+            setDrawValues(false)
+        }
+
+        fertility_temp_chart.apply {
+            description = null
+            setDrawBorders(false)
+            xAxis.granularity = 1f
+            xAxis.valueFormatter = IndexAxisValueFormatter(dates)
+            axisLeft.granularity = 0.2f
+            axisLeft.setDrawZeroLine(true)
+            axisLeft.axisMaximum = 40f
+            axisLeft.axisMinimum = 36f
+            axisRight.isEnabled = false
+            data = LineData(lineDataSet)
+            animateX(900, Easing.EaseInCirc)
+        }
+    }
+
     private fun setListener() {
         mensDay.setOnClickListener {
             openDatePicker()
@@ -219,6 +276,10 @@ class FertilityFragment : Fragment(R.layout.fragment_fertility) {
         fertility_chip_ferti.setOnClickListener {
             if (!fertiPeriods.isNullOrEmpty())
                 openCycleDialog(fertiPeriods, FERTI)
+        }
+
+        fertility_temp_save_btn.setOnClickListener {
+            viewModel.createTemp(Temperature(fertility_temp_slider.value, Date()))
         }
     }
 

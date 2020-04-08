@@ -17,8 +17,8 @@ interface TemperatureDao {
     fun getTemperaturesByPeriod(dateBegin : Date, dateEnd : Date) : LiveData<List<Temperature>>
 
     @Insert
-    fun insert(temperature: Temperature)
+    suspend fun insert(temperature: Temperature)
 
     @Query("DELETE FROM Temperature")
-    fun deleteAllTemperatures()
+    suspend fun deleteAllTemperatures()
 }

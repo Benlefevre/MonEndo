@@ -7,7 +7,7 @@ import java.util.*
 
 @Entity
 data class Temperature(
-    @ColumnInfo(name = "value") var value : Double,
+    @ColumnInfo(name = "value") var value : Float,
     @ColumnInfo(name = "date") var date: Date
 ) {
     @PrimaryKey(autoGenerate = true)
