@@ -151,7 +151,7 @@ class PainFragment : Fragment(R.layout.fragment_pain) {
 
     fun openCustomDialog(view: View) {
         configureCustomDialogAccordingToSelectedView(view)
-        MaterialAlertDialogBuilder(context).apply {
+        MaterialAlertDialogBuilder(requireContext()).apply {
             setCancelable(false)
             setView(customView)
             setPositiveButton(getString(R.string.save)) { _, _ ->

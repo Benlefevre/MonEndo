@@ -14,6 +14,7 @@ import com.benlefevre.monendo.data.models.Symptom
 import com.benlefevre.monendo.data.models.UserActivities
 import com.benlefevre.monendo.ui.viewmodels.DashboardViewModel
 import com.benlefevre.monendo.utils.formatDateWithoutYear
+import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.charts.PieChart
@@ -145,7 +146,7 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
             axisLeft.axisMaximum = 10.0f
             axisRight.isEnabled = false
             data = LineData(dataSet)
-            invalidate()
+            animateX(900, Easing.EaseOutBack)
         }
     }
 
@@ -210,7 +211,7 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
             axisLeft.axisMinimum = 0.0f
             axisRight.isEnabled = false
             data = BarData(dataSet)
-            invalidate()
+            animateX(900, Easing.EaseOutBack)
         }
 
     }
@@ -343,7 +344,7 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
             axisRight.axisMinimum = 0f
             axisRight.granularity = 1f
             data = BarData(dataSet)
-            invalidate()
+            animateX(900, Easing.EaseOutBack)
         }
     }
 
@@ -379,7 +380,7 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
             axisLeft.axisMaximum = 10f
             axisRight.isEnabled = false
             data = LineData(dataSet)
-            invalidate()
+            animateX(900, Easing.EaseOutBack)
         }
     }
 
@@ -454,7 +455,7 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
             setTouchEnabled(false)
             legend.isWordWrapEnabled = true
             data = PieData(pieDataSet)
-            invalidate()
+            animateX(900, Easing.EaseOutCirc)
         }
     }
 

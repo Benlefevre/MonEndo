@@ -54,6 +54,10 @@ class FertilityFragment : Fragment(R.layout.fragment_fertility) {
         durationMens = fertility_duration_mens_txt
     }
 
+    /**
+     * Fetches the user's input in SharedPreferences and binds them into the right field if the
+     * returned value is not null
+     */
     private fun getUserInput() {
         monthLabel = calendar.get(Calendar.MONTH)
         sharedPreferences.getString(monthLabel.toString(), null)?.let {
@@ -66,6 +70,9 @@ class FertilityFragment : Fragment(R.layout.fragment_fertility) {
         sharedPreferences.edit().remove("${monthLabel - 1}").apply()
     }
 
+    /**
+     * Pass the correct data to the FertilityCalendar to draw each defined period
+     */
     private fun initCalendar() {
         if (!mensDay.text.isNullOrBlank() && !durationMens.text.isNullOrBlank()) {
             var firstDay = mensDay.text!!.substring(0, 2).toInt()
@@ -80,6 +87,7 @@ class FertilityFragment : Fragment(R.layout.fragment_fertility) {
             calculateAndSaveNextMens()
         }
     }
+
 
     private fun calculateAndSaveNextMens() {
         mensDates.clear()
@@ -96,7 +104,7 @@ class FertilityFragment : Fragment(R.layout.fragment_fertility) {
             day = calendar.time
             mensDates.add(formatDateWithYear(day))
             sharedPreferences.edit()
-                .putString((monthLabelTemp + 1).toString(), formatDateWithYear(day))
+                .putString((if (monthLabelTemp + 1 == 12) 0 else monthLabelTemp + 1).toString(), formatDateWithYear(day))
                 .apply()
 
             while (monthLabelTemp != 11) {
@@ -163,6 +171,9 @@ class FertilityFragment : Fragment(R.layout.fragment_fertility) {
         }
     }
 
+    /**
+     * Opens a custom dialog to show all the right dates according to the user's item click
+     */
     private fun openCycleDialog(list: List<String>, tag: String) {
         var title = ""
         var message = ""
@@ -185,15 +196,20 @@ class FertilityFragment : Fragment(R.layout.fragment_fertility) {
             FERTI -> title = "Your fertilization's periods"
 
         }
-        MaterialAlertDialogBuilder(context)
-            .setTitle(title)
-            .setMessage(message)
-            .setPositiveButton("Ok") { dialog, _ ->
-                dialog.cancel()
-            }
-            .show()
+        context?.let {
+            MaterialAlertDialogBuilder(it)
+                .setTitle(title)
+                .setMessage(message)
+                .setPositiveButton("Ok") { dialog, _ ->
+                    dialog.cancel()
+                }
+                .show()
+        }
     }
 
+    /**
+     * Fetches all the temperatures saved in Database to display them into a chart.
+     */
     private fun getUserTemperature() {
         viewModel.getAllTemperatures().observe(viewLifecycleOwner, Observer {
             temperatures.clear()
@@ -202,6 +218,9 @@ class FertilityFragment : Fragment(R.layout.fragment_fertility) {
         })
     }
 
+    /**
+     * Sets the temperatures chart with the correct values
+     */
     private fun initTempChart() {
         Timber.i("$temperatures")
         val entries = mutableListOf<Entry>()
@@ -232,7 +251,7 @@ class FertilityFragment : Fragment(R.layout.fragment_fertility) {
             axisLeft.axisMinimum = 36f
             axisRight.isEnabled = false
             data = LineData(lineDataSet)
-            animateX(900, Easing.EaseInCirc)
+            animateX(900, Easing.EaseOutBack)
         }
     }
 

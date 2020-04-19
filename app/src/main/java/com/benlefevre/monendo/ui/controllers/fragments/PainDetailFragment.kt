@@ -9,6 +9,7 @@ import com.benlefevre.monendo.R
 import com.benlefevre.monendo.data.models.PainWithRelations
 import com.benlefevre.monendo.ui.viewmodels.DashboardViewModel
 import com.benlefevre.monendo.utils.formatDateWithoutYear
+import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
@@ -109,7 +110,7 @@ class PainDetailFragment : Fragment(R.layout.fragment_pain_detail) {
                         displaySelectedPain(e.x.toInt())
                 }
             })
-            invalidate()
+            animateX(500, Easing.EaseOutBack)
         }
     }
 

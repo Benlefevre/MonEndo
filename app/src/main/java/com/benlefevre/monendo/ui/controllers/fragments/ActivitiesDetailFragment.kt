@@ -11,6 +11,7 @@ import com.benlefevre.monendo.data.models.PainWithRelations
 import com.benlefevre.monendo.data.models.UserActivities
 import com.benlefevre.monendo.ui.viewmodels.DashboardViewModel
 import com.benlefevre.monendo.utils.formatDateWithoutYear
+import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
@@ -146,7 +147,7 @@ class ActivitiesDetailFragment : Fragment(R.layout.fragment_activities_detail) {
             setDrawEntryLabels(false)
             legend.isWordWrapEnabled = true
             data = PieData(pieDataSet)
-            invalidate()
+            animateX(500, Easing.EaseOutCirc)
         }
     }
 
@@ -222,6 +223,7 @@ class ActivitiesDetailFragment : Fragment(R.layout.fragment_activities_detail) {
                 }
                 setData(BarData(activitiesDataSet))
             }
+            animateX(2000,Easing.EaseOutBack)
             invalidate()
         }
     }

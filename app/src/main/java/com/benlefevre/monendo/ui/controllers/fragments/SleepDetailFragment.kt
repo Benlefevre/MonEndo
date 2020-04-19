@@ -9,6 +9,7 @@ import com.benlefevre.monendo.R
 import com.benlefevre.monendo.data.models.PainWithRelations
 import com.benlefevre.monendo.ui.viewmodels.DashboardViewModel
 import com.benlefevre.monendo.utils.formatDateWithoutYear
+import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
@@ -125,6 +126,7 @@ class SleepDetailFragment : Fragment(R.layout.fragment_sleep_detail) {
                 setData(LineData(painDataSet))
                 setData(BarData(sleepDataSet))
             }
+            animateX(2000, Easing.EaseOutBack)
             invalidate()
         }
     }

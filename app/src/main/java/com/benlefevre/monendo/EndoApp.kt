@@ -2,6 +2,7 @@ package com.benlefevre.monendo
 
 import android.app.Application
 import com.benlefevre.monendo.injection.appModule
+import com.benlefevre.monendo.injection.networkModule
 import com.facebook.stetho.Stetho
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -22,7 +23,7 @@ class EndoApp : Application() {
         startKoin{
             androidLogger()
             androidContext(this@EndoApp)
-            modules(appModule)
+            modules(listOf(appModule, networkModule))
         }
         if(BuildConfig.DEBUG){
             Timber.plant(Timber.DebugTree())

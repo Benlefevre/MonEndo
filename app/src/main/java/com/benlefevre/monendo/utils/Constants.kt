@@ -1,5 +1,7 @@
 package com.benlefevre.monendo.utils
 
+const val API_URL = "https://public.opendatasoft.com/"
+
 const val RC_SIGN_IN = 1
 const val USER_COLLECTION = "Users"
 const val NO_NAME = "No name"

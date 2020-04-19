@@ -11,6 +11,7 @@ import com.benlefevre.monendo.data.models.PainWithRelations
 import com.benlefevre.monendo.data.models.Symptom
 import com.benlefevre.monendo.ui.viewmodels.DashboardViewModel
 import com.benlefevre.monendo.utils.formatDateWithoutYear
+import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
@@ -141,7 +142,7 @@ class SymptomDetailFragment : Fragment(R.layout.fragment_symptom_detail) {
             isDrawHoleEnabled = false
             legend.isWordWrapEnabled = true
             data = PieData(pieDataSet)
-            invalidate()
+            animateX(500,Easing.EaseOutCirc)
         }
     }
 
@@ -249,7 +250,7 @@ class SymptomDetailFragment : Fragment(R.layout.fragment_symptom_detail) {
                 }
                 setData(BarData(symptomDataSet))
             }
-            invalidate()
+            animateX(2000,Easing.EaseOutBack)
         }
     }
 }

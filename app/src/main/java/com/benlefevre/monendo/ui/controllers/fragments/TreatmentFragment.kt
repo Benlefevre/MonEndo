@@ -239,7 +239,7 @@ class TreatmentFragment : Fragment(R.layout.fragment_treatment) {
     private fun openDialogTreatment() {
         setupTreatmentDialog()
         treatment = Treatment()
-        dialog = MaterialAlertDialogBuilder(context)
+        dialog = MaterialAlertDialogBuilder(requireContext())
             .setView(customDialog)
             .setCancelable(false)
             .show()

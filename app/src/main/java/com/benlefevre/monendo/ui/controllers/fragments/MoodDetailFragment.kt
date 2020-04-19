@@ -1,7 +1,6 @@
 package com.benlefevre.monendo.ui.controllers.fragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.core.content.ContextCompat.getColor
 import androidx.fragment.app.Fragment
@@ -11,6 +10,7 @@ import com.benlefevre.monendo.data.models.Mood
 import com.benlefevre.monendo.data.models.PainWithRelations
 import com.benlefevre.monendo.ui.viewmodels.DashboardViewModel
 import com.benlefevre.monendo.utils.formatDateWithoutYear
+import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
@@ -20,6 +20,7 @@ import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import kotlinx.android.synthetic.main.chipgroup_duration.*
 import kotlinx.android.synthetic.main.fragment_mood_detail.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import timber.log.Timber
 
 class MoodDetailFragment : Fragment(R.layout.fragment_mood_detail) {
 
@@ -140,7 +141,7 @@ class MoodDetailFragment : Fragment(R.layout.fragment_mood_detail) {
                 }
 
                 override fun onValueSelected(e: Entry?, h: Highlight?) {
-                    Log.i("benoit", e?.data.toString())
+                    Timber.i(e?.data.toString())
                     selectedMood = e?.data.toString()
                     setupDetailChart(selectedMood)
                 }
@@ -152,7 +153,7 @@ class MoodDetailFragment : Fragment(R.layout.fragment_mood_detail) {
             isDrawHoleEnabled = false
             legend.isWordWrapEnabled = true
             data = PieData(pieDataSet)
-            invalidate()
+            animateX(500, Easing.EaseOutCirc)
         }
     }
 
@@ -212,7 +213,7 @@ class MoodDetailFragment : Fragment(R.layout.fragment_mood_detail) {
                 }
                 setData(BarData(moodDataSet))
             }
-            invalidate()
+            animateX(2000,Easing.EaseOutBack)
         }
     }
 

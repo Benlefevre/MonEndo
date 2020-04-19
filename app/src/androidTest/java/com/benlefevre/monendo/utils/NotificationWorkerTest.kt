@@ -4,10 +4,12 @@ import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.work.ListenableWorker
+import androidx.work.WorkManager
 import androidx.work.testing.TestWorkerBuilder
 import androidx.work.workDataOf
 import io.mockk.spyk
 import io.mockk.verify
+import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -25,6 +27,11 @@ class NotificationWorkerTest {
     fun setUp() {
         context = ApplicationProvider.getApplicationContext()
         executor = Executors.newSingleThreadExecutor()
+    }
+
+    @After
+    fun tearDown() {
+        WorkManager.getInstance(context).cancelAllWorkByTag("Dolipranne")
     }
 
     @Test

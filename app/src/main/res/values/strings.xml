@@ -183,5 +183,9 @@
     <string name="for_more_precision_you_can_save_your_daily_body_s_temperature_to_see_precisely_your_ovulation_s_period">For more precision, you can save your daily body\'s temperature to see precisely your ovulation\'s period</string>
     <string name="save_my_temperature">Save my temperature</string>
     <string name="my_body_temp">My body\'s temperatures</string>
+    <string name="in_which_city_are_you_looking_for_a_doctor">In which city are you looking for a doctor?</string>
+    <string name="gynecologist">Gynecologist</string>
+    <string name="general_practitioner">General practitioner</string>
+    <string name="around_me">Around me</string>
 
 </resources>

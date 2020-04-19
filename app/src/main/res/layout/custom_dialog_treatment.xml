@@ -44,7 +44,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/custom_treatment_name_label">
 
-        <com.google.android.material.textview.MaterialAutoCompleteTextView
+        <AutoCompleteTextView
             android:id="@+id/custom_treatment_duration"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -81,7 +81,7 @@
         app:layout_constraintStart_toEndOf="@id/custom_treatment_dosage_label"
         app:layout_constraintTop_toBottomOf="@id/custom_treatment_duration_label">
 
-        <com.google.android.material.textview.MaterialAutoCompleteTextView
+        <AutoCompleteTextView
             android:id="@+id/custom_treatment_format"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
