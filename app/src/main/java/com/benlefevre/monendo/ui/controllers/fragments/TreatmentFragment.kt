@@ -27,6 +27,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.custom_dialog_treatment.view.*
 import kotlinx.android.synthetic.main.fragment_treatment.*
+import timber.log.Timber
 import java.util.*
 
 class TreatmentFragment : Fragment(R.layout.fragment_treatment) {
@@ -39,12 +40,8 @@ class TreatmentFragment : Fragment(R.layout.fragment_treatment) {
     private lateinit var dialog: androidx.appcompat.app.AlertDialog
     private lateinit var treatment: Treatment
 
-    private val treatmentList: MutableList<Treatment> by lazy {
-        mutableListOf<Treatment>()
-    }
-    private val checkedPills: MutableList<Pill> by lazy {
-        mutableListOf<Pill>()
-    }
+    private val treatmentList =  mutableListOf<Treatment>()
+    private val checkedPills = mutableListOf<Pill>()
 
     private lateinit var sharedPreferences: SharedPreferences
     private val gson by lazy { Gson() }
@@ -123,6 +120,10 @@ class TreatmentFragment : Fragment(R.layout.fragment_treatment) {
                 add(Calendar.DAY_OF_YEAR, -1)
                 time
             })
+        }
+        tempList.forEach {
+            WorkManager.getInstance(requireContext())
+                .cancelAllWorkByTag(it.name)
         }
         treatmentList.clear()
         treatmentList.addAll(tempList)
@@ -212,10 +213,18 @@ class TreatmentFragment : Fragment(R.layout.fragment_treatment) {
                 setButton(DialogInterface.BUTTON_NEUTRAL, "Delete the time") { _, _ ->
                     notifHour.setText("")
                     sharedPreferences.edit().remove(PILL_HOUR_NOTIF).apply()
-                    WorkManager.getInstance(context).cancelAllWorkByTag(PILL_TAG)
+                    cancelPillWorks()
                 }
             }.show()
         }
+    }
+
+    /**
+     * Cancels all works that are enqueued with PILL tags
+     */
+    private fun cancelPillWorks(){
+        WorkManager.getInstance(requireContext()).cancelAllWorkByTag(PILL_TAG)
+        WorkManager.getInstance(requireContext()).cancelAllWorkByTag(PILL_REPEAT)
     }
 
     /**
@@ -224,12 +233,19 @@ class TreatmentFragment : Fragment(R.layout.fragment_treatment) {
      * Calls configurePillNotification() to enqueue a request with WorkManager
      */
     private fun updateNotifHour() {
+        cancelPillWorks()
         notifHour.setText(formatTime(calendar.time))
         if (!notifHour.text.isNullOrBlank()) {
             sharedPreferences.edit().putString(PILL_HOUR_NOTIF, notifHour.text.toString())
                 .apply()
+
             val data = Data.Builder().putString(TREATMENT, PILL_TAG).build()
             context?.let { configureTreatmentNotification(it, data, notifHour.text.toString()) }
+
+            val dataRepeat = Data.Builder().putString(TREATMENT, PILL_REPEAT).build()
+            val repeatHour = setRepeatHour(calendar.time)
+            Timber.i("${notifHour.text.toString()} et repeat à $repeatHour")
+            configureTreatmentNotification(requireContext(),dataRepeat,repeatHour, PILL_REPEAT)
         }
     }
 

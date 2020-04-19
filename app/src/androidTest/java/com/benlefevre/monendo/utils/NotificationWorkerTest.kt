@@ -44,7 +44,37 @@ class NotificationWorkerTest {
             ).build()
         )
         val result = notificationWorker.doWork()
-        verify { notificationWorker.sendPillNotification() }
+        verify { notificationWorker.sendPillNotification(any()) }
+        assertEquals(ListenableWorker.Result.success(), result)
+    }
+
+    @Test
+    fun doWorkPillRepeat_success_correctResultReturned() {
+        context.getSharedPreferences(PREFERENCES,Context.MODE_PRIVATE).edit().putBoolean(CURRENT_CHECKED,false).apply()
+        val notificationWorker = spyk(
+            TestWorkerBuilder<NotificationWorker>(
+                context = context,
+                executor = executor,
+                inputData = workDataOf(TREATMENT to PILL_REPEAT)
+            ).build()
+        )
+        val result = notificationWorker.doWork()
+        verify { notificationWorker.sendPillNotification(any()) }
+        assertEquals(ListenableWorker.Result.success(), result)
+    }
+
+    @Test
+    fun doWorkPillRepeat_successButChecked_correctResultReturned() {
+        context.getSharedPreferences(PREFERENCES,Context.MODE_PRIVATE).edit().putBoolean(CURRENT_CHECKED,true).apply()
+        val notificationWorker = spyk(
+            TestWorkerBuilder<NotificationWorker>(
+                context = context,
+                executor = executor,
+                inputData = workDataOf(TREATMENT to PILL_REPEAT)
+            ).build()
+        )
+        val result = notificationWorker.doWork()
+        verify(exactly = 0) { notificationWorker.sendPillNotification(any()) }
         assertEquals(ListenableWorker.Result.success(), result)
     }
 
@@ -75,7 +105,7 @@ class NotificationWorkerTest {
             ).build()
         )
         val result = notificationWorker.doWork()
-        verify(exactly = 0) { notificationWorker.sendPillNotification() }
+        verify(exactly = 0) { notificationWorker.sendPillNotification(any()) }
         assertEquals(ListenableWorker.Result.failure(), result)
     }
 }

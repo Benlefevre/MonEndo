@@ -10,8 +10,10 @@ import android.view.MotionEvent
 import android.view.View
 import androidx.core.content.ContextCompat.getColor
 import com.benlefevre.monendo.R
+import com.benlefevre.monendo.utils.CURRENT_CHECKED
 import com.benlefevre.monendo.utils.NEED_CLEAR
 import com.benlefevre.monendo.utils.PREFERENCES
+import timber.log.Timber
 
 class ContraceptiveTablet(context: Context, attrs: AttributeSet) : View(context, attrs) {
 
@@ -114,17 +116,17 @@ class ContraceptiveTablet(context: Context, attrs: AttributeSet) : View(context,
 
         pills.forEach {
             circlePaint.color = it.color
-            canvas.drawCircle(it.x,it.y,it.radius,circlePaint)
-            if (!it.isChecked){
-                circlePaint.color = getColor(context,R.color.graph4)
-                canvas.drawCircle(it.x,it.y,it.radius/2,circlePaint)
-                canvas.drawArc(it.shadowRectF,0f,70f,false,shadowPaint)
-            }else
-                canvas.drawArc(it.shadowRectF,-180f,70f,false,shadowPaint)
+            canvas.drawCircle(it.x, it.y, it.radius, circlePaint)
+            if (!it.isChecked) {
+                circlePaint.color = getColor(context, R.color.graph4)
+                canvas.drawCircle(it.x, it.y, it.radius / 2, circlePaint)
+                canvas.drawArc(it.shadowRectF, 0f, 70f, false, shadowPaint)
+            } else
+                canvas.drawArc(it.shadowRectF, -180f, 70f, false, shadowPaint)
         }
     }
 
-    fun setupTablet(elapsedDays: Int){
+    fun setupTablet(elapsedDays: Int) {
         day = elapsedDays
         if (day >= pills.size) day -= pills.size
         if (day == 0 && needClear) clearTablet()
@@ -134,35 +136,36 @@ class ContraceptiveTablet(context: Context, attrs: AttributeSet) : View(context,
         invalidate()
     }
 
-    private fun setMissingPills(elapsedDays : Int){
-        for( index in 0..elapsedDays){
-            if (!pills[index].isChecked){
+    private fun setMissingPills(elapsedDays: Int) {
+        for (index in 0..elapsedDays) {
+            if (!pills[index].isChecked) {
                 pills[index].apply {
-                    color = getColor(context,R.color.graph5)
+                    color = getColor(context, R.color.graph5)
                     isClickable = true
                 }
             }
         }
     }
 
-    private fun setPillNotClickable(elapsedDays: Int){
-        for (index in elapsedDays + 1 until pills.size){
+    private fun setPillNotClickable(elapsedDays: Int) {
+        for (index in elapsedDays + 1 until pills.size) {
             pills[index].apply {
                 isClickable = false
                 isChecked = false
-                color = getColor(context,R.color.colorOnPrimary)
+                color = getColor(context, R.color.colorOnPrimary)
             }
         }
     }
 
-    private fun setCurrentPill(elapsedDays: Int){
-        if (!pills[elapsedDays].isChecked){
+    private fun setCurrentPill(elapsedDays: Int) {
+        if (!pills[elapsedDays].isChecked) {
             pills[elapsedDays].apply {
-                color = getColor(context,R.color.graph1)
+                color = getColor(context, R.color.graph1)
                 isClickable = true
             }
         }
         if (elapsedDays == 27) needClear = true
+        isCurrentChecked()
     }
 
     private fun clearTablet() {
@@ -174,16 +177,17 @@ class ContraceptiveTablet(context: Context, attrs: AttributeSet) : View(context,
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
-        var isTouchPill : Boolean
-        when(event.action){
+        var isTouchPill: Boolean
+        when (event.action) {
             MotionEvent.ACTION_DOWN -> {
                 pills.forEach {
-                    isTouchPill = it.checkTouchInCircle(event.x,event.y)
-                    if (isTouchPill){
-                        if (!it.isChecked){
-                            it.color = getColor(context,R.color.colorOnSecondary)
+                    isTouchPill = it.checkTouchInCircle(event.x, event.y)
+                    if (isTouchPill) {
+                        isCurrentChecked()
+                        if (!it.isChecked) {
+                            it.color = getColor(context, R.color.colorOnSecondary)
                             it.isChecked = true
-                        }else
+                        } else
                             it.isChecked = false
                     }
                     invalidate()
@@ -199,8 +203,19 @@ class ContraceptiveTablet(context: Context, attrs: AttributeSet) : View(context,
         return false
     }
 
+    private fun isCurrentChecked() {
+        Timber.i("${pills[day].isChecked}")
+        context.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)
+            .edit()
+            .putBoolean(CURRENT_CHECKED, pills[day].isChecked)
+            .apply()
+    }
+
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
-        context.getSharedPreferences(PREFERENCES,Context.MODE_PRIVATE).edit().putBoolean(NEED_CLEAR,needClear).apply()
+        context.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)
+            .edit()
+            .putBoolean(NEED_CLEAR, needClear)
+            .apply()
     }
 }

@@ -187,5 +187,7 @@
     <string name="gynecologist">Gynecologist</string>
     <string name="general_practitioner">General practitioner</string>
     <string name="around_me">Around me</string>
+    <string name="forgotten_pill">You have forgotten to take your contraceptive pill</string>
+    <string name="forgot_check_pill">Please, take your pill and check it in the tablet</string>
 
 </resources>

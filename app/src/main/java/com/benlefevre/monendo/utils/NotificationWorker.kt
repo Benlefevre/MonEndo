@@ -18,7 +18,7 @@ class NotificationWorker(private var context: Context, workerParameters: WorkerP
         return when {
             !data.getString(TREATMENT).isNullOrBlank()
                     && data.getString(TREATMENT) == PILL_TAG -> {
-                sendPillNotification()
+                sendPillNotification(data)
                 Result.success()
             }
             !data.getString(TREATMENT).isNullOrBlank()
@@ -26,11 +26,20 @@ class NotificationWorker(private var context: Context, workerParameters: WorkerP
                 sendTreatmentNotification(data)
                 Result.success()
             }
+            !data.getString(TREATMENT).isNullOrBlank()
+                    && data.getString(TREATMENT) == PILL_REPEAT -> {
+                if (!context.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)
+                        .getBoolean(CURRENT_CHECKED, false)
+                ) {
+                    sendPillNotification(data)
+                }
+                Result.success()
+            }
             else -> Result.failure()
         }
     }
 
-    fun sendPillNotification() {
+    fun sendPillNotification(data: Data) {
         val pendingIntent = NavDeepLinkBuilder(context)
             .setGraph(R.navigation.nav_graph)
             .setDestination(R.id.treatmentFragment)
@@ -47,15 +56,31 @@ class NotificationWorker(private var context: Context, workerParameters: WorkerP
             manager.createNotificationChannel(notificationChannel)
         }
 
+        val title: String
+        val text: String
+        val id: Int
+        when (data.getString(TREATMENT)) {
+            PILL_TAG -> {
+                title = context.getString(R.string.dont_forget_pill)
+                text = context.getString(R.string.check_pill)
+                id = 1
+            }
+            else -> {
+                title = context.getString(R.string.forgotten_pill)
+                text = context.getString(R.string.forgot_check_pill)
+                id = 2
+            }
+        }
+
         val notification = NotificationCompat.Builder(context, channelId)
-            .setContentTitle(context.getString(R.string.dont_forget_pill))
-            .setContentText(context.getString(R.string.check_pill))
+            .setContentTitle(title)
+            .setContentText(text)
             .setSmallIcon(R.drawable.ic_launcher_foreground)
             .setAutoCancel(false)
             .setContentIntent(pendingIntent)
             .build()
 
-        manager.notify(1, notification)
+        manager.notify(id, notification)
     }
 
     fun sendTreatmentNotification(data: Data) {

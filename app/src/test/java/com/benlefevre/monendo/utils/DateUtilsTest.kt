@@ -48,6 +48,16 @@ class DateUtilsTest {
     }
 
     @Test
+    fun setRepeatHour_success_correctDataReturned(){
+        val date = with(Calendar.getInstance()) {
+            set(Calendar.HOUR_OF_DAY, 12)
+            set(Calendar.MINUTE, 0)
+            time
+        }
+        assertEquals("13:00", setRepeatHour(date))
+    }
+
+    @Test
     fun formatDateToDayName_success_correctDataReturned() {
         val date = with(Calendar.getInstance()){
             set(Calendar.DAY_OF_WEEK,Calendar.SUNDAY)
