@@ -2,19 +2,22 @@ package com.benlefevre.monendo.utils
 
 import android.content.Context
 import androidx.work.Data
+import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
+import timber.log.Timber
 import java.util.*
 import java.util.concurrent.TimeUnit
 
 fun configureTreatmentNotification(context: Context, data: Data, hour: String, tag: String = PILL_TAG) {
+    Timber.i(tag)
     val treatmentWorker =
         PeriodicWorkRequest.Builder(NotificationWorker::class.java, 1, TimeUnit.DAYS)
             .setInputData(data)
             .setInitialDelay(setDelayDuration(hour), TimeUnit.MILLISECONDS)
             .addTag(tag)
             .build()
-    WorkManager.getInstance(context).enqueue(treatmentWorker)
+    WorkManager.getInstance(context).enqueueUniquePeriodicWork(tag,ExistingPeriodicWorkPolicy.REPLACE,treatmentWorker)
 }
 
 fun setDelayDuration(hour: String): Long {

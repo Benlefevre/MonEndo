@@ -6,8 +6,12 @@ import android.content.Context
 import android.content.DialogInterface
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.widget.ArrayAdapter
+import android.widget.EditText
 import android.widget.ImageButton
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -40,7 +44,7 @@ class TreatmentFragment : Fragment(R.layout.fragment_treatment) {
     private lateinit var dialog: androidx.appcompat.app.AlertDialog
     private lateinit var treatment: Treatment
 
-    private val treatmentList =  mutableListOf<Treatment>()
+    private val treatmentList = mutableListOf<Treatment>()
     private val checkedPills = mutableListOf<Pill>()
 
     private lateinit var sharedPreferences: SharedPreferences
@@ -61,6 +65,44 @@ class TreatmentFragment : Fragment(R.layout.fragment_treatment) {
         removeFinishTreatment()
         configureRecyclerView()
         calculateElapsedTime()
+        setHasOptionsMenu(true)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.treatment_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.pill_settings -> {
+                openNumberOfPillsDialog()
+                true
+            }
+            else -> {
+                super.onOptionsItemSelected(item)
+            }
+        }
+    }
+
+    private fun openNumberOfPillsDialog() {
+        val editText = EditText(requireContext())
+        MaterialAlertDialogBuilder(requireContext())
+            .setView(editText)
+            .setTitle("Number of pills")
+            .setMessage("How many pills there are on your tablet?")
+            .setNegativeButton("Cancel") { dialog, _ ->
+                dialog.cancel()
+            }
+            .setPositiveButton("Ok") { dialog, _ ->
+                sharedPreferences.edit()
+                    .putInt(NUMBER_OF_PILLS, editText.text.toString().toInt())
+                    .remove(CHECKED_PILLS)
+                    .apply()
+                pillTablet.setNumberOfPills(editText.text.toString().toInt())
+                dialog.cancel()
+            }
+            .setCancelable(false)
+            .show()
     }
 
     private fun initViews() {
@@ -81,8 +123,9 @@ class TreatmentFragment : Fragment(R.layout.fragment_treatment) {
         )?.let {
             checkedPills.addAll(it)
         }
-        if (!checkedPills.isNullOrEmpty())
+        if (!checkedPills.isNullOrEmpty()) {
             pillTablet.pills = checkedPills
+        }
     }
 
     /**
@@ -103,9 +146,9 @@ class TreatmentFragment : Fragment(R.layout.fragment_treatment) {
      */
     private fun getUserTreatment() {
         gson.fromJson<List<Treatment>>(
-                sharedPreferences.getString(TREATMENT, null),
-                object : TypeToken<List<Treatment>>() {}.type
-            )
+            sharedPreferences.getString(TREATMENT, null),
+            object : TypeToken<List<Treatment>>() {}.type
+        )
             ?.let {
                 treatmentList.addAll(it)
             }
@@ -115,27 +158,34 @@ class TreatmentFragment : Fragment(R.layout.fragment_treatment) {
      * Removes each treatment that the duration is finished
      */
     private fun removeFinishTreatment() {
+        val removeListTreatment = treatmentList.filter {
+            it.duration == formatDateWithYear(with(Calendar.getInstance()) {
+                add(Calendar.DAY_OF_YEAR, -1)
+                time
+            })
+        }
         val tempList = treatmentList.filter {
             it.duration != formatDateWithYear(with(Calendar.getInstance()) {
                 add(Calendar.DAY_OF_YEAR, -1)
                 time
             })
         }
-        tempList.forEach {
-            WorkManager.getInstance(requireContext())
-                .cancelAllWorkByTag(it.name)
+        removeListTreatment.forEach {
+            cancelTreatmentWork(it)
         }
         treatmentList.clear()
         treatmentList.addAll(tempList)
     }
 
+    /**
+     * Configures the recycler view and its onClick's behavior.
+     */
     private fun configureRecyclerView() {
         adapter = TreatmentAdapter(treatmentList)
-        adapter.setOnClickListener(View.OnClickListener { it ->
+        adapter.setOnClickListener(View.OnClickListener {
             val holder = it.tag as TreatmentViewHolder
             val position = holder.adapterPosition
-            WorkManager.getInstance(requireContext())
-                .cancelAllWorkByTag(treatmentList[position].name)
+            cancelTreatmentWork(treatmentList[position])
             treatmentList.removeAt(position)
             adapter.notifyDataSetChanged()
         })
@@ -210,7 +260,7 @@ class TreatmentFragment : Fragment(R.layout.fragment_treatment) {
                 it, timeListener, calendar.get(Calendar.HOUR_OF_DAY),
                 calendar.get(Calendar.MINUTE), true
             ).apply {
-                setButton(DialogInterface.BUTTON_NEUTRAL, "Delete the time") { _, _ ->
+                setButton(DialogInterface.BUTTON_NEUTRAL, getString(R.string.delete_time)) { _, _ ->
                     notifHour.setText("")
                     sharedPreferences.edit().remove(PILL_HOUR_NOTIF).apply()
                     cancelPillWorks()
@@ -222,9 +272,23 @@ class TreatmentFragment : Fragment(R.layout.fragment_treatment) {
     /**
      * Cancels all works that are enqueued with PILL tags
      */
-    private fun cancelPillWorks(){
-        WorkManager.getInstance(requireContext()).cancelAllWorkByTag(PILL_TAG)
-        WorkManager.getInstance(requireContext()).cancelAllWorkByTag(PILL_REPEAT)
+    private fun cancelPillWorks() {
+        WorkManager.getInstance(requireContext()).apply {
+            cancelUniqueWork(PILL_TAG)
+            cancelUniqueWork(PILL_REPEAT)
+        }
+    }
+
+    /**
+     * Cancels all works that are enqueued with different tags created from the treatment's name
+     */
+    private fun cancelTreatmentWork(treatment: Treatment){
+        WorkManager.getInstance(requireContext()).apply {
+            cancelUniqueWork("${treatment.name} $MORNING")
+            cancelUniqueWork("${treatment.name} $NOON")
+            cancelUniqueWork("${treatment.name} $AFTERNOON")
+            cancelUniqueWork("${treatment.name} $EVENING")
+        }
     }
 
     /**
@@ -245,7 +309,7 @@ class TreatmentFragment : Fragment(R.layout.fragment_treatment) {
             val dataRepeat = Data.Builder().putString(TREATMENT, PILL_REPEAT).build()
             val repeatHour = setRepeatHour(calendar.time)
             Timber.i("${notifHour.text.toString()} et repeat à $repeatHour")
-            configureTreatmentNotification(requireContext(),dataRepeat,repeatHour, PILL_REPEAT)
+            configureTreatmentNotification(requireContext(), dataRepeat, repeatHour, PILL_REPEAT)
         }
     }
 
@@ -362,13 +426,13 @@ class TreatmentFragment : Fragment(R.layout.fragment_treatment) {
         }.build()
 
         if (customDialog.custom_treatment_morning_chip.isChecked)
-            context?.let { configureTreatmentNotification(it, data, treatment.morning, treatment.name) }
+            context?.let { configureTreatmentNotification(it, data, treatment.morning, "${treatment.name} $MORNING" ) }
         if (customDialog.custom_treatment_noon_chip.isChecked)
-            context?.let { configureTreatmentNotification(it, data, treatment.noon, treatment.name) }
+            context?.let { configureTreatmentNotification(it, data, treatment.noon, "${treatment.name} $NOON") }
         if (customDialog.custom_treatment_afternoon_chip.isChecked)
-            context?.let { configureTreatmentNotification(it, data, treatment.afternoon, treatment.name) }
+            context?.let { configureTreatmentNotification(it, data, treatment.afternoon, "${treatment.name} $AFTERNOON") }
         if (customDialog.custom_treatment_evening_chip.isChecked)
-            context?.let { configureTreatmentNotification(it, data, treatment.evening, treatment.name) }
+            context?.let { configureTreatmentNotification(it, data, treatment.evening, "${treatment.name} $EVENING") }
     }
 
     /**
@@ -503,7 +567,8 @@ class TreatmentFragment : Fragment(R.layout.fragment_treatment) {
     override fun onPause() {
         super.onPause()
 //        Save in SharedPreferences the checked pills
-        sharedPreferences.edit().putString(CHECKED_PILLS, gson.toJson(pillTablet.pills)).apply()
+        if (pillTablet.pills.any { it.isChecked })
+            sharedPreferences.edit().putString(CHECKED_PILLS, gson.toJson(pillTablet.pills)).apply()
 //        Save in SharedPreferences the user's treatments
         sharedPreferences.edit().putString(TREATMENT, gson.toJson(treatmentList)).apply()
     }

@@ -7,7 +7,7 @@
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/custom_dialog_title"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="wrap_content"
         style="@style/CardTitle"
         android:background="@color/colorSecondary"
         android:text="@string/some_precisions_please"

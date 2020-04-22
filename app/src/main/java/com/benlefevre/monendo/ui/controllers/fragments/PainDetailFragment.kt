@@ -22,7 +22,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PainDetailFragment : Fragment(R.layout.fragment_pain_detail) {
 
-    private val viewModel : DashboardViewModel by viewModel()
+    private val viewModel: DashboardViewModel by viewModel()
 
     private val painRelations: MutableList<PainWithRelations> = mutableListOf()
 
@@ -139,8 +139,10 @@ class PainDetailFragment : Fragment(R.layout.fragment_pain_detail) {
 
         pain_details_date_txt.text = formatDateWithoutYear(pain.pain.date)
         pain_details_value_txt.text = pain.pain.intensity.toString()
-        pain_details_location_txt.text = pain.pain.location
-        pain_details_mood_txt.text = pain.moods[0].value
+        pain_details_location_txt.text =
+            if(!pain.pain.location.isBlank()) pain.pain.location else getString(R.string.not_registered)
+        pain_details_mood_txt.text =
+            if (!pain.moods.isNullOrEmpty()) pain.moods[0].value else getString(R.string.not_registered)
         pain_details_symptom_txt.text = symptomText
         pain_details_activities_txt.text = activitiesText
     }

@@ -25,6 +25,8 @@
         <item name="colorControlNormal">@android:color/white</item>
         <item name="android:background">@color/colorPrimary</item>
         <item name="titleTextColor">@color/colorOnPrimary</item>
+        <item name="android:actionMenuTextColor">@color/colorOnPrimary</item>
+        <item name="iconTint">@color/colorOnPrimary</item>
     </style>
 
     <style name="BottomStyle" parent="Widget.MaterialComponents.BottomNavigationView">

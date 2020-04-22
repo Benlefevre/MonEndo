@@ -22,6 +22,8 @@ class Pill(width: Float, var multiWith: Int, height: Float, var multiHeight: Int
     var shadowRectF: RectF = RectF()
 
     init {
+        x = width * multiWith
+        y = height * multiHeight
         shadowRectF =
             RectF(x - radius / 1.2f, y - radius / 1.2f, x + radius / 1.2f, y + radius / 1.2f)
     }

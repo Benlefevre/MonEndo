@@ -10,6 +10,7 @@ import androidx.work.Data
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.benlefevre.monendo.R
+import timber.log.Timber
 
 class NotificationWorker(private var context: Context, workerParameters: WorkerParameters) : Worker(context, workerParameters) {
 
@@ -22,11 +23,6 @@ class NotificationWorker(private var context: Context, workerParameters: WorkerP
                 Result.success()
             }
             !data.getString(TREATMENT).isNullOrBlank()
-                    && data.getString(TREATMENT) == TREATMENT_TAG -> {
-                sendTreatmentNotification(data)
-                Result.success()
-            }
-            !data.getString(TREATMENT).isNullOrBlank()
                     && data.getString(TREATMENT) == PILL_REPEAT -> {
                 if (!context.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)
                         .getBoolean(CURRENT_CHECKED, false)
@@ -35,11 +31,17 @@ class NotificationWorker(private var context: Context, workerParameters: WorkerP
                 }
                 Result.success()
             }
+            !data.getString(TREATMENT).isNullOrBlank()
+                    && data.getString(TREATMENT) == TREATMENT_TAG -> {
+                sendTreatmentNotification(data)
+                Result.success()
+            }
             else -> Result.failure()
         }
     }
 
     fun sendPillNotification(data: Data) {
+        Timber.i("Pill Notif")
         val pendingIntent = NavDeepLinkBuilder(context)
             .setGraph(R.navigation.nav_graph)
             .setDestination(R.id.treatmentFragment)
@@ -74,8 +76,9 @@ class NotificationWorker(private var context: Context, workerParameters: WorkerP
 
         val notification = NotificationCompat.Builder(context, channelId)
             .setContentTitle(title)
-            .setContentText(text)
-            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setSmallIcon(R.drawable.notification_icon)
+            .setStyle(NotificationCompat.BigTextStyle()
+                .bigText(text))
             .setAutoCancel(false)
             .setContentIntent(pendingIntent)
             .build()
@@ -84,6 +87,7 @@ class NotificationWorker(private var context: Context, workerParameters: WorkerP
     }
 
     fun sendTreatmentNotification(data: Data) {
+        Timber.i("Treatment Notif")
         val pendingIntent = NavDeepLinkBuilder(context)
             .setGraph(R.navigation.nav_graph)
             .setDestination(R.id.treatmentFragment)
@@ -101,13 +105,14 @@ class NotificationWorker(private var context: Context, workerParameters: WorkerP
         }
 
         val notification = NotificationCompat.Builder(context, channelId)
-            .setContentTitle(context.getString(R.string.treatment_notif_title, data.getString(TREATMENT_NAME)))
-            .setContentText(context.getString(R.string.treatment_notif_dosage, data.getString(TREATMENT_DOSAGE), data.getString(TREATMENT_FORMAT)))
-            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setContentTitle(context.getString(R.string.treatment_notif_title))
+            .setSmallIcon(R.drawable.notification_icon)
+            .setStyle(NotificationCompat.BigTextStyle()
+                .bigText(context.getString(R.string.treatment_notif_dosage, data.getString(TREATMENT_DOSAGE), data.getString(TREATMENT_FORMAT), data.getString(TREATMENT_NAME))))
             .setAutoCancel(false)
             .setContentIntent(pendingIntent)
             .build()
 
-        manager.notify(2, notification)
+        manager.notify(3, notification)
     }
 }

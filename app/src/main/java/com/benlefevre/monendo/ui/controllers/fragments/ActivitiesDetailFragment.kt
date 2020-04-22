@@ -135,7 +135,6 @@ class ActivitiesDetailFragment : Fragment(R.layout.fragment_activities_detail) {
                 }
 
                 override fun onValueSelected(e: Entry, h: Highlight) {
-//                    Log.i("benoit","${e.x} + ${e.y} + ${h.x}")
                     selectedActivity = e.data.toString()
                     setupDetailsChart(e.data.toString())
                 }
@@ -205,10 +204,11 @@ class ActivitiesDetailFragment : Fragment(R.layout.fragment_activities_detail) {
 
                 override fun onValueSelected(e: Entry?, h: Highlight?) {
                     val activity: UserActivities = e?.data as UserActivities
-                    Toast.makeText(context, "${activity.name} during ${activity.duration} with intensity of ${activity.intensity}", Toast.LENGTH_SHORT)
+                    Toast.makeText(context, getString(R.string.other_detail_activity,activity.name,activity.duration,activity.intensity), Toast.LENGTH_SHORT)
                         .show()
                 }
             })
+            highlightValues(null)
             description = null
             xAxis.granularity = 1f
             xAxis.valueFormatter = IndexAxisValueFormatter(dates)

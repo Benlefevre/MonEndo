@@ -12,15 +12,19 @@ import androidx.core.content.ContextCompat.getColor
 import com.benlefevre.monendo.R
 import com.benlefevre.monendo.utils.CURRENT_CHECKED
 import com.benlefevre.monendo.utils.NEED_CLEAR
+import com.benlefevre.monendo.utils.NUMBER_OF_PILLS
 import com.benlefevre.monendo.utils.PREFERENCES
 import timber.log.Timber
 
 class ContraceptiveTablet(context: Context, attrs: AttributeSet) : View(context, attrs) {
 
-    private var dividedWidth = 0f
-    private var dividedHeight = 0f
+    private var dividedWidth28 = 0f
+    private var dividedHeight28 = 0f
+    private var dividedWidth10 = 0f
+    private var dividedHeight10 = 0f
     private var day = -1
     private var needClear = false
+    private var nbPills = 28
 
     private lateinit var rectF: RectF
     private var triangle: Path = Path()
@@ -31,8 +35,11 @@ class ContraceptiveTablet(context: Context, attrs: AttributeSet) : View(context,
     var pills: MutableList<Pill> = mutableListOf()
 
     init {
+        Timber.i("Pill init")
         needClear = context.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)
             .getBoolean(NEED_CLEAR, false)
+        nbPills = context.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)
+            .getInt(NUMBER_OF_PILLS, 28)
         backPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
             color = getColor(context, R.color.colorPrimary)
             style = Paint.Style.FILL
@@ -55,6 +62,7 @@ class ContraceptiveTablet(context: Context, attrs: AttributeSet) : View(context,
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        Timber.i("onMeasure")
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
         val height = getDefaultSize(suggestedMinimumHeight, heightMeasureSpec)
         val width = getDefaultSize(suggestedMinimumWidth, widthMeasureSpec)
@@ -62,55 +70,116 @@ class ContraceptiveTablet(context: Context, attrs: AttributeSet) : View(context,
     }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
+        Timber.i("onSizeChanged")
         super.onSizeChanged(w, h, oldw, oldh)
         rectF = RectF(0f, 0f, w.toFloat(), h.toFloat())
-        dividedWidth = w / 9f
-        dividedHeight = h / 5f
+
+        dividedWidth28 = w / 9f
+        dividedHeight28 = h / 5f
+
+        dividedWidth10 = w / 7f
+        dividedHeight10 = h / 3f
 
         if (pills.isEmpty())
             createPills()
         else
             pills.forEach {
                 it.apply {
-                    width = dividedWidth
-                    height = dividedHeight
+                    width = if (nbPills == 10) dividedWidth10 else dividedWidth28
+                    height = if (nbPills == 10) dividedHeight10 else dividedHeight28
                     setShadow()
                 }
             }
     }
 
     private fun createPills() {
-        for (index in 1..4) {
-            pills.add(Pill(dividedWidth, 2, dividedHeight, index, 40f, getColor(context, R.color.colorOnPrimary)))
-            pills.add(Pill(dividedWidth, 3, dividedHeight, index, 40f, getColor(context, R.color.colorOnPrimary)))
-            pills.add(Pill(dividedWidth, 4, dividedHeight, index, 40f, getColor(context, R.color.colorOnPrimary)))
-            pills.add(Pill(dividedWidth, 5, dividedHeight, index, 40f, getColor(context, R.color.colorOnPrimary)))
-            pills.add(Pill(dividedWidth, 6, dividedHeight, index, 40f, getColor(context, R.color.colorOnPrimary)))
-            pills.add(Pill(dividedWidth, 7, dividedHeight, index, 40f, getColor(context, R.color.colorOnPrimary)))
-            pills.add(Pill(dividedWidth, 8, dividedHeight, index, 40f, getColor(context, R.color.colorOnPrimary)))
+        Timber.i("createPills")
+        val colorOnPrimary = getColor(context,R.color.colorOnPrimary)
+        pills.clear()
+        when (nbPills) {
+            28 -> {
+                for (index in 1..4) {
+                    pills.add(Pill(dividedWidth28, 2, dividedHeight28, index, 40f, colorOnPrimary))
+                    pills.add(Pill(dividedWidth28, 3, dividedHeight28, index, 40f, colorOnPrimary))
+                    pills.add(Pill(dividedWidth28, 4, dividedHeight28, index, 40f, colorOnPrimary))
+                    pills.add(Pill(dividedWidth28, 5, dividedHeight28, index, 40f, colorOnPrimary))
+                    pills.add(Pill(dividedWidth28, 6, dividedHeight28, index, 40f, colorOnPrimary))
+                    pills.add(Pill(dividedWidth28, 7, dividedHeight28, index, 40f, colorOnPrimary))
+                    pills.add(Pill(dividedWidth28, 8, dividedHeight28, index, 40f, colorOnPrimary))
+                }
+            }
+            10 -> {
+                for (index in 1..2) {
+                    pills.add(Pill(dividedWidth10, 2, dividedHeight10, index, 40f, colorOnPrimary))
+                    pills.add(Pill(dividedWidth10, 3, dividedHeight10, index, 40f, colorOnPrimary))
+                    pills.add(Pill(dividedWidth10, 4, dividedHeight10, index, 40f, colorOnPrimary))
+                    pills.add(Pill(dividedWidth10, 5, dividedHeight10, index, 40f, colorOnPrimary))
+                    pills.add(Pill(dividedWidth10, 6, dividedHeight10, index, 40f, colorOnPrimary))
+                }
+            }
         }
     }
 
+    fun setNumberOfPills(numberPills: Int) {
+        Timber.i("setNumberOfPills")
+        nbPills = numberPills
+        createPills()
+        if (day != -1)
+            setupTablet(day)
+        invalidate()
+    }
+
     override fun onDraw(canvas: Canvas) {
+        Timber.i("onDraw")
         super.onDraw(canvas)
+        triangle.reset()
         canvas.drawRoundRect(rectF, 100f, 100f, backPaint)
 
-        for (index in 1..4) {
+        val nbTriangles: Int
+        val height: Float
+        val width: Float
+        val lineLength: Int
+        val nbLines: Int
+        when (nbPills) {
+            28 -> {
+                nbTriangles = 4
+                height = dividedHeight28
+                width = dividedWidth28
+                nbLines = 3
+                lineLength = 8
+            }
+            10 -> {
+                nbTriangles = 2
+                height = dividedHeight10
+                width = dividedWidth10
+                nbLines = 1
+                lineLength = 6
+            }
+            else -> {
+                nbTriangles = 4
+                height = dividedHeight28
+                width = dividedHeight28
+                nbLines = 3
+                lineLength = 8
+            }
+        }
+
+        for (index in 1..nbTriangles) {
             triangle.apply {
-                moveTo(dividedWidth - 25, (dividedHeight * index) - 25)
-                lineTo(dividedWidth, dividedHeight * index)
-                lineTo(dividedWidth - 25, (dividedHeight * index) + 25)
+                moveTo(width - 25, (height * index) - 25)
+                lineTo(width, height * index)
+                lineTo(width - 25, (height * index) + 25)
                 close()
             }
             canvas.drawPath(triangle, linePaint)
         }
 
-        for (index in 1..3) {
+        for (index in 1..nbLines) {
             canvas.apply {
-                drawLine(dividedWidth * 8, (dividedHeight * index) + 40, dividedWidth * 8, (dividedHeight * index) + (dividedHeight / 2), linePaint)
-                drawLine((dividedWidth * 8) + 5, (dividedHeight * index) + (dividedHeight / 2), dividedWidth - 50, (dividedHeight * index) + (dividedHeight / 2), linePaint)
-                drawLine(dividedWidth - 45, (dividedHeight * index) + (dividedHeight / 2), dividedWidth - 45, dividedHeight * (index + 1), linePaint)
-                drawLine(dividedWidth - 50, dividedHeight * (index + 1), dividedWidth - 25, dividedHeight * (index + 1), linePaint)
+                drawLine(width * lineLength, (height * index) + 40, width * lineLength, (height * index) + (height / 2), linePaint)
+                drawLine((width * lineLength) + 5, (height * index) + (height / 2), width - 50, (height * index) + (height / 2), linePaint)
+                drawLine(width - 45, (height * index) + (height / 2), width - 45, height * (index + 1), linePaint)
+                drawLine(width - 50, height * (index + 1), width - 25, height * (index + 1), linePaint)
             }
         }
 
@@ -120,13 +189,14 @@ class ContraceptiveTablet(context: Context, attrs: AttributeSet) : View(context,
             if (!it.isChecked) {
                 circlePaint.color = getColor(context, R.color.graph4)
                 canvas.drawCircle(it.x, it.y, it.radius / 2, circlePaint)
-                canvas.drawArc(it.shadowRectF, 0f, 70f, false, shadowPaint)
+                canvas.drawArc(it.shadowRectF, 0f, 70f, false, shadowPaint.apply { color = getColor(context,R.color.colorBackground ) })
             } else
-                canvas.drawArc(it.shadowRectF, -180f, 70f, false, shadowPaint)
+                canvas.drawArc(it.shadowRectF, -180f, 70f, false, shadowPaint.apply { color = getColor(context,R.color.colorOnPrimary ) })
         }
     }
 
     fun setupTablet(elapsedDays: Int) {
+        Timber.i("setupTablet")
         day = elapsedDays
         if (day >= pills.size) day -= pills.size
         if (day == 0 && needClear) clearTablet()
@@ -137,6 +207,7 @@ class ContraceptiveTablet(context: Context, attrs: AttributeSet) : View(context,
     }
 
     private fun setMissingPills(elapsedDays: Int) {
+        Timber.i("setMissingPills")
         for (index in 0..elapsedDays) {
             if (!pills[index].isChecked) {
                 pills[index].apply {
@@ -148,6 +219,7 @@ class ContraceptiveTablet(context: Context, attrs: AttributeSet) : View(context,
     }
 
     private fun setPillNotClickable(elapsedDays: Int) {
+        Timber.i("setPillNotClickable")
         for (index in elapsedDays + 1 until pills.size) {
             pills[index].apply {
                 isClickable = false
@@ -158,6 +230,7 @@ class ContraceptiveTablet(context: Context, attrs: AttributeSet) : View(context,
     }
 
     private fun setCurrentPill(elapsedDays: Int) {
+        Timber.i("setCurrentPill")
         if (!pills[elapsedDays].isChecked) {
             pills[elapsedDays].apply {
                 color = getColor(context, R.color.graph1)
@@ -168,7 +241,16 @@ class ContraceptiveTablet(context: Context, attrs: AttributeSet) : View(context,
         isCurrentChecked()
     }
 
+    private fun isCurrentChecked() {
+        Timber.i("isCurrentChecked")
+        context.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)
+            .edit()
+            .putBoolean(CURRENT_CHECKED, pills[day].isChecked)
+            .apply()
+    }
+
     private fun clearTablet() {
+        Timber.i("clearTablet")
         pills.forEach {
             it.isChecked = false
             it.isClickable = true
@@ -177,15 +259,18 @@ class ContraceptiveTablet(context: Context, attrs: AttributeSet) : View(context,
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
+        Timber.i("onTouchEvent")
         var isTouchPill: Boolean
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
                 pills.forEach {
                     isTouchPill = it.checkTouchInCircle(event.x, event.y)
                     if (isTouchPill) {
-                        isCurrentChecked()
+                        if (day != -1) {
+                            isCurrentChecked()
+                        }
                         if (!it.isChecked) {
-                            it.color = getColor(context, R.color.colorOnSecondary)
+                            it.color = getColor(context, R.color.colorBackground)
                             it.isChecked = true
                         } else
                             it.isChecked = false
@@ -201,14 +286,6 @@ class ContraceptiveTablet(context: Context, attrs: AttributeSet) : View(context,
             }
         }
         return false
-    }
-
-    private fun isCurrentChecked() {
-        Timber.i("${pills[day].isChecked}")
-        context.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)
-            .edit()
-            .putBoolean(CURRENT_CHECKED, pills[day].isChecked)
-            .apply()
     }
 
     override fun onDetachedFromWindow() {

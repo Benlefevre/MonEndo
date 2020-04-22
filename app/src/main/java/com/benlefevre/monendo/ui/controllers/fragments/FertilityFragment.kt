@@ -181,7 +181,7 @@ class FertilityFragment : Fragment(R.layout.fragment_fertility) {
         if (tag == FERTI) {
             for ((index, string) in list.withIndex()) {
                 message += if (index % 2 == 0)
-                    "$string   until   "
+                    "$string   ${getString(R.string.until)}  "
                 else
                     "$string \n"
             }
@@ -191,9 +191,9 @@ class FertilityFragment : Fragment(R.layout.fragment_fertility) {
             }
         }
         when (tag) {
-            MENS -> title = "Your menstruation's dates"
-            OVUL -> title = "Your ovulation's days"
-            FERTI -> title = "Your fertilization's periods"
+            MENS -> title = getString(R.string.mens_dates)
+            OVUL -> title = getString(R.string.ovul_days)
+            FERTI -> title = getString(R.string.ferti_periods)
 
         }
         context?.let {

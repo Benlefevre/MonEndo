@@ -114,6 +114,7 @@ class SleepDetailFragment : Fragment(R.layout.fragment_sleep_detail) {
         }
 
         sleep_details_chart.apply {
+            isHighlightPerTapEnabled = false
             description = null
             xAxis.granularity = 1f
             xAxis.valueFormatter = IndexAxisValueFormatter(dates)

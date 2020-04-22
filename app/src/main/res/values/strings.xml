@@ -170,8 +170,8 @@
     <string name="permanent">Permanent</string>
     <string name="treatment_channel_id">Treatment notification</string>
     <string name="treatment_channel_name">Treatment Channel</string>
-    <string name="treatment_notif_title">Don\'t forget, it\'s time to take %1$s</string>
-    <string name="treatment_notif_dosage">You must take %1$s %2$s</string>
+    <string name="treatment_notif_title">Don\'t forget, it\'s time to take your treatment</string>
+    <string name="treatment_notif_dosage">You must take  %1$s %2$s of %3$s</string>
     <string name="notification_s_times">Notification\'s times</string>
     <string name="delete_icon">Delete icon</string>
     <string name="until">Until</string>
@@ -189,5 +189,14 @@
     <string name="around_me">Around me</string>
     <string name="forgotten_pill">You have forgotten to take your contraceptive pill</string>
     <string name="forgot_check_pill">Please, take your pill and check it in the tablet</string>
+    <string name="symptom_detailed_click">%1$s with a pain intensity of %2$d and the main pain location is %3$s </string>
+    <string name="mens_dates">Your menstruation\'s dates</string>
+    <string name="ovul_days">Your ovulation\'s days</string>
+    <string name="ferti_periods">Your fertilization\'s periods</string>
+    <string name="delete_time">Delete the time</string>
+    <string name="welcome">Welcome to </string>
+    <string name="please_login">To start, please login with your favorite provider</string>
+    <string name="pills_settings">pills settings</string>
+    <string name="not_registered">Not registered</string>
 
 </resources>

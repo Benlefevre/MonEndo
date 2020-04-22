@@ -10,7 +10,7 @@
         android:id="@+id/duration_chipgroup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:singleLine="true"
+        app:singleLine="false"
         app:singleSelection="true">
 
         <com.google.android.material.chip.Chip

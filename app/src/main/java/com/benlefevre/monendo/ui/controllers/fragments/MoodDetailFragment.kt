@@ -196,6 +196,8 @@ class MoodDetailFragment : Fragment(R.layout.fragment_mood_detail) {
         }
 
         mood_details_evo_chart.apply {
+            highlightValues(null)
+            isHighlightPerTapEnabled = false
             description = null
             xAxis.granularity = 1f
             xAxis.valueFormatter = IndexAxisValueFormatter(dates)

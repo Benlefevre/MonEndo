@@ -229,10 +229,11 @@ class SymptomDetailFragment : Fragment(R.layout.fragment_symptom_detail) {
 
                 override fun onValueSelected(e: Entry?, h: Highlight?) {
                     val pain: PainWithRelations = e?.data as PainWithRelations
-                    Toast.makeText(context, "$name with a pain intensity of ${pain.pain.intensity} and the main pain location is${pain.pain.location} ", Toast.LENGTH_LONG)
+                    Toast.makeText(context, getString(R.string.symptom_detailed_click,name,pain.pain.intensity,pain.pain.location), Toast.LENGTH_LONG)
                         .show()
                 }
             })
+            highlightValues(null)
             description = null
             xAxis.granularity = 1f
             xAxis.valueFormatter = IndexAxisValueFormatter(dates)

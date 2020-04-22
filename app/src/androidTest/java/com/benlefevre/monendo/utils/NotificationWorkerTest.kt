@@ -31,7 +31,7 @@ class NotificationWorkerTest {
 
     @After
     fun tearDown() {
-        WorkManager.getInstance(context).cancelAllWorkByTag("Dolipranne")
+        WorkManager.getInstance(context).cancelUniqueWork("Dolipranne")
     }
 
     @Test

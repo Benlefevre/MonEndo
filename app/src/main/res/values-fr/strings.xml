@@ -1,0 +1,202 @@
+<resources>
+    <string name="app_name">Mon Endo</string>
+
+    <string name="facebook_application_id">113729150041447</string>
+    <string name="fb_login_protocol_scheme">fb113729150041447</string>
+
+    <string-array name="sport">
+        <item>BasketBall</item>
+        <item>Course</item>
+        <item>Dance</item>
+        <item>Equitation</item>
+        <item>Escalade</item>
+        <item>Escrime</item>
+        <item>Fitness</item>
+        <item>Football</item>
+        <item>Gymnastique</item>
+        <item>HandBall</item>
+        <item>Marche</item>
+        <item>Vélo</item>
+        <item>Natation</item>
+        <item>Rugby</item>
+        <item>Sport de combat</item>
+        <item>Tennis</item>
+        <item>Volleyball</item>
+        <item>Yoga</item>
+    </string-array>
+
+    <string-array name="format">
+        <item>cachet</item>
+        <item>cuillère</item>
+        <item>millilitres</item>
+        <item>milligrammes</item>
+    </string-array>
+
+    <string-array name="duration">
+        <item>Permanent</item>
+        <item>1 jour</item>
+        <item>2 jours</item>
+        <item>3 jours</item>
+        <item>4 jours</item>
+        <item>5 jours</item>
+        <item>6 jours</item>
+        <item>7 jours</item>
+        <item>8 jours</item>
+        <item>9 jours</item>
+        <item>10 jours</item>
+        <item>11 jours</item>
+        <item>12 jours</item>
+        <item>13 jours</item>
+        <item>14 jours</item>
+        <item>15 jours</item>
+    </string-array>
+
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="cancel_login">Vous avez quitté l\'identification. Merci de réessayer</string>
+    <string name="network_to_login">Un accès réseau est nécessaire pour vous identifier</string>
+    <string name="unknown_error_login">Une erreur inconnue s\'est produite. Merci de réessayer</string>
+    <string name="anonymous">Anonyme</string>
+    <string name="dashboard">Suivi</string>
+    <string name="treatment">Traitement</string>
+    <string name="fertility">Fertilité</string>
+    <string name="doctor">Médecins</string>
+    <string name="settings">Paramètres</string>
+    <string name="sign_out">Se déconnecter</string>
+    <string name="my_pain">Ma douleur</string>
+    <string name="on_a_scale_of_0_to_10_how_do_you_rate_the_pain_today">Sur une échelle de 1 à 10, à combien évaluez-vous la douleur?</string>
+    <string name="where_do_you_mainly_find_pain">Où ressentez-vous principalement la douleur</string>
+    <string name="lower_abdomen">Bas ventre</string>
+    <string name="bladder">Vessie</string>
+    <string name="back">Dos</string>
+    <string name="head">Tête</string>
+    <string name="intestine">Intestin</string>
+    <string name="breast">Poitrine</string>
+    <string name="vagina">Vagin</string>
+    <string name="what_are_the_main_symptoms">Quels sont les principaux symptômes?</string>
+    <string name="burns">Brulûres</string>
+    <string name="cramps">Crampes</string>
+    <string name="bleeding">Saignements</string>
+    <string name="fever">Fièvre</string>
+    <string name="chills">Frissons</string>
+    <string name="bloating">Balonnements</string>
+    <string name="hot_flush">Bouffées de chaleur</string>
+    <string name="diarrhea">Diarrhée</string>
+    <string name="constipation">Constipation</string>
+    <string name="nausea">Nausée</string>
+    <string name="tired">Fatigue</string>
+    <string name="activities">Activités</string>
+    <string name="what_have_you_done_today_and_what_are_the_factors_that_can_cause_pain">Qu\'avez-vous fait aujourd\'hui et quels sont les principaux facteurs pouvant entraînés des douleurs?</string>
+    <string name="sport">Sport</string>
+    <string name="sleep">Sommeil</string>
+    <string name="stress">Stress</string>
+    <string name="relaxation">Relaxation</string>
+    <string name="sex">Sexe</string>
+    <string name="other">Autre</string>
+    <string name="mood">Humeur</string>
+    <string name="sad">Triste</string>
+    <string name="sick">Malade</string>
+    <string name="irritated">Enervée</string>
+    <string name="happy">Heureuse</string>
+    <string name="very_happy">Très heureuse</string>
+    <string name="save">Enregistrer</string>
+    <string name="some_precisions_please">Quelques précisions s\'il vous plaît</string>
+    <string name="what_activities_did_you_practiced">Quelles activités avez-vous pratiquées?</string>
+    <string name="how_long_in_minutes">Combien de temps (en minute)?</string>
+    <string name="with_what_intensity_on_a_scale_from_0_to_10">Avec quelle intensité sur une échelle de 0 à 10?</string>
+    <string name="cancel">Annuler</string>
+    <string name="rate_sleep_quality">Comment jugez-vous la qualité de votre sommeil?</string>
+    <string name="activity_name">Nom de l\'activité :</string>
+    <string name="activity_duration">Durée de l\'activité :</string>
+    <string name="activity_instensity">"Intensité de l'activité : "</string>
+    <string name="delete">Supprimer</string>
+    <string name="evolution_of_pain_over_the_last_7_days">Evolution de la douleur sur les 7 derniers jours</string>
+    <string name="recurrence_of_symptoms_over_the_last_7_days">Recurrence des symptômes sur les 7 derniers jours</string>
+    <string name="practiced_activities_over_the_last_7_days">Activités pratiquées au cours des 7 derniers jours</string>
+    <string name="sleep_quality_over_the_last_7_days">Qualité du sommeil au cours des 7 derniers jours</string>
+    <string name="mood_repartition_over_the_last_7_days">Répartition de l\'humeur sur les 7 derniers jours</string>
+    <string name="pain_history_appear">L\'historique de vos douleurs apparaîtra ici</string>
+    <string name="symptom_history_appear">L\'historique de vos symptomes apparaîtra ici</string>
+    <string name="activities_history_appear">L\'historique de vos activités apparaîtra ici</string>
+    <string name="sleep_quality_history_appear">L\'historique de la qualité de votre sommeil apparaîtra ici</string>
+    <string name="mood_history_appear">L\'historique de vos humeurs apparaîtra ici</string>
+    <string name="activity_session">Nombre de %1$s sessions</string>
+    <string name="activity_duration_chart">Durée moyenne de %1$s</string>
+    <string name="activity_intensity_chart">Intensité moyenne de %1$s</string>
+    <string name="sleep_quality">Qualité du sommeil</string>
+    <string name="pain_details">Historique de vos douleurs</string>
+    <string name="click_on_a_value_to_see_all_information_you_saved_that_day">Cliquez sur une valeur pour voir les données enregistrées ce jour là</string>
+    <string name="week">Semaine</string>
+    <string name="month">Mois</string>
+    <string name="_6_months">6 Mois</string>
+    <string name="year">Année</string>
+    <string name="date">Date</string>
+    <string name="pain_value">Intensité de la douleur</string>
+    <string name="location">Localisation</string>
+    <string name="symptoms">Symptômes</string>
+    <string name="practiced_activities">Activités pratiquées</string>
+    <string name="sleep_detail_activity">%1$s avec une qualité de %2$d</string>
+    <string name="stress_detail_activity">%1$s avec une intensité d\'exposition de %2$d</string>
+    <string name="other_detail_activity">%1$s durant %2$d minutes et avec une intensité de %3$d</string>
+    <string name="click_on_a_pie_chart_s_value_to_see_the_symptom_evolution_in_time">Cliquez sur une valeur du diagramme pour voir l\'évolution du symptôme dans le temps</string>
+    <string name="symptom_details">Historique de vos symptômes</string>
+    <string name="click_on_a_pie_chart_value_to_see_the_evolution_of_pain_with_activities">Cliquez sur une valeur du diagramme pour voir l\'évolution de la douleur en fonction des activités</string>
+    <string name="activities_detailed_history">Historique de vos activités</string>
+    <string name="other_activities">Autre: %1$s</string>
+    <string name="click_on_a_value_to_see_the_detail_of_the_chosen_practiced_activity">Cliquez sur une valeur pour voir le détail de l\'activité choisie</string>
+    <string name="click_on_a_value_to_see_the_detail_of_the_chosen_symptom">Cliquez sur une valeur pour voir le détail du symptôme choisi</string>
+    <string name="sleep_detail_history">Historique de votre sommeil</string>
+    <string name="mood_detail_history">Historique de votre humeur</string>
+    <string name="click_on_a_pie_chart_s_value_to_see_the_mood_s_evolution_in_time">Cliquez sur une valeur du diagramme pour voir l\'évolution de votre humeur dans le temps</string>
+    <string name="click_on_a_value_to_see_the_detail_of_the_chosen_mood">Cliquez sur une valeur pour voir le détail de l\'humeur choisie</string>
+    <string name="your_contraceptive_pill">Votre pilule contraceptive</string>
+    <string name="the_first_day_of_your_last_menstruation">Le premier jour de vos dernières menstruations</string>
+    <string name="contra_pill_notif_id">Notification de pilule contraceptive</string>
+    <string name="contra_pill_notif_name">Pilule Contraceptive Channel</string>
+    <string name="dont_forget_pill">Alerte pilule, ne l\'oubliez pas</string>
+    <string name="check_pill">Prenez votre pilule et pensez à valider la prise de celle-ci dans la tablette en cliquant ici</string>
+    <string name="the_time_you_want_to_be_notified_of_taking_your_pill">L\'heure de prise de votre pilule</string>
+    <string name="others_treatments">Autres traitements</string>
+    <string name="add_treatment_button">Bouton d\'ajout de traitement</string>
+    <string name="add_a_treatment">Ajouter un traitement</string>
+    <string name="treatment_s_name">Nom du traitement</string>
+    <string name="treatment_s_duration">Durée du traitement</string>
+    <string name="dosage">Dosage</string>
+    <string name="format">Format</string>
+    <string name="click_on_the_day_s_period_to_define_the_notification_s_hour_of_taking_treatment">Cliquez pour définir l\'heure de prise de votre traitement</string>
+    <string name="morning">Matin</string>
+    <string name="noon">Midi</string>
+    <string name="afternoon">Après-midi</string>
+    <string name="evening">Soir</string>
+    <string name="permanent">Permanent</string>
+    <string name="treatment_channel_id">Notification de traitement</string>
+    <string name="treatment_channel_name">Traitement Channel</string>
+    <string name="treatment_notif_title">N\'oubliez pas, de prendre votre traitement</string>
+    <string name="treatment_notif_dosage">Vous devez prendre %1$s %2$s de %3$s</string>
+    <string name="notification_s_times">Heures de notification</string>
+    <string name="delete_icon">Icône de suppression</string>
+    <string name="until">Jusqu\'au</string>
+    <string name="menstruation">Menstruation</string>
+    <string name="ovulation">Ovulation</string>
+    <string name="fertilization_period">Période de fertilité</string>
+    <string name="the_duration_of_your_menstruation_s_cycle">Durée de votre cycle menstruel</string>
+    <string name="body_temperature_monitoring">Suivi de la température corporelle</string>
+    <string name="for_more_precision_you_can_save_your_daily_body_s_temperature_to_see_precisely_your_ovulation_s_period">Pour plus de précision, vous pouvez enregistrer votre température corporelle quotidiennement afin de définir avec précision votre ovulation</string>
+    <string name="save_my_temperature">Enregistrer ma température</string>
+    <string name="my_body_temp">Mes températures</string>
+    <string name="in_which_city_are_you_looking_for_a_doctor">Dans quelle ville recherchez-vous un médecin?</string>
+    <string name="gynecologist">Gynécologue</string>
+    <string name="general_practitioner">Médecin généraliste</string>
+    <string name="around_me">Autour de moi</string>
+    <string name="forgotten_pill">Attention à la prise de votre pilule</string>
+    <string name="forgot_check_pill">Prenez la maintenant pour éviter tout oubli et pensez à la valider dans la tablette en cliquant ici</string>
+    <string name="symptom_detailed_click">"%1$s avec une douleur évaluée à %2$d et une localisation à %3$s "</string>
+    <string name="mens_dates">Vos prochaines menstruations</string>
+    <string name="ovul_days">Vos prochains jours d\'ovulation</string>
+    <string name="ferti_periods">Vos prochaines périodes de fécondité</string>
+    <string name="delete_time">Effacer l\'heure</string>
+    <string name="welcome">"Bienvenue dans "</string>
+    <string name="please_login">"Pour commencer, veuillez vous identifier avec la méthode de votre choix. "</string>
+    <string name="pills_settings">pills settings</string>
+    <string name="not_registered">Non enregistrée</string>
+
+</resources>
