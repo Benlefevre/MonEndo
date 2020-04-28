@@ -198,5 +198,6 @@
     <string name="please_login">To start, please login with your favorite provider</string>
     <string name="pills_settings">pills settings</string>
     <string name="not_registered">Not registered</string>
+    <string name="search_btn">Search</string>
 
 </resources>

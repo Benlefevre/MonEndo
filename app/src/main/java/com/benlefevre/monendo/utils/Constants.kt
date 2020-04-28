@@ -1,5 +1,7 @@
 package com.benlefevre.monendo.utils
 
+const val LOCATION_PERMISSIONS = 1
+
 const val API_URL = "https://public.opendatasoft.com/"
 
 const val RC_SIGN_IN = 1

@@ -237,7 +237,10 @@ class ContraceptiveTablet(context: Context, attrs: AttributeSet) : View(context,
                 isClickable = true
             }
         }
-        if (elapsedDays == 27) needClear = true
+        when(nbPills){
+            10 -> if (elapsedDays == 9) needClear = true
+            28 -> if (elapsedDays == 27) needClear = true
+        }
         isCurrentChecked()
     }
 

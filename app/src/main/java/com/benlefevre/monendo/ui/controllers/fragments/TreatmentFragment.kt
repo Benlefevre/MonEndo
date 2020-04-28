@@ -567,7 +567,7 @@ class TreatmentFragment : Fragment(R.layout.fragment_treatment) {
     override fun onPause() {
         super.onPause()
 //        Save in SharedPreferences the checked pills
-        if (pillTablet.pills.any { it.isChecked })
+//        if (pillTablet.pills.any { it.isChecked })
             sharedPreferences.edit().putString(CHECKED_PILLS, gson.toJson(pillTablet.pills)).apply()
 //        Save in SharedPreferences the user's treatments
         sharedPreferences.edit().putString(TREATMENT, gson.toJson(treatmentList)).apply()

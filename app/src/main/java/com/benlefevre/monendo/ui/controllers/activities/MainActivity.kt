@@ -7,11 +7,13 @@ import android.view.View.VISIBLE
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.view.GravityCompat
+import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 import com.benlefevre.monendo.R
 import com.benlefevre.monendo.data.models.User
 import com.benlefevre.monendo.mappers.convertFirebaseUserIntoUser
+import com.benlefevre.monendo.utils.ConnectivityLivedata
 import com.benlefevre.monendo.utils.NO_MAIL
 import com.benlefevre.monendo.utils.NO_NAME
 import com.benlefevre.monendo.utils.NO_PHOTO_URL
@@ -21,6 +23,7 @@ import com.google.android.material.textview.MaterialTextView
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_main.*
 
+
 class MainActivity : AppCompatActivity() {
 
     private val navController by lazy {
@@ -28,6 +31,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     private lateinit var user: User
+    private lateinit var connectivityLiveData: ConnectivityLivedata
+
+    companion object {
+        var isConnected = false
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,12 +44,23 @@ class MainActivity : AppCompatActivity() {
             finish()
         } else {
             setContentView(R.layout.activity_main)
+            verifyConnectivity()
             FirebaseAuth.getInstance().currentUser?.let {
                 user = convertFirebaseUserIntoUser(it)
                 updateDrawerHeader(user)
             }
             setupNavigation()
         }
+    }
+
+    /**
+     * Observes the device's connectivity and store it into a boolean
+     */
+    private fun verifyConnectivity() {
+        connectivityLiveData = ConnectivityLivedata(this)
+        connectivityLiveData.observe(this, Observer {
+            isConnected = it
+        })
     }
 
     /**

@@ -198,5 +198,6 @@
     <string name="please_login">"Pour commencer, veuillez vous identifier avec la méthode de votre choix. "</string>
     <string name="pills_settings">pills settings</string>
     <string name="not_registered">Non enregistrée</string>
+    <string name="search_btn">Rechercher</string>
 
 </resources>
