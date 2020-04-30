@@ -4,6 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.benlefevre.monendo.api.*
 import com.benlefevre.monendo.data.models.Doctor
+import com.benlefevre.monendo.data.repositories.FirestoreRepo
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.argumentCaptor
 import com.nhaarman.mockitokotlin2.verify
@@ -39,12 +40,15 @@ class DoctorViewModelTest {
     lateinit var doctorRepository: DoctorRepository
 
     @Mock
+    lateinit var firestoreRepo: FirestoreRepo
+
+    @Mock
     lateinit var doctorObserver: Observer<List<Doctor>>
 
     @Before
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
-        SUT = DoctorViewModel(doctorRepository)
+        SUT = DoctorViewModel(doctorRepository, firestoreRepo)
         SUT.doctor.observeForever(doctorObserver)
     }
 

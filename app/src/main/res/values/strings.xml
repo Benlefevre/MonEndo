@@ -199,5 +199,7 @@
     <string name="pills_settings">pills settings</string>
     <string name="not_registered">Not registered</string>
     <string name="search_btn">Search</string>
+    <string name="no_phone">There is no phone number</string>
+    <string name="a_star">A star</string>
 
 </resources>

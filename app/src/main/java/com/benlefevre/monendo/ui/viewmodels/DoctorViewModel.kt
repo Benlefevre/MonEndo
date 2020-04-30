@@ -6,10 +6,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.benlefevre.monendo.api.DoctorRepository
 import com.benlefevre.monendo.data.models.Doctor
+import com.benlefevre.monendo.data.repositories.FirestoreRepo
 import com.benlefevre.monendo.mappers.createDoctorsFromCpamApi
 import kotlinx.coroutines.launch
 
-class DoctorViewModel(private val doctorRepository: DoctorRepository) : ViewModel() {
+class DoctorViewModel(private val doctorRepository: DoctorRepository, private val firestoreRepo: FirestoreRepo) : ViewModel() {
 
     private val _doctor = MutableLiveData<List<Doctor>>()
 
@@ -21,3 +22,4 @@ class DoctorViewModel(private val doctorRepository: DoctorRepository) : ViewMode
         _doctor.value = createDoctorsFromCpamApi(result)
     }
 }
+

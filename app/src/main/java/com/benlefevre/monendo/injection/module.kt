@@ -27,7 +27,7 @@ val appModule = module {
     single { MoodRepo(get<EndoDatabase>().moodDao()) }
     single { TemperatureRepo(get<EndoDatabase>().temperatureDao()) }
     single { PainWithRelationsRepo(get<EndoDatabase>().painRelationDao()) }
-    single { FirestoreRepo }
+    single { FirestoreRepo.getInstance() }
     viewModel { DashboardViewModel(get()) }
     viewModel { LoginActivityViewModel(get()) }
     viewModel { PainFragmentViewModel(get(), get(), get(), get()) }
@@ -40,7 +40,7 @@ val networkModule = module {
     factory { provideCpamApi(get()) }
     single { provideRetrofit(get()) }
     factory { DoctorRepository(get()) }
-    viewModel { DoctorViewModel(get()) }
+    viewModel { DoctorViewModel(get(),get()) }
 }
 
 fun provideCpamApi(retrofit: Retrofit): CpamService = retrofit.create(CpamService::class.java)

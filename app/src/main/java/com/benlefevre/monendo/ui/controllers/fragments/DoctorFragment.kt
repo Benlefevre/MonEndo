@@ -12,10 +12,12 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.benlefevre.monendo.R
 import com.benlefevre.monendo.data.models.Doctor
 import com.benlefevre.monendo.location.LocationData
 import com.benlefevre.monendo.location.LocationLiveData
+import com.benlefevre.monendo.ui.adapters.DoctorAdapter
 import com.benlefevre.monendo.ui.adapters.EndoWindowAdapter
 import com.benlefevre.monendo.ui.controllers.activities.MainActivity
 import com.benlefevre.monendo.ui.viewmodels.DoctorViewModel
@@ -34,9 +36,11 @@ class DoctorFragment : Fragment(R.layout.fragment_doctor), OnMapReadyCallback {
     private lateinit var map: GoogleMap
     private val viewModel: DoctorViewModel by viewModel()
     private val queryMap = mutableMapOf<String, String>()
-    private lateinit var doctors: MutableList<Doctor>
+    private val doctors =  mutableListOf<Doctor>()
     private lateinit var locationLiveData: LocationLiveData
     private lateinit var lastLocation: Location
+
+    private lateinit var doctorAdapter: DoctorAdapter
 
     private var searchLocation: String =""
 
@@ -49,6 +53,15 @@ class DoctorFragment : Fragment(R.layout.fragment_doctor), OnMapReadyCallback {
         locationLiveData.observe(viewLifecycleOwner, Observer {
             handleLocationData(it)
         })
+        configureRecyclerView()
+    }
+
+    private fun configureRecyclerView() {
+        doctorAdapter = DoctorAdapter(doctors)
+        fragment_doctor_recycler_view.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = doctorAdapter
+        }
     }
 
     private fun handleLocationData(locationData: LocationData) {
@@ -94,9 +107,11 @@ class DoctorFragment : Fragment(R.layout.fragment_doctor), OnMapReadyCallback {
     private fun getDoctor() {
         if (MainActivity.isConnected) {
             configureQueryMap()
-            doctors = mutableListOf()
             viewModel.doctor.observe(viewLifecycleOwner, Observer {
                 it?.let {
+                    doctors.clear()
+                    doctors.addAll(it)
+                    doctorAdapter.notifyDataSetChanged()
                     map.clear()
                     it.forEach {
                         addMarkersOnMap(it)
@@ -111,8 +126,9 @@ class DoctorFragment : Fragment(R.layout.fragment_doctor), OnMapReadyCallback {
             .position(LatLng(doctor.coordonnees[0] , doctor.coordonnees[1])))
 
         marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET))
+//        marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.doctor_icon))
         marker.tag = doctor
-        Timber.i("${doctor.name} à ${doctor.address} et est ${doctor.spec} et vaut ${doctor.rating}")
+        Timber.i("${doctor.name} id : ${doctor.id} à ${doctor.address} et est ${doctor.spec} et vaut ${doctor.rating}")
     }
 
     private fun configureQueryMap() {

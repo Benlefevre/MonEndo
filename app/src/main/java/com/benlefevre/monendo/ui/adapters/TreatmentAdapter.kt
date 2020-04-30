@@ -10,7 +10,7 @@ import kotlinx.android.synthetic.main.treatment_list_item.view.*
 
 class TreatmentAdapter(private val treatments : List<Treatment>) : RecyclerView.Adapter<TreatmentViewHolder>() {
 
-    lateinit var listener : View.OnClickListener
+    private lateinit var listener : View.OnClickListener
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TreatmentViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.treatment_list_item,parent,false)

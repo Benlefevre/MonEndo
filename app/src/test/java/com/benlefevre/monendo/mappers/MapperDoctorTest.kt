@@ -35,7 +35,7 @@ class MapperDoctorTest{
         assertEquals("Chirurgie",doctor[0].typesActes)
         assertEquals(listOf(22.0,23.0),doctor[0].coordonnees)
         assertEquals(0,doctor[0].nbComment)
-        assertEquals(0,doctor[0].rating)
+        assertEquals(0.0,doctor[0].rating,0.0)
     }
 }
 
