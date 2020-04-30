@@ -1,5 +1,7 @@
 package com.benlefevre.monendo.api
 
+import com.benlefevre.monendo.doctor.api.CpamService
+import com.benlefevre.monendo.doctor.api.DoctorRepository
 import com.nhaarman.mockitokotlin2.argumentCaptor
 import com.nhaarman.mockitokotlin2.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi

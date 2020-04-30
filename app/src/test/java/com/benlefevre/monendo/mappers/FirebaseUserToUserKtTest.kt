@@ -1,5 +1,6 @@
 package com.benlefevre.monendo.mappers
 
+import com.benlefevre.monendo.login.convertFirebaseUserIntoUser
 import com.benlefevre.monendo.utils.NO_MAIL
 import com.benlefevre.monendo.utils.NO_NAME
 import com.benlefevre.monendo.utils.NO_PHOTO_URL

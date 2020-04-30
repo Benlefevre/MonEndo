@@ -68,7 +68,7 @@ dependencies {
     implementation 'com.jakewharton.timber:timber:4.7.1'
 
 //    Koin AndroidX
-    def koin_version = "2.1.4"
+    def koin_version = "2.1.5"
     implementation "org.koin:koin-androidx-scope:$koin_version"
     implementation "org.koin:koin-androidx-viewmodel:$koin_version"
 
@@ -105,9 +105,9 @@ dependencies {
     implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
 
 //    Firebase
-    implementation "com.google.firebase:firebase-analytics:17.3.0"
-    implementation 'com.google.firebase:firebase-auth:19.3.0'
-    implementation 'com.google.firebase:firebase-firestore-ktx:21.4.2'
+    implementation "com.google.firebase:firebase-analytics:17.4.0"
+    implementation 'com.google.firebase:firebase-auth:19.3.1'
+    implementation 'com.google.firebase:firebase-firestore-ktx:21.4.3'
     implementation "com.firebaseui:firebase-ui-auth:6.1.0"
 
 //    Facebook SDK

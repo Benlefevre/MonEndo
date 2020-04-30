@@ -1,6 +1,7 @@
 package com.benlefevre.monendo.ui.viewmodels
 
-import com.benlefevre.monendo.data.repositories.PainWithRelationsRepo
+import com.benlefevre.monendo.dashboard.repository.PainWithRelationsRepo
+import com.benlefevre.monendo.dashboard.viewmodels.DashboardViewModel
 import com.nhaarman.mockitokotlin2.argumentCaptor
 import com.nhaarman.mockitokotlin2.verify
 import org.junit.Assert.assertEquals
@@ -21,7 +22,10 @@ class DashboardViewModelTest {
 
     @Before
     fun setUp() {
-        SUT = DashboardViewModel(painRelationsRepo)
+        SUT =
+            DashboardViewModel(
+                painRelationsRepo
+            )
     }
 
     @Test

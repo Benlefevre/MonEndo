@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".ui.controllers.fragments.TreatmentFragment">
+    tools:context=".treatment.ui.TreatmentFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -29,7 +29,7 @@
                     android:layout_height="50dp"
                     android:text="@string/your_contraceptive_pill" />
 
-                <com.benlefevre.monendo.ui.customview.ContraceptiveTablet
+                <com.benlefevre.monendo.treatment.ui.ContraceptiveTablet
                     android:id="@+id/pill_tablet"
                     android:layout_width="match_parent"
                     android:layout_height="250dp"

@@ -1,23 +1,39 @@
 package com.benlefevre.monendo.mappers
 
-import com.benlefevre.monendo.api.*
+import com.benlefevre.monendo.doctor.api.*
+import com.benlefevre.monendo.doctor.createDoctorsFromCpamApi
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class MapperDoctorTest{
 
     private val result = ResultApi(
-        2, Parameters("", "", 0, "", listOf("")), listOf(
+        2,
+        Parameters("", "", 0, "", listOf("")),
+        listOf(
             Records(
-                "", "1", Fields(
+                "",
+                "1",
+                Fields(
                     "Lefevre", "",
                     "", 92370, "", "", "Chirurgie",
                     "", "Mr", "15 avenue Charles de Gaulle 75000 Paris", "061789956230", "92",
                     "Gynécologue", 0, "1", "Paris",
                     "", 0, listOf(22.0, 23.0), "Chirurgie complète"
-                ), Geometry("", listOf(22.0, 23.0)), ""
+                ),
+                Geometry(
+                    "",
+                    listOf(22.0, 23.0)
+                ),
+                ""
             )
-        ), listOf(Facet_groups(listOf(Facets(0, "", "", "")), ""))
+        ),
+        listOf(
+            Facet_groups(
+                listOf(Facets(0, "", "", "")),
+                ""
+            )
+        )
     )
 
     @Test

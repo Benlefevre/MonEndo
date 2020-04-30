@@ -1,8 +1,9 @@
 package com.benlefevre.monendo.ui.viewmodels
 
 import androidx.lifecycle.MutableLiveData
-import com.benlefevre.monendo.data.models.Temperature
-import com.benlefevre.monendo.data.repositories.TemperatureRepo
+import com.benlefevre.monendo.fertility.FertilityViewModel
+import com.benlefevre.monendo.fertility.models.Temperature
+import com.benlefevre.monendo.fertility.temperature.TemperatureRepo
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.argumentCaptor
 import com.nhaarman.mockitokotlin2.verify
@@ -35,7 +36,8 @@ class FertilityViewModelTest {
     @Before
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
-        SUT = FertilityViewModel(temperatureRepo)
+        SUT =
+            FertilityViewModel(temperatureRepo)
     }
 
     @After
@@ -46,7 +48,8 @@ class FertilityViewModelTest {
     @Test
     fun createTemp() = testDispatcher.runBlockingTest {
         val date = Date()
-        val temp = Temperature(36.5f,date)
+        val temp =
+            Temperature(36.5f, date)
         SUT.createTemp(temp)
         argumentCaptor<Temperature>().apply {
             verify(temperatureRepo).insertTemperature(capture())
@@ -63,7 +66,12 @@ class FertilityViewModelTest {
 
     @Test
     fun getTemperaturesByPeriod() {
-        val temperatures = MutableLiveData(listOf(Temperature(36.5f,Date())))
+        val temperatures = MutableLiveData(listOf(
+            Temperature(
+                36.5f,
+                Date()
+            )
+        ))
         whenever(temperatureRepo.getTemperaturesByPeriod(any(), any())).thenReturn(temperatures)
         val end = Date()
         val begin = with(Calendar.getInstance()){

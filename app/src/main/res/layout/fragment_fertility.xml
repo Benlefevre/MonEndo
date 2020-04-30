@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.controllers.fragments.FertilityFragment">
+    tools:context=".fertility.ui.FertilityFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -22,7 +22,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <com.benlefevre.monendo.ui.customview.FertilityCalendar
+                <com.benlefevre.monendo.fertility.ui.FertilityCalendar
                     android:id="@+id/fertility_calendar"
                     android:layout_width="match_parent"
                     android:layout_height="250dp"

@@ -2,9 +2,10 @@ package com.benlefevre.monendo.ui.viewmodels
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
-import com.benlefevre.monendo.api.*
-import com.benlefevre.monendo.data.models.Doctor
-import com.benlefevre.monendo.data.repositories.FirestoreRepo
+import com.benlefevre.monendo.doctor.CommentaryRepository
+import com.benlefevre.monendo.doctor.DoctorViewModel
+import com.benlefevre.monendo.doctor.api.*
+import com.benlefevre.monendo.doctor.models.Doctor
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.argumentCaptor
 import com.nhaarman.mockitokotlin2.verify
@@ -40,7 +41,7 @@ class DoctorViewModelTest {
     lateinit var doctorRepository: DoctorRepository
 
     @Mock
-    lateinit var firestoreRepo: FirestoreRepo
+    lateinit var commentaryRepository: CommentaryRepository
 
     @Mock
     lateinit var doctorObserver: Observer<List<Doctor>>
@@ -48,7 +49,10 @@ class DoctorViewModelTest {
     @Before
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
-        SUT = DoctorViewModel(doctorRepository, firestoreRepo)
+        SUT = DoctorViewModel(
+            doctorRepository,
+            commentaryRepository
+        )
         SUT.doctor.observeForever(doctorObserver)
     }
 
@@ -60,17 +64,44 @@ class DoctorViewModelTest {
     @Test
     fun getDoctors_success_correctDataPassed() = testDispatcher.runBlockingTest {
         val result = ResultApi(
-            2, Parameters("", "", 0, "", listOf("")), listOf(
+            2,
+            Parameters(
+                "",
+                "",
+                0,
+                "",
+                listOf("")
+            ),
+            listOf(
                 Records(
-                    "", "1", Fields(
+                    "",
+                    "1",
+                    Fields(
                         "", "",
                         "", 92370, "", "", "",
                         "", "Mr", "", "061789956230", "92",
                         "", 0, "", "Chaville",
                         "", 0, listOf(22.0, 23.0), ""
-                    ), Geometry("", listOf(22.0, 23.0)), ""
+                    ),
+                    Geometry(
+                        "",
+                        listOf(22.0, 23.0)
+                    ),
+                    ""
                 )
-            ), listOf(Facet_groups(listOf(Facets(0, "", "", "")), ""))
+            ),
+            listOf(
+                Facet_groups(
+                    listOf(
+                        Facets(
+                            0,
+                            "",
+                            "",
+                            ""
+                        )
+                    ), ""
+                )
+            )
         )
         whenever(doctorRepository.getDoctors(any())).thenReturn(result)
 

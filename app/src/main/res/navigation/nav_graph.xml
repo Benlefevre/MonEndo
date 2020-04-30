@@ -6,56 +6,56 @@
     app:startDestination="@id/dashboardFragment">
     <fragment
         android:id="@+id/dashboardFragment"
-        android:name="com.benlefevre.monendo.ui.controllers.fragments.DashboardFragment"
+        android:name="com.benlefevre.monendo.dashboard.fragments.DashboardFragment"
         android:label="@string/dashboard"
         tools:layout="@layout/fragment_dashboard" />
     <activity
         android:id="@+id/logOut"
-        android:name="com.benlefevre.monendo.ui.controllers.activities.LoginActivity" />
+        android:name="com.benlefevre.monendo.login.LoginActivity" />
     <fragment
         android:id="@+id/painFragment"
-        android:name="com.benlefevre.monendo.ui.controllers.fragments.PainFragment"
+        android:name="com.benlefevre.monendo.pain.PainFragment"
         android:label="@string/my_pain"
         tools:layout="@layout/fragment_pain" >
     </fragment>
     <fragment
         android:id="@+id/painDetailFragment"
-        android:name="com.benlefevre.monendo.ui.controllers.fragments.PainDetailFragment"
+        android:name="com.benlefevre.monendo.dashboard.fragments.PainDetailFragment"
         android:label="@string/pain_details"
         tools:layout="@layout/fragment_pain_detail" />
     <fragment
         android:id="@+id/symptomDetailFragment"
-        android:name="com.benlefevre.monendo.ui.controllers.fragments.SymptomDetailFragment"
+        android:name="com.benlefevre.monendo.dashboard.fragments.SymptomDetailFragment"
         android:label="@string/symptom_details"
         tools:layout="@layout/fragment_symptom_detail" />
     <fragment
         android:id="@+id/activitiesDetailFragment"
-        android:name="com.benlefevre.monendo.ui.controllers.fragments.ActivitiesDetailFragment"
+        android:name="com.benlefevre.monendo.dashboard.fragments.ActivitiesDetailFragment"
         android:label="@string/activities_detailed_history"
         tools:layout="@layout/fragment_activities_detail" />
     <fragment
         android:id="@+id/sleepDetailFragment"
-        android:name="com.benlefevre.monendo.ui.controllers.fragments.SleepDetailFragment"
+        android:name="com.benlefevre.monendo.dashboard.fragments.SleepDetailFragment"
         android:label="@string/sleep_detail_history"
         tools:layout="@layout/fragment_sleep_detail" />
     <fragment
         android:id="@+id/moodDetailFragment"
-        android:name="com.benlefevre.monendo.ui.controllers.fragments.MoodDetailFragment"
+        android:name="com.benlefevre.monendo.dashboard.fragments.MoodDetailFragment"
         android:label="@string/mood_detail_history"
         tools:layout="@layout/fragment_mood_detail" />
     <fragment
         android:id="@+id/treatmentFragment"
-        android:name="com.benlefevre.monendo.ui.controllers.fragments.TreatmentFragment"
+        android:name="com.benlefevre.monendo.treatment.ui.TreatmentFragment"
         android:label="@string/treatment"
         tools:layout="@layout/fragment_treatment" />
     <fragment
         android:id="@+id/fertilityFragment"
-        android:name="com.benlefevre.monendo.ui.controllers.fragments.FertilityFragment"
+        android:name="com.benlefevre.monendo.fertility.ui.FertilityFragment"
         android:label="@string/fertility"
         tools:layout="@layout/fragment_fertility" />
     <fragment
         android:id="@+id/doctorFragment"
-        android:name="com.benlefevre.monendo.ui.controllers.fragments.DoctorFragment"
+        android:name="com.benlefevre.monendo.doctor.DoctorFragment"
         android:label="@string/doctor"
         tools:layout="@layout/fragment_doctor" />
 </navigation>

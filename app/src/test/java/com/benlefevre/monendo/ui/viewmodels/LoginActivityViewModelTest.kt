@@ -1,7 +1,8 @@
 package com.benlefevre.monendo.ui.viewmodels
 
-import com.benlefevre.monendo.data.models.User
-import com.benlefevre.monendo.data.repositories.FirestoreRepo
+import com.benlefevre.monendo.login.LoginActivityViewModel
+import com.benlefevre.monendo.login.User
+import com.benlefevre.monendo.login.UserRepo
 import com.nhaarman.mockitokotlin2.argumentCaptor
 import com.nhaarman.mockitokotlin2.verify
 import org.junit.Assert.assertEquals
@@ -17,21 +18,21 @@ class LoginActivityViewModelTest{
     lateinit var SUT : LoginActivityViewModel
 
     @Mock
-    lateinit var firestoreRepo : FirestoreRepo
+    lateinit var userRepo : UserRepo
 
     lateinit var user : User
 
     @Before
     fun setUp() {
-        SUT = LoginActivityViewModel(firestoreRepo)
-        user = User("","","","")
+        SUT = LoginActivityViewModel(userRepo)
+        user = User("", "", "", "")
     }
 
     @Test
     fun createUserInFirestore_success_correctDataPassed() {
         SUT.createUserInFirestore(user)
         argumentCaptor<User>().apply {
-            verify(firestoreRepo).createUserInFirestore(capture())
+            verify(userRepo).createUserInFirestore(capture())
             assertEquals(user,firstValue)
         }
     }
