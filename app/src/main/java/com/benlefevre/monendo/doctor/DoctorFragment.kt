@@ -8,6 +8,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
@@ -22,24 +23,27 @@ import com.benlefevre.monendo.utils.LOCATION_PERMISSIONS
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import kotlinx.android.synthetic.main.fragment_doctor.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import pub.devrel.easypermissions.EasyPermissions
 import timber.log.Timber
 
-class DoctorFragment : Fragment(R.layout.fragment_doctor), OnMapReadyCallback {
+class DoctorFragment : Fragment(R.layout.fragment_doctor), OnMapReadyCallback,
+    DoctorAdapter.DoctorListAdapterListener {
 
     private lateinit var map: GoogleMap
     private val viewModel: DoctorViewModel by viewModel()
     private val queryMap = mutableMapOf<String, String>()
-    private val doctors =  mutableListOf<Doctor>()
+    private val doctors = mutableListOf<Doctor>()
     private lateinit var locationLiveData: LocationLiveData
     private lateinit var lastLocation: Location
 
     private lateinit var doctorAdapter: DoctorAdapter
 
-    private var searchLocation: String =""
+    private var searchLocation: String = ""
+    private val markers = mutableListOf<Marker>()
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -54,7 +58,7 @@ class DoctorFragment : Fragment(R.layout.fragment_doctor), OnMapReadyCallback {
     }
 
     private fun configureRecyclerView() {
-        doctorAdapter = DoctorAdapter(doctors)
+        doctorAdapter = DoctorAdapter(doctors, this)
         fragment_doctor_recycler_view.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = doctorAdapter
@@ -69,7 +73,14 @@ class DoctorFragment : Fragment(R.layout.fragment_doctor), OnMapReadyCallback {
             lastLocation = it
             if (::map.isInitialized) {
                 map.isMyLocationEnabled = true
-                map.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(it.latitude, it.longitude), 14f))
+                map.animateCamera(
+                    CameraUpdateFactory.newLatLngZoom(
+                        LatLng(
+                            it.latitude,
+                            it.longitude
+                        ), 14f
+                    )
+                )
             }
             getDoctor()
         }
@@ -105,27 +116,51 @@ class DoctorFragment : Fragment(R.layout.fragment_doctor), OnMapReadyCallback {
         if (MainActivity.isConnected) {
             configureQueryMap()
             viewModel.doctor.observe(viewLifecycleOwner, Observer {
-                it?.let {
-                    doctors.clear()
-                    doctors.addAll(it)
-                    doctorAdapter.notifyDataSetChanged()
-                    map.clear()
-                    it.forEach {
-                        addMarkersOnMap(it)
-                    }
-                }
+                updateUiState(it)
             })
+        } else {
+            Toast.makeText(
+                requireContext(),
+                "A network access is necessary to find doctors",
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
 
-    private fun addMarkersOnMap(doctor: Doctor){
-        val marker = map.addMarker(MarkerOptions().title(doctor.name).snippet("${doctor.spec} at ${doctor.address}")
-            .position(LatLng(doctor.coordonnees[0] , doctor.coordonnees[1])))
+    private fun updateUiState(state: DoctorUiState) {
+        when (state) {
+            DoctorUiState.Loading -> {
+                fragment_doctor_progress_bar.show()
+                doctors.clear()
+                doctorAdapter.notifyDataSetChanged()
+            }
+            is DoctorUiState.DoctorReady -> {
+                fragment_doctor_progress_bar.hide()
+                doctors.clear()
+                doctors.addAll(state.doctors)
+                doctorAdapter.notifyDataSetChanged()
+                map.clear()
+                markers.clear()
+                doctors.forEach {
+                    val marker = addMarkersOnMap(it)
+                    markers.add(marker)
+                }
+            }
+            is DoctorUiState.Error -> Timber.e(state.errorMessage)
+        }
+    }
+
+    private fun addMarkersOnMap(doctor: Doctor) : Marker {
+        val marker = map.addMarker(
+            MarkerOptions().title(doctor.name).snippet("${doctor.spec} at ${doctor.address}")
+                .position(LatLng(doctor.coordonnees[0], doctor.coordonnees[1]))
+        )
 
         marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET))
 //        marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.doctor_icon))
         marker.tag = doctor
         Timber.i("${doctor.name} id : ${doctor.id} à ${doctor.address} et est ${doctor.spec} et vaut ${doctor.rating}")
+        return marker
     }
 
     private fun configureQueryMap() {
@@ -161,16 +196,75 @@ class DoctorFragment : Fragment(R.layout.fragment_doctor), OnMapReadyCallback {
 
         }
         map.setOnMarkerClickListener {
-            map.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(it.position.latitude + 0.0008,it.position.longitude),16f))
+            map.animateCamera(
+                CameraUpdateFactory.newLatLngZoom(
+                    LatLng(
+                        it.position.latitude + 0.0008,
+                        it.position.longitude
+                    ), 16f
+                )
+            )
             it.showInfoWindow()
             true
         }
     }
 
+    private fun checkLocationPermissions() {
+        if (!EasyPermissions.hasPermissions(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            )
+        ) {
+            EasyPermissions.requestPermissions(
+                this, getString(R.string.need_locate_you),
+                LOCATION_PERMISSIONS, Manifest.permission.ACCESS_FINE_LOCATION
+            )
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+            if (EasyPermissions.permissionPermanentlyDenied(
+                    this,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                )
+            ) {
+                AlertDialog.Builder(requireContext())
+                    .setTitle(getString(R.string.location_permission))
+                    .setMessage(getString(R.string.want_find_doctor))
+                    .setPositiveButton(getString(R.string.go_settings)) { dialog, _ ->
+                        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                        intent.data = Uri.parse("package:com.benlefevre.monendo")
+                        startActivity(intent)
+                        dialog.cancel()
+                    }
+                    .setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
+                        dialog.cancel()
+                    }
+                    .show()
+                return
+            } else {
+                EasyPermissions.requestPermissions(
+                    this, getString(R.string.need_locate_you),
+                    LOCATION_PERMISSIONS, Manifest.permission.ACCESS_FINE_LOCATION
+                )
+                return
+            }
+        }
+        when (requestCode) {
+            LOCATION_PERMISSIONS -> locationLiveData.requestLastLocation()
+        }
+    }
+
     private fun setOnClickListeners() {
         fragment_doctor_search_txt.addTextChangedListener {
-            when{
-                it.toString().isNotEmpty() -> fragment_doctor_search_btn.text = getString(R.string.search_btn)
+            when {
+                it.toString().isNotEmpty() -> fragment_doctor_search_btn.text =
+                    getString(R.string.search_btn)
                 else -> fragment_doctor_search_btn.text = getString(R.string.around_me)
             }
             searchLocation = it.toString()
@@ -180,42 +274,21 @@ class DoctorFragment : Fragment(R.layout.fragment_doctor), OnMapReadyCallback {
         }
     }
 
-    private fun checkLocationPermissions() {
-        if (!EasyPermissions.hasPermissions(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION)) {
-            EasyPermissions.requestPermissions(
-                this, "We need this permission to locate you on a map",
-                LOCATION_PERMISSIONS, Manifest.permission.ACCESS_FINE_LOCATION
+    override fun onDoctorSelected(doctor: Doctor) {
+        map.animateCamera(
+            CameraUpdateFactory.newLatLngZoom(
+                LatLng(
+                    doctor.coordonnees[0] + 0.0008,
+                    doctor.coordonnees[1]
+                ), 16f
             )
+        )
+        val marker = markers.filter { it.tag == doctor }[0]
+        if (!marker.isInfoWindowShown){
+            marker.showInfoWindow()
         }
-    }
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-            if (EasyPermissions.permissionPermanentlyDenied(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
-                AlertDialog.Builder(requireContext())
-                    .setTitle("Location permissions")
-                    .setMessage("If you want find a doctor around you or do a search, we need to locate you. Please give us the needed permission")
-                    .setPositiveButton("Go to settings") { dialog, _ ->
-                        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-                        intent.data = Uri.parse("package:com.benlefevre.monendo")
-                        startActivity(intent)
-                        dialog.cancel()
-                    }
-                    .setNegativeButton("Cancel") { dialog, _ ->
-                        dialog.cancel()
-                    }
-                    .show()
-                return
-            } else {
-                EasyPermissions.requestPermissions(
-                    this, "We need this permission to locate you on a map",
-                    LOCATION_PERMISSIONS, Manifest.permission.ACCESS_FINE_LOCATION
-                )
-                return
-            }
-        }
-        when (requestCode) {
-            LOCATION_PERMISSIONS -> locationLiveData.requestLastLocation()
+        else{
+            Toast.makeText(requireContext(),"test",Toast.LENGTH_SHORT).show()
         }
     }
 }

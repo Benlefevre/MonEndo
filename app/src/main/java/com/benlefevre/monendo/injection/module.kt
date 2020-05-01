@@ -18,6 +18,8 @@ import com.benlefevre.monendo.login.UserRepo
 import com.benlefevre.monendo.pain.PainFragmentViewModel
 import com.benlefevre.monendo.pain.PainRepo
 import com.benlefevre.monendo.utils.API_URL
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.ext.koin.androidApplication
@@ -32,6 +34,7 @@ val appModule = module {
         Room.databaseBuilder(androidApplication(), EndoDatabase::class.java, "endo_db")
             .build()
     }
+    single { Firebase.firestore }
     single { PainRepo(get<EndoDatabase>().painDao()) }
     single { SymptomRepo(get<EndoDatabase>().symptomDao()) }
     single { UserActivitiesRepo(get<EndoDatabase>().userActivitiesDao()) }
@@ -42,7 +45,7 @@ val appModule = module {
             get<EndoDatabase>().painRelationDao()
         )
     }
-    single { UserRepo.getInstance() }
+    single { UserRepo(get()) }
     viewModel {
         DashboardViewModel(
             get()
@@ -65,13 +68,14 @@ val networkModule = module {
     factory { provideHttpClient() }
     factory { provideCpamApi(get()) }
     single { provideRetrofit(get()) }
-    single { CommentaryRepository.getInstance() }
+    single { CommentaryRepository(get()) }
     factory { DoctorRepository(get()) }
     viewModel { DoctorViewModel(get(), get()) }
 }
 
 fun provideCpamApi(retrofit: Retrofit): CpamService = retrofit.create(
-    CpamService::class.java)
+    CpamService::class.java
+)
 
 fun provideRetrofit(client: OkHttpClient): Retrofit {
     return Retrofit.Builder().baseUrl(API_URL)

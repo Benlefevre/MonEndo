@@ -201,5 +201,11 @@
     <string name="search_btn">Rechercher</string>
     <string name="no_phone">Il n\'y a pas de numéro de téléphone</string>
     <string name="a_star">Une étoile</string>
+    <string name="location_permission">Permission de Localisation</string>
+    <string name="want_find_doctor">Si vous souhaitez voir les médecins autour de vous ou faire une recherche, nous avons besoin des permissions de localisation. Merci de nous autoriser l\'accès à ces permissions</string>
+    <string name="go_settings">Réglages autorisations</string>
+    <string name="need_locate_you">Nous avons besoin de cette permission pour vous localiser.</string>
+    <string name="doctor_nb_comment">Il y a %1$d commentaires</string>
+    <string name="no_doctor_comment">Il n\'y a pas de commentaires</string>
 
 </resources>

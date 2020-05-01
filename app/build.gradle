@@ -109,6 +109,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth:19.3.1'
     implementation 'com.google.firebase:firebase-firestore-ktx:21.4.3'
     implementation "com.firebaseui:firebase-ui-auth:6.1.0"
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.1.1'
 
 //    Facebook SDK
     implementation 'com.facebook.android:facebook-android-sdk:5.9.0'

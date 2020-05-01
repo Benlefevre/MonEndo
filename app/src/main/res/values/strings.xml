@@ -201,5 +201,11 @@
     <string name="search_btn">Search</string>
     <string name="no_phone">There is no phone number</string>
     <string name="a_star">A star</string>
+    <string name="location_permission">Location permissions</string>
+    <string name="want_find_doctor">If you want find a doctor around you or do a search, we need to locate you. Please give us the needed permission</string>
+    <string name="go_settings">Go to settings</string>
+    <string name="need_locate_you">We need this permission to locate you on a map</string>
+    <string name="doctor_nb_comment">There is %1$d commentaries</string>
+    <string name="no_doctor_comment">There is no commentaries</string>
 
 </resources>

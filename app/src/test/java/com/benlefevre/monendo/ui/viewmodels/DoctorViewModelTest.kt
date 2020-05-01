@@ -3,9 +3,11 @@ package com.benlefevre.monendo.ui.viewmodels
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.benlefevre.monendo.doctor.CommentaryRepository
+import com.benlefevre.monendo.doctor.DoctorUiState
 import com.benlefevre.monendo.doctor.DoctorViewModel
 import com.benlefevre.monendo.doctor.api.*
-import com.benlefevre.monendo.doctor.models.Doctor
+import com.benlefevre.monendo.doctor.createDoctorsFromCpamApi
+import com.google.firebase.firestore.FirebaseFirestore
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.argumentCaptor
 import com.nhaarman.mockitokotlin2.verify
@@ -44,7 +46,10 @@ class DoctorViewModelTest {
     lateinit var commentaryRepository: CommentaryRepository
 
     @Mock
-    lateinit var doctorObserver: Observer<List<Doctor>>
+    lateinit var firebaseFirestore: FirebaseFirestore
+
+    @Mock
+    lateinit var doctorObserver: Observer<DoctorUiState>
 
     @Before
     fun setUp() {
@@ -106,15 +111,23 @@ class DoctorViewModelTest {
         whenever(doctorRepository.getDoctors(any())).thenReturn(result)
 
         val map = mapOf("1" to "1", "2" to "2")
-        val doctor = SUT.getDoctors(map)
+        SUT.getDoctors(map)
+        val doctors = createDoctorsFromCpamApi(result)
 
-        argumentCaptor<Map<String,String>>().apply {
+        argumentCaptor<Map<String, String>>().apply {
             verify(doctorRepository).getDoctors(capture())
-            assertEquals("1",firstValue["1"])
-            assertEquals("2",firstValue["2"])
+            assertEquals("1", firstValue["1"])
+            assertEquals("2", firstValue["2"])
         }
-        argumentCaptor<List<Doctor>>().apply {
+        argumentCaptor<String>().apply {
+            verify(commentaryRepository).getDoctorCommentary(capture())
+            assertEquals(result.records[0].recordid, firstValue)
+        }
+        SUT.doctor.observeForever(doctorObserver)
+
+        argumentCaptor<DoctorUiState>().apply {
             verify(doctorObserver).onChanged(capture())
+            assertEquals(DoctorUiState.Loading, firstValue)
         }
     }
 }
