@@ -1,9 +1,6 @@
 package com.benlefevre.monendo.doctor
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.benlefevre.monendo.doctor.api.DoctorRepository
 import com.benlefevre.monendo.doctor.models.Commentary
 import com.benlefevre.monendo.doctor.models.Doctor
@@ -20,6 +17,7 @@ sealed class DoctorUiState {
 }
 
 class DoctorViewModel(
+    private val handle: SavedStateHandle,
     private val doctorRepository: DoctorRepository,
     private val commentaryRepository: CommentaryRepository
 ) : ViewModel() {
@@ -29,8 +27,18 @@ class DoctorViewModel(
     val doctor: LiveData<DoctorUiState>
         get() = _doctor
 
+    fun isReady(map: Map<String, String>) : DoctorUiState{
+        val mapQ = handle.get<String>("mapQ") ?: ""
+        val location = handle.get<String>("location")
+        return if (handle.contains("doctor") && mapQ == map["q"] && location == map["geofilter.distance"]){
+            DoctorUiState.DoctorReady(handle.get<List<Doctor>>("doctor")!!)
+        }else{
+            DoctorUiState.Loading
+        }
+    }
+
     fun getDoctors(map: Map<String, String>) = viewModelScope.launch {
-        _doctor.value = DoctorUiState.Loading
+        _doctor.value = isReady(map)
         val result = doctorRepository.getDoctors(map)
         if (result.records.isEmpty()) {
             _doctor.value = DoctorUiState.Error("There no doctor for this search. Please modify it")
@@ -43,6 +51,9 @@ class DoctorViewModel(
             doctor.rating = (commentaries.sumByDouble { it.rating } / doctor.nbComment)
         }
         doctors.sortedBy { it.nbComment }
+        handle.set("doctor", doctors)
+        handle.set("mapQ", map["q"])
+        handle.set("location",map["geofilter.distance"])
         _doctor.value = DoctorUiState.DoctorReady(doctors)
     }
 

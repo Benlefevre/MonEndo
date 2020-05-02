@@ -146,11 +146,11 @@ dependencies {
 //    Retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.8.1'
     implementation 'com.squareup.retrofit2:converter-gson:2.8.1'
-    implementation 'com.squareup.okhttp3:logging-interceptor:4.5.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.6.0'
 
 //    GoogleMap
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
-    implementation 'com.google.maps.android:android-maps-utils:1.0.2'
+    implementation 'com.google.maps.android:android-maps-utils:1.2.1'
 
 //    GooglePlay Location
     implementation 'com.google.android.gms:play-services-location:17.0.0'

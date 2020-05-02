@@ -1,5 +1,6 @@
 package com.benlefevre.monendo.injection
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.room.Room
 import com.benlefevre.monendo.dashboard.repository.MoodRepo
 import com.benlefevre.monendo.dashboard.repository.PainWithRelationsRepo
@@ -70,7 +71,7 @@ val networkModule = module {
     single { provideRetrofit(get()) }
     single { CommentaryRepository(get()) }
     factory { DoctorRepository(get()) }
-    viewModel { DoctorViewModel(get(), get()) }
+    viewModel { (handle: SavedStateHandle) -> DoctorViewModel(handle, get(), get()) }
 }
 
 fun provideCpamApi(retrofit: Retrofit): CpamService = retrofit.create(

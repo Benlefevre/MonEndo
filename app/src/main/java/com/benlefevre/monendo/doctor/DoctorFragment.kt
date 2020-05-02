@@ -13,6 +13,8 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.navigation.NavController
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.benlefevre.monendo.MainActivity
 import com.benlefevre.monendo.R
@@ -26,15 +28,16 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import kotlinx.android.synthetic.main.fragment_doctor.*
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.ext.android.stateViewModel
 import pub.devrel.easypermissions.EasyPermissions
 import timber.log.Timber
 
 class DoctorFragment : Fragment(R.layout.fragment_doctor), OnMapReadyCallback,
     DoctorAdapter.DoctorListAdapterListener {
 
+    private lateinit var navController : NavController
     private lateinit var map: GoogleMap
-    private val viewModel: DoctorViewModel by viewModel()
+    private val viewModel: DoctorViewModel by stateViewModel()
     private val queryMap = mutableMapOf<String, String>()
     private val doctors = mutableListOf<Doctor>()
     private lateinit var locationLiveData: LocationLiveData
@@ -48,6 +51,7 @@ class DoctorFragment : Fragment(R.layout.fragment_doctor), OnMapReadyCallback,
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        navController = findNavController()
         setOnClickListeners()
         initMap()
         locationLiveData = LocationLiveData(requireContext())
@@ -65,6 +69,10 @@ class DoctorFragment : Fragment(R.layout.fragment_doctor), OnMapReadyCallback,
         }
     }
 
+    /**
+     * It is the function called when LocationLiveData emit a value. It verifies if an exception is
+     * thrown and if it is not the case it updates the position of the GoogleMap's camera.
+     */
     private fun handleLocationData(locationData: LocationData) {
         if (handleLocationException(locationData.exception)) {
             return
@@ -78,7 +86,7 @@ class DoctorFragment : Fragment(R.layout.fragment_doctor), OnMapReadyCallback,
                         LatLng(
                             it.latitude,
                             it.longitude
-                        ), 14f
+                        ), 12f
                     )
                 )
             }
@@ -86,6 +94,9 @@ class DoctorFragment : Fragment(R.layout.fragment_doctor), OnMapReadyCallback,
         }
     }
 
+    /**
+     * Checks if an exception is thrown and calls the function that requested the needed permissions.
+     */
     private fun handleLocationException(exception: Exception?): Boolean {
         exception ?: return false
         Timber.e(exception)
@@ -112,6 +123,10 @@ class DoctorFragment : Fragment(R.layout.fragment_doctor), OnMapReadyCallback,
             .commit()
     }
 
+    /**
+     * Checks is the device has a network access, calls the query's configuration function and
+     * sets an observer on the viewModel's doctor LiveData.
+     */
     private fun getDoctor() {
         if (MainActivity.isConnected) {
             configureQueryMap()
@@ -127,6 +142,9 @@ class DoctorFragment : Fragment(R.layout.fragment_doctor), OnMapReadyCallback,
         }
     }
 
+    /**
+     * Handles the value returned by the DoctorLiveData and updates the Ui according to the result.
+     */
     private fun updateUiState(state: DoctorUiState) {
         when (state) {
             DoctorUiState.Loading -> {
@@ -145,11 +163,18 @@ class DoctorFragment : Fragment(R.layout.fragment_doctor), OnMapReadyCallback,
                     val marker = addMarkersOnMap(it)
                     markers.add(marker)
                 }
+                if (!searchLocation.isBlank()){
+                    map.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(doctors[0].coordonnees[0],doctors[0].coordonnees[1]),12f))
+                }
             }
             is DoctorUiState.Error -> Timber.e(state.errorMessage)
         }
     }
 
+    /**
+     * Adds a marker on the map with the doctor's values and return the added marker with a tag
+     * that corresponding to the doctor passed in parameter.
+     */
     private fun addMarkersOnMap(doctor: Doctor) : Marker {
         val marker = map.addMarker(
             MarkerOptions().title(doctor.name).snippet("${doctor.spec} at ${doctor.address}")
@@ -159,10 +184,12 @@ class DoctorFragment : Fragment(R.layout.fragment_doctor), OnMapReadyCallback,
         marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET))
 //        marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.doctor_icon))
         marker.tag = doctor
-        Timber.i("${doctor.name} id : ${doctor.id} à ${doctor.address} et est ${doctor.spec} et vaut ${doctor.rating}")
         return marker
     }
 
+    /**
+     * Configures the needed query to request the CPAM api with the correct fields.
+     */
     private fun configureQueryMap() {
         queryMap.clear()
         queryMap["dataset"] = "annuaire-des-professionnels-de-sante"
@@ -193,7 +220,8 @@ class DoctorFragment : Fragment(R.layout.fragment_doctor), OnMapReadyCallback,
             )
         )
         map.setOnInfoWindowClickListener {
-
+            val doctorDest = DoctorFragmentDirections.actionDoctorFragmentToDoctorDetailFragment(it.tag as Doctor)
+            navController.navigate(doctorDest)
         }
         map.setOnMarkerClickListener {
             map.animateCamera(
@@ -205,6 +233,7 @@ class DoctorFragment : Fragment(R.layout.fragment_doctor), OnMapReadyCallback,
                 )
             )
             it.showInfoWindow()
+            fragment_doctor_recycler_view.scrollToPosition(doctors.indexOf(it.tag))
             true
         }
     }
@@ -274,6 +303,9 @@ class DoctorFragment : Fragment(R.layout.fragment_doctor), OnMapReadyCallback,
         }
     }
 
+    /**
+     * Defines the map's behavior and the navigation when user clicks on a recycler view's item
+     */
     override fun onDoctorSelected(doctor: Doctor) {
         map.animateCamera(
             CameraUpdateFactory.newLatLngZoom(
@@ -288,7 +320,8 @@ class DoctorFragment : Fragment(R.layout.fragment_doctor), OnMapReadyCallback,
             marker.showInfoWindow()
         }
         else{
-            Toast.makeText(requireContext(),"test",Toast.LENGTH_SHORT).show()
+            val doctorDest = DoctorFragmentDirections.actionDoctorFragmentToDoctorDetailFragment(doctor)
+            navController.navigate(doctorDest)
         }
     }
 }

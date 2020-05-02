@@ -207,5 +207,14 @@
     <string name="need_locate_you">Nous avons besoin de cette permission pour vous localiser.</string>
     <string name="doctor_nb_comment">Il y a %1$d commentaires</string>
     <string name="no_doctor_comment">Il n\'y a pas de commentaires</string>
+    <string name="doctor_details">Informations médecin</string>
+    <string name="acts">Actes pratiqués</string>
+    <string name="types_of_acts">Types d\'actes</string>
+    <string name="nb_pills">Nombre de pilules</string>
+    <string name="how_many_pills">Combien de pilules contient votre plaquette?</string>
+    <string name="call">Appeler</string>
+    <string name="commentary">Commentaire</string>
+    <string name="web_search">Web</string>
+    <string name="phone_number">Téléphone :</string>
 
 </resources>

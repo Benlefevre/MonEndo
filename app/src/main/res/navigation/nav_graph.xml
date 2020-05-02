@@ -57,5 +57,17 @@
         android:id="@+id/doctorFragment"
         android:name="com.benlefevre.monendo.doctor.DoctorFragment"
         android:label="@string/doctor"
-        tools:layout="@layout/fragment_doctor" />
+        tools:layout="@layout/fragment_doctor" >
+        <action
+            android:id="@+id/action_doctorFragment_to_doctorDetailFragment"
+            app:destination="@id/doctorDetailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/doctorDetailFragment"
+        android:name="com.benlefevre.monendo.doctor.DoctorDetailFragment"
+        android:label="@string/doctor_details"
+        tools:layout="@layout/fragment_doctor_detail" >
+        <argument android:name="selectedDoctor"
+            app:argType="com.benlefevre.monendo.doctor.models.Doctor" />
+    </fragment>
 </navigation>

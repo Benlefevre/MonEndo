@@ -87,17 +87,19 @@ class TreatmentFragment : Fragment(R.layout.fragment_treatment) {
         val editText = EditText(requireContext())
         MaterialAlertDialogBuilder(requireContext())
             .setView(editText)
-            .setTitle("Number of pills")
-            .setMessage("How many pills there are on your tablet?")
+            .setTitle(getString(R.string.nb_pills))
+            .setMessage(getString(R.string.how_many_pills))
             .setNegativeButton("Cancel") { dialog, _ ->
                 dialog.cancel()
             }
             .setPositiveButton("Ok") { dialog, _ ->
-                sharedPreferences.edit()
-                    .putInt(NUMBER_OF_PILLS, editText.text.toString().toInt())
-                    .remove(CHECKED_PILLS)
-                    .apply()
-                pillTablet.setNumberOfPills(editText.text.toString().toInt())
+                if (!editText.text.isNullOrBlank()) {
+                    sharedPreferences.edit()
+                        .putInt(NUMBER_OF_PILLS, editText.text.toString().toInt())
+                        .remove(CHECKED_PILLS)
+                        .apply()
+                    pillTablet.setNumberOfPills(editText.text.toString().toInt())
+                }
                 dialog.cancel()
             }
             .setCancelable(false)
@@ -282,7 +284,7 @@ class TreatmentFragment : Fragment(R.layout.fragment_treatment) {
     /**
      * Cancels all works that are enqueued with different tags created from the treatment's name
      */
-    private fun cancelTreatmentWork(treatment: Treatment){
+    private fun cancelTreatmentWork(treatment: Treatment) {
         WorkManager.getInstance(requireContext()).apply {
             cancelUniqueWork("${treatment.name} $MORNING")
             cancelUniqueWork("${treatment.name} $NOON")
@@ -426,7 +428,7 @@ class TreatmentFragment : Fragment(R.layout.fragment_treatment) {
         }.build()
 
         if (customDialog.custom_treatment_morning_chip.isChecked)
-            context?.let { configureTreatmentNotification(it, data, treatment.morning, "${treatment.name} $MORNING" ) }
+            context?.let { configureTreatmentNotification(it, data, treatment.morning, "${treatment.name} $MORNING") }
         if (customDialog.custom_treatment_noon_chip.isChecked)
             context?.let { configureTreatmentNotification(it, data, treatment.noon, "${treatment.name} $NOON") }
         if (customDialog.custom_treatment_afternoon_chip.isChecked)
@@ -568,7 +570,7 @@ class TreatmentFragment : Fragment(R.layout.fragment_treatment) {
         super.onPause()
 //        Save in SharedPreferences the checked pills
 //        if (pillTablet.pills.any { it.isChecked })
-            sharedPreferences.edit().putString(CHECKED_PILLS, gson.toJson(pillTablet.pills)).apply()
+        sharedPreferences.edit().putString(CHECKED_PILLS, gson.toJson(pillTablet.pills)).apply()
 //        Save in SharedPreferences the user's treatments
         sharedPreferences.edit().putString(TREATMENT, gson.toJson(treatmentList)).apply()
     }

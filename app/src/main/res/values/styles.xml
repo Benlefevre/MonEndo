@@ -61,7 +61,7 @@
 
     <style name="CustomChip" parent="@style/Widget.MaterialComponents.Chip.Filter">
         <item name="chipBackgroundColor">@color/background_color_chip</item>
-        <item name="chipStrokeColor">@color/colorPrimary</item>
+        <item name="chipStrokeColor">@color/stroke_color_chip</item>
         <item name="android:textColor">@color/text_color_chip</item>
         <item name="checkedIcon">@drawable/ic_check_24dp</item>
         <item name="checkedIconVisible">true</item>
@@ -73,7 +73,7 @@
 
     <style name="CustomChipChoice" parent="@style/Widget.MaterialComponents.Chip.Choice">
         <item name="chipBackgroundColor">@color/background_color_chip</item>
-        <item name="chipStrokeColor">@color/colorPrimary</item>
+        <item name="chipStrokeColor">@color/stroke_color_chip</item>
         <item name="android:textColor">@color/text_color_chip</item>
         <item name="checkedIcon">@drawable/ic_check_24dp</item>
         <item name="checkedIconVisible">true</item>

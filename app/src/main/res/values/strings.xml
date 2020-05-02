@@ -207,5 +207,14 @@
     <string name="need_locate_you">We need this permission to locate you on a map</string>
     <string name="doctor_nb_comment">There is %1$d commentaries</string>
     <string name="no_doctor_comment">There is no commentaries</string>
+    <string name="doctor_details">Doctor details</string>
+    <string name="acts">Acts</string>
+    <string name="types_of_acts">Types of acts</string>
+    <string name="nb_pills">Number of pills</string>
+    <string name="how_many_pills">How many pills there are on your tablet?</string>
+    <string name="call">Call</string>
+    <string name="commentary">Commentary</string>
+    <string name="web_search">Web search</string>
+    <string name="phone_number">Phone number :</string>
 
 </resources>

@@ -30,11 +30,11 @@ class MainActivity : AppCompatActivity() {
         findNavController(R.id.nav_host_fragment)
     }
 
-    private lateinit var user: User
     private lateinit var connectivityLiveData: ConnectivityLivedata
 
     companion object {
         var isConnected = false
+        lateinit var user : User
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -109,6 +109,8 @@ class MainActivity : AppCompatActivity() {
                 R.id.activitiesDetailFragment -> bottomNav.visibility = GONE
                 R.id.sleepDetailFragment -> bottomNav.visibility = GONE
                 R.id.moodDetailFragment -> bottomNav.visibility = GONE
+                R.id.doctorDetailFragment -> bottomNav.visibility = GONE
+                R.id.doctorFragment -> bottomNav.visibility = VISIBLE
             }
         }
     }
