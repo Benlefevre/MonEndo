@@ -6,14 +6,13 @@
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/custom_dialog_title"
+        style="@style/CardTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@style/CardTitle"
-        android:background="@color/colorSecondary"
         android:text="@string/some_precisions_please"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/dialog_sport_legend"

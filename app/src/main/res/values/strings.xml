@@ -51,6 +51,15 @@
         <item>15 days</item>
     </string-array>
 
+    <string-array name="pill_format">
+        <item>28</item>
+        <item>21 + 7</item>
+        <item>21</item>
+        <item>14</item>
+        <item>12</item>
+        <item>10</item>
+    </string-array>
+
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="cancel_login">You have cancelled the authentication process. Please try again.</string>
     <string name="network_to_login">A network access is required to login</string>
@@ -216,5 +225,7 @@
     <string name="commentary">Commentary</string>
     <string name="web_search">Web search</string>
     <string name="phone_number">Phone number :</string>
+    <string name="start_date_of_your_pill_tablet">Start date of your pill tablet</string>
+    <string name="pill_tablet_settings">Pill tablet settings</string>
 
 </resources>

@@ -7,7 +7,6 @@
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/custom_treatment_title"
         style="@style/CardTitle"
-        android:background="@color/colorSecondary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/add_a_treatment"

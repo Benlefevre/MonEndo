@@ -41,7 +41,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="8dp"
-                    android:hint="@string/the_first_day_of_your_last_menstruation">
+                    android:hint="@string/start_date_of_your_pill_tablet">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/treatment_mens_txt"

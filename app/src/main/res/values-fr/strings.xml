@@ -51,6 +51,15 @@
         <item>15 jours</item>
     </string-array>
 
+    <string-array name="pill_format">
+        <item>28</item>
+        <item>21 + 7</item>
+        <item>21</item>
+        <item>14</item>
+        <item>12</item>
+        <item>10</item>
+    </string-array>
+
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="cancel_login">Vous avez quitté l\'identification. Merci de réessayer</string>
     <string name="network_to_login">Un accès réseau est nécessaire pour vous identifier</string>
@@ -216,5 +225,7 @@
     <string name="commentary">Commentaire</string>
     <string name="web_search">Web</string>
     <string name="phone_number">Téléphone :</string>
+    <string name="start_date_of_your_pill_tablet">Date d\'entame de votre plaquette</string>
+    <string name="pill_tablet_settings">Paramètres de la plaquette</string>
 
 </resources>

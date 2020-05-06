@@ -6,12 +6,8 @@ import android.content.Context
 import android.content.DialogInterface
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.view.View
+import android.view.*
 import android.widget.ArrayAdapter
-import android.widget.EditText
 import android.widget.ImageButton
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -28,6 +24,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputEditText
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import kotlinx.android.synthetic.main.custom_dialog_nb_pills.view.*
 import kotlinx.android.synthetic.main.custom_dialog_treatment.view.*
 import kotlinx.android.synthetic.main.fragment_treatment.*
 import timber.log.Timber
@@ -84,21 +81,36 @@ class TreatmentFragment : Fragment(R.layout.fragment_treatment) {
     }
 
     private fun openNumberOfPillsDialog() {
-        val editText = EditText(requireContext())
+        var userChoice = ""
+        val numberPills = sharedPreferences.getInt(NUMBER_OF_PILLS,28).toString()
+        val customDialog =
+            LayoutInflater.from(requireContext()).inflate(R.layout.custom_dialog_nb_pills, null)
+        val nbPills = customDialog.custom_dialog_pill_format
+        val adapter = ArrayAdapter(requireContext(), R.layout.support_simple_spinner_dropdown_item, resources.getStringArray(R.array.pill_format))
+        nbPills.apply {
+            setText(if (numberPills == "29")"21 + 7" else numberPills)
+            setAdapter(adapter)
+
+            setOnItemClickListener { parent, _, position, _ ->
+                userChoice = parent.getItemAtPosition(position).toString()
+                when (userChoice) {
+                    "21 + 7" -> userChoice = "29"
+                }
+            }
+        }
         MaterialAlertDialogBuilder(requireContext())
-            .setView(editText)
-            .setTitle(getString(R.string.nb_pills))
-            .setMessage(getString(R.string.how_many_pills))
+            .setView(customDialog)
             .setNegativeButton("Cancel") { dialog, _ ->
                 dialog.cancel()
             }
             .setPositiveButton("Ok") { dialog, _ ->
-                if (!editText.text.isNullOrBlank()) {
+                if (userChoice.isNotBlank()) {
                     sharedPreferences.edit()
-                        .putInt(NUMBER_OF_PILLS, editText.text.toString().toInt())
+                        .putInt(NUMBER_OF_PILLS, userChoice.toInt())
                         .remove(CHECKED_PILLS)
                         .apply()
-                    pillTablet.setNumberOfPills(editText.text.toString().toInt())
+                    pillTablet.setNumberOfPills(userChoice.toInt())
+                    calculateNextPill()
                 }
                 dialog.cancel()
             }
@@ -133,10 +145,26 @@ class TreatmentFragment : Fragment(R.layout.fragment_treatment) {
      * Bind user's input saved in SharedPreferences into fields
      */
     private fun getUserInput() {
-        val monthLabel = Calendar.getInstance().get(Calendar.MONTH)
-        sharedPreferences.getString(monthLabel.toString(), null)?.let {
-            dayMens.setText(it)
+        val currentPill = sharedPreferences.getString(LAST_PILL_DATE, null)
+        val nextPill = sharedPreferences.getString(NEXT_PILL_DATE, null)
+        val nextPillDate = nextPill?.let { parseStringInDate(it) }
+        val nextPillCalendar = Calendar.getInstance().apply {
+            nextPillDate?.let {
+                time = it
+            }
         }
+        if (Calendar.getInstance().before(nextPillCalendar)) {
+            currentPill?.let {
+                dayMens.setText(it)
+            }
+        } else {
+            nextPill?.let {
+                dayMens.setText(it)
+            }
+            sharedPreferences.edit().putString(LAST_PILL_DATE, nextPill).apply()
+            calculateNextPill()
+        }
+
         sharedPreferences.getString(PILL_HOUR_NOTIF, null)?.let {
             notifHour.setText(it)
         }
@@ -200,11 +228,12 @@ class TreatmentFragment : Fragment(R.layout.fragment_treatment) {
      */
     private fun calculateElapsedTime() {
         var today = Date(-1L)
-        if (!treatment_mens_txt.text.isNullOrBlank())
-            today = parseStringInDate(treatment_mens_txt.text.toString())
+        if (!dayMens.text.isNullOrBlank())
+            today = parseStringInDate(dayMens.text.toString())
         if (today != Date(-1L)) {
             var elapsedTime = System.currentTimeMillis() - today.time
             elapsedTime /= (24 * 60 * 60 * 1000)
+            Timber.i("current time = ${System.currentTimeMillis()} / todayTime = ${today.time} / elapsedTime = $elapsedTime")
             pillTablet.setupTablet(elapsedTime.toInt())
         }
     }
@@ -236,14 +265,35 @@ class TreatmentFragment : Fragment(R.layout.fragment_treatment) {
     private fun updateMenstruationDate() {
         dayMens.setText(formatDateWithYear(calendar.time))
         if (!dayMens.text.isNullOrBlank()) {
-            val monthLabel = with(Calendar.getInstance()) {
-                get(Calendar.MONTH)
-            }
             sharedPreferences.edit()
-                .putString(monthLabel.toString(), dayMens.text.toString())
+                .putString(LAST_PILL_DATE, dayMens.text.toString())
                 .apply()
         }
+        calculateNextPill()
         calculateElapsedTime()
+    }
+
+    /**
+     * According to the number of pills in a tablet, calculates the start day of the next tablet
+     */
+    private fun calculateNextPill() {
+        if (dayMens.text.isNullOrBlank()) {
+            return
+        }
+        val nbPills = sharedPreferences.getInt(NUMBER_OF_PILLS, 28)
+        val nextPillDate = parseStringInDate(dayMens.text.toString())
+        val nextPill = if (nextPillDate != Date(-1L)) {
+            formatDateWithYear(with(Calendar.getInstance()) {
+                time = nextPillDate
+                add(Calendar.DAY_OF_YEAR, if (nbPills == 29) 28 else nbPills)
+                time
+            })
+        } else {
+            dayMens.text.toString()
+        }
+        sharedPreferences.edit()
+            .putString(NEXT_PILL_DATE, nextPill)
+            .apply()
     }
 
     /**

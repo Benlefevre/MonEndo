@@ -19,10 +19,14 @@ import timber.log.Timber
 
 class ContraceptiveTablet(context: Context, attrs: AttributeSet) : View(context, attrs) {
 
-    private var dividedWidth28 = 0f
-    private var dividedHeight28 = 0f
-    private var dividedWidth10 = 0f
-    private var dividedHeight10 = 0f
+    private var dividedWidth7Pills = 0f
+    private var dividedWidth6Pills = 0f
+    private var dividedWidth5Pills = 0f
+
+    private var dividedHeight2Lines = 0f
+    private var dividedHeight4Lines = 0f
+    private var dividedHeight3Lines = 0f
+
     private var day = -1
     private var needClear = false
     private var nbPills = 28
@@ -75,19 +79,46 @@ class ContraceptiveTablet(context: Context, attrs: AttributeSet) : View(context,
         super.onSizeChanged(w, h, oldw, oldh)
         rectF = RectF(0f, 0f, w.toFloat(), h.toFloat())
 
-        dividedWidth28 = w / 9f
-        dividedHeight28 = h / 5f
+        dividedWidth7Pills = w / 9f
+        dividedWidth6Pills = w / 8f
+        dividedWidth5Pills = w / 7f
 
-        dividedWidth10 = w / 7f
-        dividedHeight10 = h / 3f
+        dividedHeight4Lines = h / 5f
+        dividedHeight3Lines = h / 4f
+        dividedHeight2Lines = h / 3f
+
 
         if (pills.isEmpty())
             createPills()
         else
             pills.forEach {
                 it.apply {
-                    width = if (nbPills == 10) dividedWidth10 else dividedWidth28
-                    height = if (nbPills == 10) dividedHeight10 else dividedHeight28
+                    when (nbPills) {
+                        10 -> {
+                            width = dividedWidth5Pills
+                            height = dividedHeight2Lines
+                        }
+                        12 -> {
+                            width = dividedWidth6Pills
+                            height = dividedHeight2Lines
+                        }
+                        14 -> {
+                            width = dividedWidth7Pills
+                            height = dividedHeight2Lines
+                        }
+                        21 -> {
+                            width = dividedWidth7Pills
+                            height = dividedHeight3Lines
+                        }
+                        28 -> {
+                            width = dividedWidth7Pills
+                            height = dividedHeight4Lines
+                        }
+                        29 -> {
+                            width = dividedWidth7Pills
+                            height = dividedHeight4Lines
+                        }
+                    }
                     setShadow()
                 }
             }
@@ -95,136 +126,63 @@ class ContraceptiveTablet(context: Context, attrs: AttributeSet) : View(context,
 
     private fun createPills() {
         Timber.i("createPills")
-        val colorOnPrimary = getColor(context,R.color.colorOnPrimary)
+        val colorOnPrimary = getColor(context, R.color.colorOnPrimary)
         pills.clear()
+
+        var width = 0.0f
+        var height = 0.0f
+        var rangeLine: IntRange = 0..1
+        var rangePills: IntRange = 0..1
         when (nbPills) {
+            29 -> {
+                width = dividedWidth7Pills
+                height = dividedHeight4Lines
+                rangeLine = 1..4
+                rangePills = 2..8
+            }
             28 -> {
-                for (index in 1..4) {
-                    pills.add(
-                        Pill(
-                            dividedWidth28,
-                            2,
-                            dividedHeight28,
-                            index,
-                            40f,
-                            colorOnPrimary
-                        )
-                    )
-                    pills.add(
-                        Pill(
-                            dividedWidth28,
-                            3,
-                            dividedHeight28,
-                            index,
-                            40f,
-                            colorOnPrimary
-                        )
-                    )
-                    pills.add(
-                        Pill(
-                            dividedWidth28,
-                            4,
-                            dividedHeight28,
-                            index,
-                            40f,
-                            colorOnPrimary
-                        )
-                    )
-                    pills.add(
-                        Pill(
-                            dividedWidth28,
-                            5,
-                            dividedHeight28,
-                            index,
-                            40f,
-                            colorOnPrimary
-                        )
-                    )
-                    pills.add(
-                        Pill(
-                            dividedWidth28,
-                            6,
-                            dividedHeight28,
-                            index,
-                            40f,
-                            colorOnPrimary
-                        )
-                    )
-                    pills.add(
-                        Pill(
-                            dividedWidth28,
-                            7,
-                            dividedHeight28,
-                            index,
-                            40f,
-                            colorOnPrimary
-                        )
-                    )
-                    pills.add(
-                        Pill(
-                            dividedWidth28,
-                            8,
-                            dividedHeight28,
-                            index,
-                            40f,
-                            colorOnPrimary
-                        )
-                    )
-                }
+                width = dividedWidth7Pills
+                height = dividedHeight4Lines
+                rangeLine = 1..4
+                rangePills = 2..8
+            }
+            21 -> {
+                width = dividedWidth7Pills
+                height = dividedHeight3Lines
+                rangeLine = 1..3
+                rangePills = 2..8
+            }
+            14 -> {
+                width = dividedWidth7Pills
+                height = dividedHeight2Lines
+                rangeLine = 1..2
+                rangePills = 2..8
+            }
+            12 -> {
+                width = dividedWidth6Pills
+                height = dividedHeight2Lines
+                rangeLine = 1..2
+                rangePills = 2..7
             }
             10 -> {
-                for (index in 1..2) {
-                    pills.add(
-                        Pill(
-                            dividedWidth10,
-                            2,
-                            dividedHeight10,
-                            index,
-                            40f,
-                            colorOnPrimary
-                        )
+                width = dividedWidth5Pills
+                height = dividedHeight2Lines
+                rangeLine = 1..2
+                rangePills = 2..6
+            }
+        }
+        for (index in rangeLine) {
+            for (indexWidth in rangePills) {
+                pills.add(
+                    Pill(
+                        width,
+                        indexWidth,
+                        height,
+                        index,
+                        40f,
+                        colorOnPrimary
                     )
-                    pills.add(
-                        Pill(
-                            dividedWidth10,
-                            3,
-                            dividedHeight10,
-                            index,
-                            40f,
-                            colorOnPrimary
-                        )
-                    )
-                    pills.add(
-                        Pill(
-                            dividedWidth10,
-                            4,
-                            dividedHeight10,
-                            index,
-                            40f,
-                            colorOnPrimary
-                        )
-                    )
-                    pills.add(
-                        Pill(
-                            dividedWidth10,
-                            5,
-                            dividedHeight10,
-                            index,
-                            40f,
-                            colorOnPrimary
-                        )
-                    )
-                    pills.add(
-                        Pill(
-                            dividedWidth10,
-                            6,
-                            dividedHeight10,
-                            index,
-                            40f,
-                            colorOnPrimary
-                        )
-                    )
-                }
+                )
             }
         }
     }
@@ -250,24 +208,52 @@ class ContraceptiveTablet(context: Context, attrs: AttributeSet) : View(context,
         val lineLength: Int
         val nbLines: Int
         when (nbPills) {
-            28 -> {
+            29 -> {
                 nbTriangles = 4
-                height = dividedHeight28
-                width = dividedWidth28
+                height = dividedHeight4Lines
+                width = dividedWidth7Pills
                 nbLines = 3
                 lineLength = 8
             }
+            28 -> {
+                nbTriangles = 4
+                height = dividedHeight4Lines
+                width = dividedWidth7Pills
+                nbLines = 3
+                lineLength = 8
+            }
+            21 -> {
+                nbTriangles = 3
+                height = dividedHeight3Lines
+                width = dividedWidth7Pills
+                nbLines = 2
+                lineLength = 8
+            }
+            14 -> {
+                nbTriangles = 2
+                height = dividedHeight2Lines
+                width = dividedWidth7Pills
+                nbLines = 1
+                lineLength = 8
+            }
+            12 -> {
+                nbTriangles = 2
+                height = dividedHeight2Lines
+                width = dividedWidth6Pills
+                nbLines = 1
+                lineLength = 7
+            }
             10 -> {
                 nbTriangles = 2
-                height = dividedHeight10
-                width = dividedWidth10
+                height = dividedHeight2Lines
+                width = dividedWidth5Pills
                 nbLines = 1
                 lineLength = 6
             }
             else -> {
                 nbTriangles = 4
-                height = dividedHeight28
-                width = dividedHeight28
+                height = dividedHeight4Lines
+                width = dividedHeight4Lines
                 nbLines = 3
                 lineLength = 8
             }
@@ -298,14 +284,28 @@ class ContraceptiveTablet(context: Context, attrs: AttributeSet) : View(context,
             if (!it.isChecked) {
                 circlePaint.color = getColor(context, R.color.graph4)
                 canvas.drawCircle(it.x, it.y, it.radius / 2, circlePaint)
-                canvas.drawArc(it.shadowRectF, 0f, 70f, false, shadowPaint.apply { color = getColor(context,R.color.colorBackground ) })
+                canvas.drawArc(it.shadowRectF, 0f, 70f, false, shadowPaint.apply {
+                    color = getColor(context, R.color.colorBackground)
+                })
             } else
-                canvas.drawArc(it.shadowRectF, -180f, 70f, false, shadowPaint.apply { color = getColor(context,R.color.colorOnPrimary ) })
+                canvas.drawArc(it.shadowRectF, -180f, 70f, false, shadowPaint.apply {
+                    color = getColor(context, R.color.colorOnPrimary)
+                })
+        }
+        if (nbPills == 29) {
+            circlePaint.color = getColor(context, R.color.graph3)
+            for (index in 21..27) {
+                with(pills[index]) {
+                    if (!isChecked) {
+                        canvas.drawCircle(x, y, radius / 2, circlePaint)
+                    }
+                }
+            }
         }
     }
 
     fun setupTablet(elapsedDays: Int) {
-        Timber.i("setupTablet")
+        Timber.i("setupTablet + days = $elapsedDays / ${pills.size}")
         day = elapsedDays
         if (day >= pills.size) day -= pills.size
         if (day == 0 && needClear) clearTablet()
@@ -346,9 +346,13 @@ class ContraceptiveTablet(context: Context, attrs: AttributeSet) : View(context,
                 isClickable = true
             }
         }
-        when(nbPills){
+        when (nbPills) {
             10 -> if (elapsedDays == 9) needClear = true
+            12 -> if (elapsedDays == 11) needClear = true
+            14 -> if (elapsedDays == 13) needClear = true
+            21 -> if (elapsedDays == 20) needClear = true
             28 -> if (elapsedDays == 27) needClear = true
+            29 -> if (elapsedDays == 27) needClear = true
         }
         isCurrentChecked()
     }
@@ -403,8 +407,10 @@ class ContraceptiveTablet(context: Context, attrs: AttributeSet) : View(context,
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
         context.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)
-            .edit()
-            .putBoolean(NEED_CLEAR, needClear)
-            .apply()
+            .edit().apply {
+                putBoolean(NEED_CLEAR, needClear)
+                putInt(NUMBER_OF_PILLS, nbPills)
+                apply()
+            }
     }
 }

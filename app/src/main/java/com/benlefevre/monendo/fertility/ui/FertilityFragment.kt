@@ -60,14 +60,30 @@ class FertilityFragment : Fragment(R.layout.fragment_fertility) {
      */
     private fun getUserInput() {
         monthLabel = calendar.get(Calendar.MONTH)
-        sharedPreferences.getString(monthLabel.toString(), null)?.let {
-            mensDay.setText(it)
-            durationMens.isFocusableInTouchMode = true
+        val currentMonthValue = sharedPreferences.getString(monthLabel.toString(), null)
+        val monthLabelDate = currentMonthValue?.let { parseStringInDate(it) }
+        val currentMonth = Calendar.getInstance().apply {
+            monthLabelDate?.let {
+                time = it
+            }
+        }
+        Timber.i("currentMonthValue = $currentMonthValue / monthLabelDate = $monthLabelDate / current month =${currentMonth.time}")
+
+        if (Calendar.getInstance().before(currentMonth)) {
+            sharedPreferences.getString((monthLabel - 1).toString(), null).let {
+                mensDay.setText(it)
+                durationMens.isFocusableInTouchMode = true
+            }
+        } else {
+            sharedPreferences.getString(monthLabel.toString(), null)?.let {
+                mensDay.setText(it)
+                durationMens.isFocusableInTouchMode = true
+            }
+            sharedPreferences.edit().remove("${monthLabel - 1}").apply()
         }
         sharedPreferences.getString(DURATION, null)?.let {
             durationMens.setText(it)
         }
-        sharedPreferences.edit().remove("${monthLabel - 1}").apply()
     }
 
     /**
