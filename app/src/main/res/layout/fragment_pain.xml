@@ -32,23 +32,51 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/pain_card_date_legend"
+                    style="@style/CustomTextInputLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/date"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginEnd="8dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/pain_card_title">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/pain_card_date"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:drawableStart="@drawable/calendar"
+                        android:drawablePadding="8dp"
+                        android:paddingStart="16dp"
+                        android:cursorVisible="false"
+                        android:focusable="false" />
+                </com.google.android.material.textfield.TextInputLayout>
+
                 <!--_________________________________Begin Slider________________________________-->
 
                 <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/pain_slider_legend"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginEnd="8dp"
                     android:text="@string/on_a_scale_of_0_to_10_how_do_you_rate_the_pain_today"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/pain_card_title" />
+                    app:layout_constraintTop_toBottomOf="@+id/pain_card_date_legend" />
 
                 <com.google.android.material.slider.Slider
                     android:id="@+id/pain_slider"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginEnd="8dp"
                     android:stepSize="1"
                     android:value="5f"
                     android:valueFrom="0f"
@@ -65,7 +93,9 @@
                     android:id="@+id/pain_location_legend"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginEnd="8dp"
                     android:text="@string/where_do_you_mainly_find_pain"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -75,8 +105,8 @@
                     android:id="@+id/pain_location_linear"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
                     android:layout_marginStart="8dp"
+                    android:layout_marginTop="4dp"
                     android:layout_marginEnd="8dp"
                     android:gravity="center_horizontal"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -152,7 +182,9 @@
                     android:id="@+id/pain_symptom_legend"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginEnd="8dp"
                     android:text="@string/what_are_the_main_symptoms"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -161,7 +193,9 @@
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginEnd="8dp"
                     android:gravity="center_horizontal"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -286,7 +320,9 @@
                     android:id="@+id/activities_card_legend"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginEnd="8dp"
                     android:text="@string/what_have_you_done_today_and_what_are_the_factors_that_can_cause_pain"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -297,7 +333,7 @@
                     android:id="@+id/pain_card_sport"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="4dp"
                     android:background="@drawable/linear_card"
                     android:elevation="5dp"
                     android:orientation="vertical"
@@ -329,7 +365,7 @@
                     android:id="@+id/pain_card_sleep"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="4dp"
                     android:background="@drawable/linear_card"
                     android:elevation="5dp"
                     android:orientation="vertical"
@@ -360,7 +396,7 @@
                     android:id="@+id/pain_card_stress"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="4dp"
                     android:background="@drawable/linear_card"
                     android:elevation="5dp"
                     android:orientation="vertical"
@@ -391,8 +427,7 @@
                     android:id="@+id/pain_card_relaxation"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="8dp"
+                    android:layout_marginTop="4dp"
                     android:background="@drawable/linear_card"
                     android:elevation="5dp"
                     android:orientation="vertical"
@@ -423,7 +458,7 @@
                     android:id="@+id/pain_card_sex"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="4dp"
                     android:background="@drawable/linear_card"
                     android:elevation="5dp"
                     android:orientation="vertical"
@@ -454,7 +489,7 @@
                     android:id="@+id/pain_card_other"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="4dp"
                     android:background="@drawable/linear_card"
                     android:elevation="5dp"
                     android:orientation="vertical"
@@ -484,11 +519,14 @@
                     android:id="@+id/pain_activity_chipgroup"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
-                    app:layout_constraintTop_toBottomOf="@id/pain_card_relaxation"
-                    app:layout_constraintStart_toStartOf="parent"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="4dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/pain_card_relaxation" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -518,8 +556,14 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="4dp"
                     android:gravity="center_horizontal"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/mood_card_title">
 
                     <com.google.android.material.chip.ChipGroup
@@ -572,7 +616,9 @@
             android:id="@+id/pain_save_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
             android:text="@string/save"
             app:cornerRadius="25dp"/>
     </LinearLayout>

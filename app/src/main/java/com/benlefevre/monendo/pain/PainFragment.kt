@@ -1,6 +1,7 @@
 package com.benlefevre.monendo.pain
 
 
+import android.app.DatePickerDialog
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
@@ -15,6 +16,8 @@ import com.benlefevre.monendo.dashboard.models.Mood
 import com.benlefevre.monendo.dashboard.models.Pain
 import com.benlefevre.monendo.dashboard.models.Symptom
 import com.benlefevre.monendo.dashboard.models.UserActivities
+import com.benlefevre.monendo.utils.formatDateWithYear
+import com.benlefevre.monendo.utils.parseStringInDate
 import com.google.android.material.chip.Chip
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.slider.Slider
@@ -32,7 +35,7 @@ class PainFragment : Fragment(R.layout.fragment_pain) {
     private lateinit var durationSlider: Slider
     private lateinit var otherTextInput: TextInputEditText
 
-    private val viewModel : PainFragmentViewModel by viewModel()
+    private val viewModel: PainFragmentViewModel by viewModel()
 
     private val navController by lazy { findNavController() }
     private lateinit var pain: Pain
@@ -44,6 +47,7 @@ class PainFragment : Fragment(R.layout.fragment_pain) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(true)
+        pain_card_date.setText(formatDateWithYear(Date()))
         setupOnClickListener()
         createChipWhenUserActivityAdded()
     }
@@ -62,25 +66,26 @@ class PainFragment : Fragment(R.layout.fragment_pain) {
         return super.onOptionsItemSelected(item)
     }
 
-    fun createPain() {
-        var location = ""
-        when {
-            pain_chip_abdo.isChecked -> location = getString(R.string.lower_abdomen)
-            pain_chip_bladder.isChecked -> location = getString(R.string.bladder)
-            pain_chip_back.isChecked -> location = getString(R.string.back)
-            pain_chip_breast.isChecked -> location = getString(R.string.breast)
-            pain_chip_head.isChecked -> location = getString(R.string.head)
-            pain_chip_intestine.isChecked -> location = getString(R.string.intestine)
-            pain_chip_vagina.isChecked -> location = getString(R.string.vagina)
+    private fun createPain() {
+        val location = when {
+            pain_chip_abdo.isChecked -> getString(R.string.lower_abdomen)
+            pain_chip_bladder.isChecked -> getString(R.string.bladder)
+            pain_chip_back.isChecked -> getString(R.string.back)
+            pain_chip_breast.isChecked -> getString(R.string.breast)
+            pain_chip_head.isChecked -> getString(R.string.head)
+            pain_chip_intestine.isChecked -> getString(R.string.intestine)
+            pain_chip_vagina.isChecked -> getString(R.string.vagina)
+            else -> ""
         }
+        val date = parseStringInDate(pain_card_date.text.toString())
         pain = Pain(
-            Date(),
+            if (date != Date(-1L)) date else Date(),
             pain_slider.value.toInt(),
             location
         )
     }
 
-    fun createMood() {
+    private fun createMood() {
         when {
             pain_chip_sad.isChecked -> mood =
                 Mood(value = getString(R.string.sad))
@@ -95,7 +100,7 @@ class PainFragment : Fragment(R.layout.fragment_pain) {
         }
     }
 
-    fun createSymptomsList() {
+    private fun createSymptomsList() {
         symptoms = mutableListOf()
         if (pain_chip_burns.isChecked) symptoms.add(
             Symptom(
@@ -165,14 +170,14 @@ class PainFragment : Fragment(R.layout.fragment_pain) {
         )
     }
 
-    fun saveUserInputInDb() {
+    private fun saveUserInputInDb() {
         createPain()
         createMood()
         createSymptomsList()
         viewModel.insertUserInput(pain, mood, symptoms)
     }
 
-    fun configureCustomDialogAccordingToSelectedView(view: View) {
+    private fun configureCustomDialogAccordingToSelectedView(view: View) {
         customView = layoutInflater.inflate(R.layout.custom_dialog_user_activities, null)
         intensitySlider = customView.dialog_intensity_slider
         durationSlider = customView.dialog_duration_slider
@@ -212,7 +217,7 @@ class PainFragment : Fragment(R.layout.fragment_pain) {
         }
     }
 
-    fun openCustomDialog(view: View) {
+    private fun openCustomDialog(view: View) {
         configureCustomDialogAccordingToSelectedView(view)
         MaterialAlertDialogBuilder(requireContext()).apply {
             setCancelable(false)
@@ -234,7 +239,7 @@ class PainFragment : Fragment(R.layout.fragment_pain) {
         }
     }
 
-    fun createChipWhenUserActivityAdded() {
+    private fun createChipWhenUserActivityAdded() {
         viewModel.activitiesLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             pain_activity_chipgroup.removeAllViews()
             it.forEach { activity ->
@@ -253,6 +258,24 @@ class PainFragment : Fragment(R.layout.fragment_pain) {
                 pain_activity_chipgroup.addView(chip)
             }
         })
+    }
+
+    private fun openDatePicker() {
+        val calendar = Calendar.getInstance()
+        val dateListener = DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
+            calendar.apply {
+                set(Calendar.YEAR, year)
+                set(Calendar.MONTH, month)
+                set(Calendar.DAY_OF_MONTH, dayOfMonth)
+            }
+            pain_card_date.setText(formatDateWithYear(calendar.time))
+        }
+        context?.let {
+            DatePickerDialog(
+                it, dateListener, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH)
+            ).show()
+        }
     }
 
     private fun setupOnClickListener() {
@@ -283,6 +306,9 @@ class PainFragment : Fragment(R.layout.fragment_pain) {
         pain_card_other.setOnClickListener {
             openCustomDialog(it)
             it.tag = getString(R.string.other)
+        }
+        pain_card_date.setOnClickListener {
+            openDatePicker()
         }
     }
 }
