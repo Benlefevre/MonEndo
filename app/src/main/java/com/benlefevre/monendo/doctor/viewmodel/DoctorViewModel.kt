@@ -1,9 +1,11 @@
-package com.benlefevre.monendo.doctor
+package com.benlefevre.monendo.doctor.viewmodel
 
 import androidx.lifecycle.*
 import com.benlefevre.monendo.doctor.api.DoctorRepository
+import com.benlefevre.monendo.doctor.createDoctorsFromCpamApi
 import com.benlefevre.monendo.doctor.models.Commentary
 import com.benlefevre.monendo.doctor.models.Doctor
+import com.benlefevre.monendo.doctor.repository.CommentaryRepository
 import com.google.firebase.firestore.ktx.toObject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -23,16 +25,20 @@ class DoctorViewModel(
 ) : ViewModel() {
 
     private val _doctor = MutableLiveData<DoctorUiState>()
+    private val _commentaries = MutableLiveData<List<Commentary>>()
+
+    val commentaries: LiveData<List<Commentary>>
+        get() = _commentaries
 
     val doctor: LiveData<DoctorUiState>
         get() = _doctor
 
-    fun isReady(map: Map<String, String>) : DoctorUiState{
+    fun isReady(map: Map<String, String>): DoctorUiState {
         val mapQ = handle.get<String>("mapQ") ?: ""
         val location = handle.get<String>("location")
-        return if (handle.contains("doctor") && mapQ == map["q"] && location == map["geofilter.distance"]){
+        return if (handle.contains("doctor") && mapQ == map["q"] && location == map["geofilter.distance"]) {
             DoctorUiState.DoctorReady(handle.get<List<Doctor>>("doctor")!!)
-        }else{
+        } else {
             DoctorUiState.Loading
         }
     }
@@ -41,20 +47,33 @@ class DoctorViewModel(
         _doctor.value = isReady(map)
         val result = doctorRepository.getDoctors(map)
         if (result.records.isEmpty()) {
-            _doctor.value = DoctorUiState.Error("There no doctor for this search. Please modify it")
+            _doctor.value =
+                DoctorUiState.Error("There no doctor for this search. Please modify it")
             return@launch
         }
         val doctors = createDoctorsFromCpamApi(result)
+        var isComment = false
+
         doctors.forEach { doctor ->
             val commentaries = getCommentaries(doctor.id)
-            doctor.nbComment = commentaries.size
-            doctor.rating = (commentaries.sumByDouble { it.rating } / doctor.nbComment)
+            if (commentaries.isNotEmpty()) {
+                doctor.nbComment = commentaries.size
+                doctor.rating = (commentaries.sumByDouble { it.rating } / doctor.nbComment)
+                isComment = true
+            }
         }
-        doctors.sortedBy { it.nbComment }
-        handle.set("doctor", doctors)
+
+        val sortedList = if (isComment) {
+            doctors.sortedByDescending { it.nbComment }
+        } else {
+            doctors
+        }
+
+        handle.set("doctor", sortedList)
         handle.set("mapQ", map["q"])
-        handle.set("location",map["geofilter.distance"])
-        _doctor.value = DoctorUiState.DoctorReady(doctors)
+        handle.set("location", map["geofilter.distance"])
+        _doctor.value =
+            DoctorUiState.DoctorReady(sortedList)
     }
 
     private suspend fun getCommentaries(doctorId: String): MutableList<Commentary> {
@@ -68,6 +87,16 @@ class DoctorViewModel(
             }
         }
         return commentaries
+    }
+
+    fun createCommentaryInFirestore(commentary: Commentary) {
+        commentaryRepository.createDoctorCommentary(commentary)
+    }
+
+    fun getCommentaryWithId(doctorId: String) = viewModelScope.launch {
+        val commentaries = getCommentaries(doctorId)
+        commentaries.sortByDescending { it.date }
+        _commentaries.value = commentaries
     }
 }
 

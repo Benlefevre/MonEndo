@@ -83,7 +83,7 @@ class MainActivity : AppCompatActivity() {
             Glide.with(this).load(user.photoUrl).apply(RequestOptions.circleCropTransform())
                 .into(headerPhoto)
         else
-            Glide.with(this).load(R.drawable.ic_girl).into(headerPhoto)
+            Glide.with(this).load(R.drawable.ic_girl_white).apply(RequestOptions.circleCropTransform()).into(headerPhoto)
     }
 
     /**

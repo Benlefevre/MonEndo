@@ -4,7 +4,7 @@
     <string name="facebook_application_id">113729150041447</string>
     <string name="fb_login_protocol_scheme">fb113729150041447</string>
 
-    <!--    <string name="leak_canary_test_class_name">org.assertj.core.api.Assertions</string>-->
+<!--        <string name="leak_canary_test_class_name">org.assertj.core.api.Assertions</string>-->
 
     <string-array name="sport">
         <item>BasketBall</item>
@@ -220,7 +220,7 @@
     <string name="no_doctor_comment">There is no commentaries</string>
     <string name="doctor_details">Doctor details</string>
     <string name="acts">Acts</string>
-    <string name="types_of_acts">Types of acts</string>
+    <string name="types_of_acts">Types of acts :</string>
     <string name="nb_pills">Number of pills</string>
     <string name="how_many_pills">How many pills there are on your tablet?</string>
     <string name="call">Call</string>
@@ -229,5 +229,10 @@
     <string name="phone_number">Phone number :</string>
     <string name="start_date_of_your_pill_tablet">Start date of your pill tablet</string>
     <string name="pill_tablet_settings">Pill tablet settings</string>
+    <string name="add_a_commentary">Add a commentary</string>
+    <string name="doctor_endo_label">On a scale of 0 to 10, how would you assess the management of patients with endometriosis by this doctor?</string>
+    <string name="enter_your_commentary_here">Enter your commentary here</string>
+    <string name="commentaries">Commentaries</string>
+    <string name="address">Address :</string>
 
 </resources>

@@ -17,7 +17,8 @@ fun createDoctorsFromCpamApi(response : ResultApi) : List<Doctor>{
                 it.fields.telephone,
                 it.fields.actes,
                 it.fields.types_actes,
-                it.fields.coordonnees
+                it.fields.coordonnees,
+                it.fields.dist
             )
         )
     }

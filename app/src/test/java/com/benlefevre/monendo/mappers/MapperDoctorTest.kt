@@ -19,7 +19,7 @@ class MapperDoctorTest{
                     "", 92370, "", "", "Chirurgie",
                     "", "Mr", "15 avenue Charles de Gaulle 75000 Paris", "061789956230", "92",
                     "Gynécologue", 0, "1", "Paris",
-                    "", 0, listOf(22.0, 23.0), "Chirurgie complète"
+                    "", 0, listOf(22.0, 23.0), "Chirurgie complète",600.0
                 ),
                 Geometry(
                     "",
@@ -52,6 +52,7 @@ class MapperDoctorTest{
         assertEquals(listOf(22.0,23.0),doctor[0].coordonnees)
         assertEquals(0,doctor[0].nbComment)
         assertEquals(0.0,doctor[0].rating,0.0)
+        assertEquals(600.0,doctor[0].dist,0.0)
     }
 }
 

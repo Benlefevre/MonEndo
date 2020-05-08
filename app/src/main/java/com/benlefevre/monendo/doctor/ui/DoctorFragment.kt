@@ -1,4 +1,4 @@
-package com.benlefevre.monendo.doctor
+package com.benlefevre.monendo.doctor.ui
 
 import android.Manifest
 import android.content.Intent
@@ -18,7 +18,11 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.benlefevre.monendo.MainActivity
 import com.benlefevre.monendo.R
+import com.benlefevre.monendo.doctor.DoctorAdapter
+import com.benlefevre.monendo.doctor.EndoWindowAdapter
 import com.benlefevre.monendo.doctor.models.Doctor
+import com.benlefevre.monendo.doctor.viewmodel.DoctorUiState
+import com.benlefevre.monendo.doctor.viewmodel.DoctorViewModel
 import com.benlefevre.monendo.location.LocationData
 import com.benlefevre.monendo.location.LocationLiveData
 import com.benlefevre.monendo.utils.LOCATION_PERMISSIONS
@@ -62,7 +66,8 @@ class DoctorFragment : Fragment(R.layout.fragment_doctor), OnMapReadyCallback,
     }
 
     private fun configureRecyclerView() {
-        doctorAdapter = DoctorAdapter(doctors, this)
+        doctorAdapter =
+            DoctorAdapter(doctors, this)
         fragment_doctor_recycler_view.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = doctorAdapter
@@ -220,7 +225,8 @@ class DoctorFragment : Fragment(R.layout.fragment_doctor), OnMapReadyCallback,
             )
         )
         map.setOnInfoWindowClickListener {
-            val doctorDest = DoctorFragmentDirections.actionDoctorFragmentToDoctorDetailFragment(it.tag as Doctor)
+            val doctorDest =
+                DoctorFragmentDirections.actionDoctorFragmentToDoctorDetailFragment(it.tag as Doctor)
             navController.navigate(doctorDest)
         }
         map.setOnMarkerClickListener {
@@ -292,13 +298,21 @@ class DoctorFragment : Fragment(R.layout.fragment_doctor), OnMapReadyCallback,
     private fun setOnClickListeners() {
         fragment_doctor_search_txt.addTextChangedListener {
             when {
-                it.toString().isNotEmpty() -> fragment_doctor_search_btn.text =
-                    getString(R.string.search_btn)
-                else -> fragment_doctor_search_btn.text = getString(R.string.around_me)
+                it.toString().isNotEmpty() -> with(fragment_doctor_search_btn){
+                        visibility = View.VISIBLE
+                        text = getString(R.string.search_btn)
+                    }
+                else -> with(fragment_doctor_search_btn){
+                    visibility = View.GONE
+                    text = getString(R.string.around_me)
+                }
             }
             searchLocation = it.toString()
         }
         fragment_doctor_search_btn.setOnClickListener {
+            getDoctor()
+        }
+        fragment_doctor_chip_group.setOnCheckedChangeListener { _, _ ->
             getDoctor()
         }
     }
@@ -320,7 +334,8 @@ class DoctorFragment : Fragment(R.layout.fragment_doctor), OnMapReadyCallback,
             marker.showInfoWindow()
         }
         else{
-            val doctorDest = DoctorFragmentDirections.actionDoctorFragmentToDoctorDetailFragment(doctor)
+            val doctorDest =
+                DoctorFragmentDirections.actionDoctorFragmentToDoctorDetailFragment(doctor)
             navController.navigate(doctorDest)
         }
     }

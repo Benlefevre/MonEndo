@@ -102,7 +102,7 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
     private fun setupAllCharts() {
         if (!pains.isNullOrEmpty()) setupPainChart()
         if (!symptoms.isNullOrEmpty()) setupSymptomsChart()
-        if (!activities.isNullOrEmpty()) setupActivitiesChart()
+        if (!activities.filter { it.name != getString(R.string.sleep) }.isNullOrEmpty()) setupActivitiesChart()
         if (!activities.filter { it.name == getString(R.string.sleep) }.isNullOrEmpty()) setupSleepChart()
         if (!moods.isNullOrEmpty()) setupMoodChart()
     }

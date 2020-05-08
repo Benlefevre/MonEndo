@@ -1,4 +1,4 @@
-package com.benlefevre.monendo.doctor
+package com.benlefevre.monendo.doctor.repository
 
 import com.benlefevre.monendo.doctor.models.Commentary
 import com.benlefevre.monendo.utils.COMMENT_COLLECTION

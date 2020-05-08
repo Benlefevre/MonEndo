@@ -55,7 +55,7 @@
         tools:layout="@layout/fragment_fertility" />
     <fragment
         android:id="@+id/doctorFragment"
-        android:name="com.benlefevre.monendo.doctor.DoctorFragment"
+        android:name="com.benlefevre.monendo.doctor.ui.DoctorFragment"
         android:label="@string/doctor"
         tools:layout="@layout/fragment_doctor" >
         <action
@@ -64,7 +64,7 @@
     </fragment>
     <fragment
         android:id="@+id/doctorDetailFragment"
-        android:name="com.benlefevre.monendo.doctor.DoctorDetailFragment"
+        android:name="com.benlefevre.monendo.doctor.ui.DoctorDetailFragment"
         android:label="@string/doctor_details"
         tools:layout="@layout/fragment_doctor_detail" >
         <argument android:name="selectedDoctor"

@@ -10,7 +10,6 @@ import com.benlefevre.monendo.R
 import com.benlefevre.monendo.doctor.models.Doctor
 import com.google.android.material.textview.MaterialTextView
 import kotlinx.android.synthetic.main.doctor_list_item.view.*
-import kotlinx.android.synthetic.main.rating_stars.view.*
 
 class DoctorAdapter(
     private val doctors: List<Doctor>,
@@ -56,89 +55,7 @@ class DoctorAdapter(
                     R.string.doctor_nb_comment,
                     doctor.nbComment
                 ) else context.getString(R.string.no_doctor_comment)
-            defineNbStars(doctor.rating, holder)
-        }
-    }
-
-    private fun defineNbStars(doctorRating: Double, holder: DoctorViewHolder) {
-        when (doctorRating) {
-            in 0.1..0.5 -> {
-                holder.ratingStar.star1.setImageResource(R.drawable.half_star)
-                holder.ratingStar.star2.setImageResource(R.drawable.empty_star)
-                holder.ratingStar.star3.setImageResource(R.drawable.empty_star)
-                holder.ratingStar.star4.setImageResource(R.drawable.empty_star)
-                holder.ratingStar.star5.setImageResource(R.drawable.empty_star)
-            }
-            in 0.6..1.0 -> {
-                holder.ratingStar.star1.setImageResource(R.drawable.full_star)
-                holder.ratingStar.star2.setImageResource(R.drawable.empty_star)
-                holder.ratingStar.star3.setImageResource(R.drawable.empty_star)
-                holder.ratingStar.star4.setImageResource(R.drawable.empty_star)
-                holder.ratingStar.star5.setImageResource(R.drawable.empty_star)
-            }
-            in 1.1..1.5 -> {
-                holder.ratingStar.star1.setImageResource(R.drawable.full_star)
-                holder.ratingStar.star2.setImageResource(R.drawable.half_star)
-                holder.ratingStar.star3.setImageResource(R.drawable.empty_star)
-                holder.ratingStar.star4.setImageResource(R.drawable.empty_star)
-                holder.ratingStar.star5.setImageResource(R.drawable.empty_star)
-            }
-            in 1.6..2.0 -> {
-                holder.ratingStar.star1.setImageResource(R.drawable.full_star)
-                holder.ratingStar.star2.setImageResource(R.drawable.full_star)
-                holder.ratingStar.star3.setImageResource(R.drawable.empty_star)
-                holder.ratingStar.star4.setImageResource(R.drawable.empty_star)
-                holder.ratingStar.star5.setImageResource(R.drawable.empty_star)
-            }
-            in 2.1..2.5 -> {
-                holder.ratingStar.star1.setImageResource(R.drawable.full_star)
-                holder.ratingStar.star2.setImageResource(R.drawable.full_star)
-                holder.ratingStar.star3.setImageResource(R.drawable.half_star)
-                holder.ratingStar.star4.setImageResource(R.drawable.empty_star)
-                holder.ratingStar.star5.setImageResource(R.drawable.empty_star)
-            }
-            in 2.6..3.0 -> {
-                holder.ratingStar.star1.setImageResource(R.drawable.full_star)
-                holder.ratingStar.star2.setImageResource(R.drawable.full_star)
-                holder.ratingStar.star3.setImageResource(R.drawable.full_star)
-                holder.ratingStar.star4.setImageResource(R.drawable.empty_star)
-                holder.ratingStar.star5.setImageResource(R.drawable.empty_star)
-            }
-            in 3.1..3.5 -> {
-                holder.ratingStar.star1.setImageResource(R.drawable.full_star)
-                holder.ratingStar.star2.setImageResource(R.drawable.full_star)
-                holder.ratingStar.star3.setImageResource(R.drawable.full_star)
-                holder.ratingStar.star4.setImageResource(R.drawable.half_star)
-                holder.ratingStar.star5.setImageResource(R.drawable.empty_star)
-            }
-            in 3.6..4.0 -> {
-                holder.ratingStar.star1.setImageResource(R.drawable.full_star)
-                holder.ratingStar.star2.setImageResource(R.drawable.full_star)
-                holder.ratingStar.star3.setImageResource(R.drawable.full_star)
-                holder.ratingStar.star4.setImageResource(R.drawable.full_star)
-                holder.ratingStar.star5.setImageResource(R.drawable.empty_star)
-            }
-            in 4.1..4.5 -> {
-                holder.ratingStar.star1.setImageResource(R.drawable.full_star)
-                holder.ratingStar.star2.setImageResource(R.drawable.full_star)
-                holder.ratingStar.star3.setImageResource(R.drawable.full_star)
-                holder.ratingStar.star4.setImageResource(R.drawable.full_star)
-                holder.ratingStar.star5.setImageResource(R.drawable.half_star)
-            }
-            in 4.6..5.0 -> {
-                holder.ratingStar.star1.setImageResource(R.drawable.full_star)
-                holder.ratingStar.star2.setImageResource(R.drawable.full_star)
-                holder.ratingStar.star3.setImageResource(R.drawable.full_star)
-                holder.ratingStar.star4.setImageResource(R.drawable.full_star)
-                holder.ratingStar.star5.setImageResource(R.drawable.full_star)
-            }
-            else -> {
-                holder.ratingStar.star1.setImageResource(R.drawable.empty_star)
-                holder.ratingStar.star2.setImageResource(R.drawable.empty_star)
-                holder.ratingStar.star3.setImageResource(R.drawable.empty_star)
-                holder.ratingStar.star4.setImageResource(R.drawable.empty_star)
-                holder.ratingStar.star5.setImageResource(R.drawable.empty_star)
-            }
+            defineNbStars(doctor.rating, ratingStar)
         }
     }
 

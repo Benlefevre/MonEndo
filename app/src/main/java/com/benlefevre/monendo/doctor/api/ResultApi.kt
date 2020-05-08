@@ -55,7 +55,9 @@ data class Fields (
     @SerializedName("ccam_phase") val ccam_phase : String,
     @SerializedName("code_profession") val code_profession : Int,
     @SerializedName("coordonnees") val coordonnees : List<Double>,
-    @SerializedName("actes") val actes : String
+    @SerializedName("actes") val actes : String,
+    @SerializedName("dist") val dist : Double
+
 )
 
 data class Facets (

@@ -4,12 +4,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".doctor.DoctorFragment">
+    tools:context=".doctor.ui.DoctorFragment">
 
     <com.google.android.material.card.MaterialCardView
         style="@style/CardViewTheme"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_marginBottom="8dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -66,9 +66,11 @@
                 app:layout_constraintTop_toBottomOf="@id/fragment_doctor_search_label">
 
                 <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/fragment_doctor_chip_group"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:chipSpacing="4dp"
+                    app:selectionRequired="true"
                     app:singleLine="true"
                     app:singleSelection="true">
 
@@ -106,6 +108,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/around_me"
+                android:visibility="gone"
                 app:cornerRadius="25dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -114,13 +117,14 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/fragment_doctor_recycler_view"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
                 android:layout_marginStart="4dp"
                 android:layout_marginTop="4dp"
                 android:layout_marginEnd="4dp"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/fragment_doctor_divider"/>
+                app:layout_constraintTop_toBottomOf="@+id/fragment_doctor_divider" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

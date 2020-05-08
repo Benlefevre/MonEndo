@@ -3,12 +3,12 @@ package com.benlefevre.monendo.ui.viewmodels
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import androidx.lifecycle.SavedStateHandle
-import com.benlefevre.monendo.doctor.CommentaryRepository
-import com.benlefevre.monendo.doctor.DoctorUiState
-import com.benlefevre.monendo.doctor.DoctorViewModel
 import com.benlefevre.monendo.doctor.api.*
 import com.benlefevre.monendo.doctor.createDoctorsFromCpamApi
 import com.benlefevre.monendo.doctor.models.Doctor
+import com.benlefevre.monendo.doctor.repository.CommentaryRepository
+import com.benlefevre.monendo.doctor.viewmodel.DoctorUiState
+import com.benlefevre.monendo.doctor.viewmodel.DoctorViewModel
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.argumentCaptor
 import com.nhaarman.mockitokotlin2.verify
@@ -60,7 +60,7 @@ class DoctorViewModelTest {
             doctorRepository,
             commentaryRepository
         )
-        doctors = listOf(Doctor("1", "test", "mr", "testAddress", "doctor", null, "000", null, null, listOf(0.0, 0.0), 2, 3.0))
+        doctors = listOf(Doctor("1", "test", "mr", "testAddress", "doctor", null, "000", null, null, listOf(0.0, 0.0),600.0 ,2, 3.0))
         handle.set("doctor", doctors)
         handle.set("mapQ", "doctor")
         handle.set("location", "here")
@@ -107,7 +107,7 @@ class DoctorViewModelTest {
                         "", 92370, "", "", "",
                         "", "Mr", "", "061789956230", "92",
                         "", 0, "", "Chaville",
-                        "", 0, listOf(22.0, 23.0), ""
+                        "", 0, listOf(22.0, 23.0), "",600.0
                     ),
                     Geometry(
                         "",

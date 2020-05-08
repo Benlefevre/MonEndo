@@ -8,10 +8,10 @@ import com.benlefevre.monendo.dashboard.repository.SymptomRepo
 import com.benlefevre.monendo.dashboard.repository.UserActivitiesRepo
 import com.benlefevre.monendo.dashboard.viewmodels.DashboardViewModel
 import com.benlefevre.monendo.database.EndoDatabase
-import com.benlefevre.monendo.doctor.CommentaryRepository
-import com.benlefevre.monendo.doctor.DoctorViewModel
 import com.benlefevre.monendo.doctor.api.CpamService
 import com.benlefevre.monendo.doctor.api.DoctorRepository
+import com.benlefevre.monendo.doctor.repository.CommentaryRepository
+import com.benlefevre.monendo.doctor.viewmodel.DoctorViewModel
 import com.benlefevre.monendo.fertility.FertilityViewModel
 import com.benlefevre.monendo.fertility.temperature.TemperatureRepo
 import com.benlefevre.monendo.login.LoginActivityViewModel
