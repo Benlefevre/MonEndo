@@ -1,7 +1,6 @@
 package com.benlefevre.monendo.fertility.ui
 
 import android.app.DatePickerDialog
-import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
@@ -21,13 +20,14 @@ import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputEditText
 import kotlinx.android.synthetic.main.fragment_fertility.*
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 import java.util.*
 
 class FertilityFragment : Fragment(R.layout.fragment_fertility) {
 
-    private lateinit var sharedPreferences: SharedPreferences
+    private val sharedPreferences: SharedPreferences by inject()
     private lateinit var mensDay: TextInputEditText
     private lateinit var durationMens: TextInputEditText
     private val mensDates: MutableList<String> by lazy { mutableListOf<String>() }
@@ -41,7 +41,6 @@ class FertilityFragment : Fragment(R.layout.fragment_fertility) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        sharedPreferences = requireContext().getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)
         initViews()
         getUserInput()
         getUserTemperature()
@@ -60,29 +59,13 @@ class FertilityFragment : Fragment(R.layout.fragment_fertility) {
      */
     private fun getUserInput() {
         monthLabel = calendar.get(Calendar.MONTH)
-        val currentMonthValue = sharedPreferences.getString(monthLabel.toString(), null)
-        val monthLabelDate = currentMonthValue?.let { parseStringInDate(it) }
-        val currentMonth = Calendar.getInstance().apply {
-            monthLabelDate?.let {
-                time = it
-            }
+        val inputs = viewModel.getCorrectUserInput()
+        if (inputs[0].isNotBlank()){
+            mensDay.setText(inputs[0])
+            durationMens.isFocusableInTouchMode = true
         }
-        Timber.i("currentMonthValue = $currentMonthValue / monthLabelDate = $monthLabelDate / current month =${currentMonth.time}")
-
-        if (Calendar.getInstance().before(currentMonth)) {
-            sharedPreferences.getString((monthLabel - 1).toString(), null).let {
-                mensDay.setText(it)
-                durationMens.isFocusableInTouchMode = true
-            }
-        } else {
-            sharedPreferences.getString(monthLabel.toString(), null)?.let {
-                mensDay.setText(it)
-                durationMens.isFocusableInTouchMode = true
-            }
-            sharedPreferences.edit().remove("${monthLabel - 1}").apply()
-        }
-        sharedPreferences.getString(DURATION, null)?.let {
-            durationMens.setText(it)
+        if (inputs[1].isNotBlank()){
+            durationMens.setText(inputs[1])
         }
     }
 
@@ -120,7 +103,7 @@ class FertilityFragment : Fragment(R.layout.fragment_fertility) {
             day = calendar.time
             mensDates.add(formatDateWithYear(day))
             sharedPreferences.edit()
-                .putString((if (monthLabelTemp + 1 == 12) 0 else monthLabelTemp + 1).toString(), formatDateWithYear(day))
+                .putString(NEXT_MENS, formatDateWithYear(day))
                 .apply()
 
             while (monthLabelTemp != 11) {
@@ -180,7 +163,7 @@ class FertilityFragment : Fragment(R.layout.fragment_fertility) {
         initCalendar()
         if (!mensDay.text.isNullOrBlank()) {
             sharedPreferences.edit()
-                .putString(monthLabel.toString(), mensDay.text.toString())
+                .putString(CURRENT_MENS, mensDay.text.toString())
                 .apply()
             durationMens.isFocusableInTouchMode = true
             fertility_day_mens_label.isErrorEnabled = false

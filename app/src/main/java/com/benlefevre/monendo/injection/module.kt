@@ -1,5 +1,8 @@
 package com.benlefevre.monendo.injection
 
+import android.app.Application
+import android.content.Context
+import android.content.SharedPreferences
 import androidx.lifecycle.SavedStateHandle
 import androidx.room.Room
 import com.benlefevre.monendo.dashboard.repository.MoodRepo
@@ -20,6 +23,7 @@ import com.benlefevre.monendo.pain.PainFragmentViewModel
 import com.benlefevre.monendo.pain.PainRepo
 import com.benlefevre.monendo.settings.SettingViewModel
 import com.benlefevre.monendo.utils.API_URL
+import com.benlefevre.monendo.utils.PREFERENCES
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import okhttp3.OkHttpClient
@@ -48,6 +52,7 @@ val appModule = module {
         )
     }
     single { UserRepo(get()) }
+    single { provideSharedPreferences(androidApplication()) }
     viewModel {
         DashboardViewModel(
             get()
@@ -62,8 +67,8 @@ val appModule = module {
             get()
         )
     }
-    viewModel { FertilityViewModel(get()) }
-    viewModel { SettingViewModel(get(), get(),get()) }
+    viewModel { FertilityViewModel(get(), get()) }
+    viewModel { SettingViewModel(get(), get(), get()) }
 }
 
 val networkModule = module {
@@ -91,5 +96,9 @@ fun provideHttpClient(): OkHttpClient {
     return OkHttpClient.Builder()
         .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
         .build()
+}
+
+fun provideSharedPreferences(app: Application): SharedPreferences {
+    return app.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)
 }
 
