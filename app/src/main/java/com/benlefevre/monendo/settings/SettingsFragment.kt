@@ -1,6 +1,5 @@
 package com.benlefevre.monendo.settings
 
-import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
@@ -21,8 +20,8 @@ import com.benlefevre.monendo.utils.*
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.util.*
 
 class SettingsFragment : PreferenceFragmentCompat(), CommentaryAdapter.CommentaryListAdapterListener {
 
@@ -34,9 +33,7 @@ class SettingsFragment : PreferenceFragmentCompat(), CommentaryAdapter.Commentar
     private val commentIdList = mutableListOf<String>()
     private val selectedCommentList = mutableListOf<Commentary>()
 
-    private val preferences by lazy {
-        requireContext().getSharedPreferences(PREFERENCES, MODE_PRIVATE)
-    }
+    private val preferences : SharedPreferences by inject()
 
     private lateinit var preferencePill: ListPreference
     private lateinit var dataPreferences: Preference
@@ -48,13 +45,9 @@ class SettingsFragment : PreferenceFragmentCompat(), CommentaryAdapter.Commentar
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.settings, rootKey)
-//        adapter = CommentaryAdapter(comments,this)
-//        getCommentaries()
         dataStore = DataStore(preferences)
         val preferenceManager = preferenceManager
         preferenceManager.preferenceDataStore = dataStore
-//        initPreferences()
-//        configurePreferencesBehaviors()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -132,14 +125,10 @@ class SettingsFragment : PreferenceFragmentCompat(), CommentaryAdapter.Commentar
     }
 
     private fun removeMenstruationData() {
-        val month = Calendar.getInstance().get(Calendar.MONTH)
-        val previousMonth = month - 1
-        val nextMonth = month + 1
         preferences.edit().apply {
             remove(DURATION)
-            remove("$month")
-            remove("$previousMonth")
-            remove("$nextMonth")
+            remove(CURRENT_MENS)
+            remove(NEXT_MENS)
         }.apply()
     }
 

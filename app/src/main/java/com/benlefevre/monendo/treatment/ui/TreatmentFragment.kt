@@ -2,7 +2,6 @@ package com.benlefevre.monendo.treatment.ui
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
-import android.content.Context
 import android.content.DialogInterface
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -27,6 +26,7 @@ import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.custom_dialog_nb_pills.view.*
 import kotlinx.android.synthetic.main.custom_dialog_treatment.view.*
 import kotlinx.android.synthetic.main.fragment_treatment.*
+import org.koin.android.ext.android.inject
 import timber.log.Timber
 import java.util.*
 
@@ -43,7 +43,7 @@ class TreatmentFragment : Fragment(R.layout.fragment_treatment) {
     private val treatmentList = mutableListOf<Treatment>()
     private val checkedPills = mutableListOf<Pill>()
 
-    private lateinit var sharedPreferences: SharedPreferences
+    private val sharedPreferences: SharedPreferences by inject()
     private val gson by lazy { Gson() }
     private lateinit var calendar: Calendar
     private lateinit var recyclerView: RecyclerView
@@ -53,7 +53,6 @@ class TreatmentFragment : Fragment(R.layout.fragment_treatment) {
         super.onViewCreated(view, savedInstanceState)
         initViews()
         setupClickListener()
-        sharedPreferences = requireContext().getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)
         calendar = Calendar.getInstance()
         getCheckedPills()
         getUserInput()
@@ -620,7 +619,6 @@ class TreatmentFragment : Fragment(R.layout.fragment_treatment) {
     override fun onPause() {
         super.onPause()
 //        Save in SharedPreferences the checked pills
-//        if (pillTablet.pills.any { it.isChecked })
         sharedPreferences.edit().putString(CHECKED_PILLS, gson.toJson(pillTablet.pills)).apply()
 //        Save in SharedPreferences the user's treatments
         sharedPreferences.edit().putString(TREATMENT, gson.toJson(treatmentList)).apply()

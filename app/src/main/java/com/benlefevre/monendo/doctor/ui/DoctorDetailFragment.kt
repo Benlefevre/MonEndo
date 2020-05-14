@@ -1,6 +1,5 @@
 package com.benlefevre.monendo.doctor.ui
 
-import android.content.Context
 import android.content.Intent
 import android.content.Intent.ACTION_DIAL
 import android.content.Intent.ACTION_VIEW
@@ -26,7 +25,6 @@ import com.benlefevre.monendo.doctor.viewmodel.DoctorViewModel
 import com.benlefevre.monendo.login.User
 import com.benlefevre.monendo.utils.COMMENT_ID
 import com.benlefevre.monendo.utils.NO_NAME
-import com.benlefevre.monendo.utils.PREFERENCES
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
@@ -37,6 +35,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.custom_dialog_comment.view.*
 import kotlinx.android.synthetic.main.fragment_doctor_detail.*
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.stateViewModel
 import java.util.*
 
@@ -47,7 +46,7 @@ class DoctorDetailFragment : Fragment(R.layout.fragment_doctor_detail), OnMapRea
     private lateinit var markerOptions: MarkerOptions
     private lateinit var user: User
     private lateinit var adapter: CommentaryAdapter
-    private lateinit var sharedPreferences: SharedPreferences
+    private val sharedPreferences: SharedPreferences by inject()
     private lateinit var commentIdList: MutableList<String>
     private val gson = Gson()
     private val commentaries = mutableListOf<Commentary>()
@@ -56,7 +55,6 @@ class DoctorDetailFragment : Fragment(R.layout.fragment_doctor_detail), OnMapRea
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        sharedPreferences = requireContext().getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)
         user = MainActivity.user
         initMap()
         configureRecyclerView()
