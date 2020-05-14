@@ -234,5 +234,25 @@
     <string name="enter_your_commentary_here">Entrez votre commentaire ici</string>
     <string name="commentaries">Commentaires</string>
     <string name="address">Adresse :</string>
+    <string name="already_comment">Vous avez déjà enregistré un commentaire pour ce médecin.</string>
+    <string name="saved_data">Données sauvegardées</string>
+    <string name="delete_pains">Effacer toutes les entrées liées aux douleurs</string>
+    <string name="sure_delete_pains">Êtes-vous sûre de vouloir effacer toutes vos entrées de douleurs?</string>
+    <string name="delete_treatments">Effacer les données liées aux traitements</string>
+    <string name="sure_delete_treatment">Êtes-vous sûre de vouloir effacer toutes les données liées aux traitements</string>
+    <string name="delete_temp_data">Effacer les données liées aux températures</string>
+    <string name="sure_delete_temp">Êtes-vous sûre de vouloir effacer toutes les données liées aux températures?</string>
+    <string name="delete_mens_data">Effacer toutes les données liées aux menstruations</string>
+    <string name="sure_delete_mens_data">Êtes-vous sûre de vouloir effacer toutes les données liées aux menstruations?</string>
+    <string name="yes_sure">Oui, je suis sûre</string>
+    <string name="can_delete_pains">Vous pouvez effacer toutes les données liées à vos douleurs</string>
+    <string name="choose_nb_pill">Vous pouvez choisir le nombre de pilules par tablette afin de faire correspondre l\'affichage à votre pilule contraceptive</string>
+    <string name="reset_treatment_data">Vous pouvez effacer toutes les données liées à vos traitements</string>
+    <string name="can_delete_mens_data">Vous pouvez effacer toutes les données liées à vos menstruations</string>
+    <string name="can_delete_temp_data">Vous pouvez effacer toutes les données liées aux températures</string>
+    <string name="can_delete_commentary">Vous pouvez effacer l\'un de vos commentaires à propos d\'un médecin</string>
+    <string name="delete_comment">Effacer un commentaire</string>
+    <string name="click_comment_to_delete">Sélectionnez le(s) commentaire(s) que vous souhaitez effacer et valider votre choix.</string>
+    <string name="network_location">Un accès réseau et votre position sont nécessaires pour rechercher des médecins.</string>
 
 </resources>

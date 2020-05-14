@@ -1,0 +1,246 @@
+package com.benlefevre.monendo.settings
+
+import android.content.Context.MODE_PRIVATE
+import android.content.SharedPreferences
+import android.os.Bundle
+import android.view.View
+import androidx.lifecycle.Observer
+import androidx.preference.ListPreference
+import androidx.preference.Preference
+import androidx.preference.PreferenceDataStore
+import androidx.preference.PreferenceFragmentCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.work.WorkManager
+import com.benlefevre.monendo.MainActivity
+import com.benlefevre.monendo.R
+import com.benlefevre.monendo.doctor.CommentaryAdapter
+import com.benlefevre.monendo.doctor.models.Commentary
+import com.benlefevre.monendo.treatment.models.Treatment
+import com.benlefevre.monendo.utils.*
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.util.*
+
+class SettingsFragment : PreferenceFragmentCompat(), CommentaryAdapter.CommentaryListAdapterListener {
+
+    private val viewModel: SettingViewModel by viewModel()
+
+    private lateinit var dataStore: PreferenceDataStore
+    private lateinit var adapter : CommentaryAdapter
+    private val comments = mutableListOf<Commentary>()
+    private val commentIdList = mutableListOf<String>()
+    private val selectedCommentList = mutableListOf<Commentary>()
+
+    private val preferences by lazy {
+        requireContext().getSharedPreferences(PREFERENCES, MODE_PRIVATE)
+    }
+
+    private lateinit var preferencePill: ListPreference
+    private lateinit var dataPreferences: Preference
+    private lateinit var dataTreatment: Preference
+    private lateinit var dataMenstruation: Preference
+    private lateinit var dataTemperature: Preference
+    private lateinit var dataDoctor: Preference
+    private val gson = Gson()
+
+    override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+        setPreferencesFromResource(R.xml.settings, rootKey)
+//        adapter = CommentaryAdapter(comments,this)
+//        getCommentaries()
+        dataStore = DataStore(preferences)
+        val preferenceManager = preferenceManager
+        preferenceManager.preferenceDataStore = dataStore
+//        initPreferences()
+//        configurePreferencesBehaviors()
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        adapter = CommentaryAdapter(comments,this)
+        getCommentaries()
+        initPreferences()
+        configurePreferencesBehaviors()
+    }
+
+    private fun initPreferences() {
+        preferencePill = findPreference(NUMBER_OF_PILLS)!!
+        dataPreferences = findPreference("pain_data")!!
+        dataTreatment = findPreference("reset_treatment_data")!!
+        dataMenstruation = findPreference("mens_data")!!
+        dataTemperature = findPreference("temp_data")!!
+        dataDoctor = findPreference("comment_data")!!
+    }
+
+    private fun configurePreferencesBehaviors() {
+        preferencePill.apply {
+            value = preferences.getString(NUMBER_OF_PILLS, "28")
+            setOnPreferenceChangeListener { _, _ ->
+                preferences.edit().remove(CHECKED_PILLS).apply()
+                true
+            }
+        }
+        dataPreferences.apply {
+            setOnPreferenceClickListener {
+                openCustomDialog(getString(R.string.delete_pains), getString(R.string.sure_delete_pains), "data")
+                true
+            }
+        }
+        dataTreatment.apply {
+            setOnPreferenceClickListener {
+                openCustomDialog(getString(R.string.delete_treatments), getString(R.string.sure_delete_treatment), "treatment")
+                true
+            }
+        }
+        dataMenstruation.apply {
+            setOnPreferenceClickListener {
+                openCustomDialog(getString(R.string.delete_mens_data), getString(R.string.sure_delete_mens_data), "menstruation")
+                true
+            }
+        }
+        dataTemperature.apply {
+            setOnPreferenceClickListener {
+                openCustomDialog(getString(R.string.delete_temp_data), getString(R.string.sure_delete_temp), "temperature")
+                true
+            }
+        }
+        dataDoctor.apply {
+            setOnPreferenceClickListener {
+                openCommentaryDialog()
+                true
+            }
+        }
+    }
+
+    private fun getCommentaries() {
+        comments.clear()
+        commentIdList.clear()
+        gson.fromJson<List<String>>(
+            preferences.getString(COMMENT_ID, ""),
+            object : TypeToken<List<String>>() {}.type
+        )?.let {
+            commentIdList.addAll(it)
+        }
+        viewModel.getUserCommentaries(commentIdList)
+        viewModel.commentLiveData.observe(viewLifecycleOwner, Observer {
+            comments.clear()
+            comments.addAll(it)
+            adapter.notifyDataSetChanged()
+        })
+    }
+
+    private fun removeMenstruationData() {
+        val month = Calendar.getInstance().get(Calendar.MONTH)
+        val previousMonth = month - 1
+        val nextMonth = month + 1
+        preferences.edit().apply {
+            remove(DURATION)
+            remove("$month")
+            remove("$previousMonth")
+            remove("$nextMonth")
+        }.apply()
+    }
+
+    private fun removeTreatmentData() {
+        val treatmentList = mutableListOf<Treatment>()
+        gson.fromJson<List<Treatment>>(
+            preferences.getString(TREATMENT, ""),
+            object : TypeToken<List<Treatment>>() {}.type
+        )?.let {
+            treatmentList.addAll(it)
+        }
+        val workManager = WorkManager.getInstance(requireContext())
+        treatmentList.forEach {
+            workManager.apply {
+                cancelUniqueWork("${it.name} $MORNING")
+                cancelUniqueWork("${it.name} $NOON")
+                cancelUniqueWork("${it.name} $AFTERNOON")
+                cancelUniqueWork("${it.name} $EVENING")
+            }
+        }
+        workManager.apply {
+            cancelUniqueWork(PILL_TAG)
+            cancelUniqueWork(PILL_REPEAT)
+        }
+        preferences.edit().apply {
+            remove(PILL_HOUR_NOTIF)
+            remove(CHECKED_PILLS)
+            remove(CURRENT_CHECKED)
+            remove(NEED_CLEAR)
+            remove(LAST_PILL_DATE)
+            remove(NEXT_PILL_DATE)
+            remove(TREATMENT)
+        }.apply()
+    }
+
+    private fun openCustomDialog(title: String, message: String, origin: String) {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(title)
+            .setMessage(message)
+            .setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
+                dialog.cancel()
+            }
+            .setPositiveButton(getString(R.string.yes_sure)) { _, _ ->
+                when (origin) {
+                    "data" -> viewModel.deleteAllPains()
+                    "treatment" -> removeTreatmentData()
+                    "temperature" -> viewModel.deleteAllTemperatures()
+                    "menstruation" -> removeMenstruationData()
+                }
+            }
+            .show()
+    }
+
+    private fun openCommentaryDialog(){
+        val recyclerView = RecyclerView(requireContext())
+        recyclerView.apply {
+            adapter = this@SettingsFragment.adapter
+            layoutManager = LinearLayoutManager(requireContext())
+        }
+        MaterialAlertDialogBuilder(requireContext())
+            .setView(recyclerView)
+            .setTitle(getString(R.string.delete_comment))
+            .setMessage(getString(R.string.click_comment_to_delete))
+            .setNegativeButton(getString(R.string.cancel)){dialog, _ ->
+                dialog.cancel()
+            }
+            .setPositiveButton(getString(R.string.yes_sure)) { _, _ ->
+                removeCommentaries()
+            }
+            .show()
+    }
+
+    private fun removeCommentaries() {
+        val userId = MainActivity.user.id
+        selectedCommentList.forEach {
+            val id = "${it.doctorName}-$userId"
+            commentIdList.remove(id)
+            viewModel.deleteCommentary(id)
+            comments.remove(it)
+        }
+        val idList = gson.toJson(commentIdList)
+        preferences.edit().putString(COMMENT_ID,idList).apply()
+    }
+
+    override fun onCommentarySelected(commentary: Commentary) {
+        if (selectedCommentList.contains(commentary)){
+            selectedCommentList.remove(commentary)
+        }else{
+            selectedCommentList.add(commentary)
+        }
+    }
+
+}
+
+class DataStore(private val preferences: SharedPreferences) : PreferenceDataStore() {
+
+    override fun putString(key: String, value: String?) {
+        preferences.edit().putString(key, value).apply()
+    }
+
+    override fun getString(key: String, defValue: String?): String? {
+        return preferences.getString(key, defValue)
+    }
+}

@@ -290,10 +290,12 @@ class FertilityFragment : Fragment(R.layout.fragment_fertility) {
                 if (it.isNullOrBlank()) {
                     fertility_calendar.clearAllCalendarDays()
                 } else {
-                    sharedPreferences.edit()
-                        .putString(DURATION, durationMens.text.toString())
-                        .apply()
-                    initCalendar()
+                    if (it.toString().toInt() >= 10) {
+                        sharedPreferences.edit()
+                            .putString(DURATION, durationMens.text.toString())
+                            .apply()
+                        initCalendar()
+                    }
                 }
             }
         }

@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat.getColor
 import androidx.recyclerview.widget.RecyclerView
 import com.benlefevre.monendo.R
 import com.benlefevre.monendo.doctor.models.Doctor
@@ -14,14 +15,14 @@ import kotlinx.android.synthetic.main.doctor_list_item.view.*
 class DoctorAdapter(
     private val doctors: List<Doctor>,
     private val listener: DoctorListAdapterListener
-) : RecyclerView.Adapter<DoctorAdapter.DoctorViewHolder>(),
-    View.OnClickListener {
-
-    private lateinit var context: Context
+) : RecyclerView.Adapter<DoctorAdapter.DoctorViewHolder>(){
 
     interface DoctorListAdapterListener {
         fun onDoctorSelected(doctor: Doctor)
     }
+
+    private lateinit var context: Context
+    var index = -1
 
     class DoctorViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val doctorItem: ConstraintLayout = itemView.doctor_item_root
@@ -44,7 +45,11 @@ class DoctorAdapter(
     override fun onBindViewHolder(holder: DoctorViewHolder, position: Int) {
         val doctor = doctors[position]
         with(holder) {
-            doctorItem.setOnClickListener(this@DoctorAdapter)
+            doctorItem.setOnClickListener{
+                index = position
+                listener.onDoctorSelected(it.tag as Doctor)
+                notifyDataSetChanged()
+            }
             doctorItem.tag = doctor
             doctorName.text = doctor.name
             doctorSpec.text = doctor.spec
@@ -56,10 +61,11 @@ class DoctorAdapter(
                     doctor.nbComment
                 ) else context.getString(R.string.no_doctor_comment)
             defineNbStars(doctor.rating, ratingStar)
+            if (index == position){
+                doctorItem.setBackgroundColor(getColor(context,R.color.itemSelected))
+            }else{
+                doctorItem.setBackgroundColor(getColor(context,R.color.colorOnPrimary))
+            }
         }
-    }
-
-    override fun onClick(v: View?) {
-        listener.onDoctorSelected(v?.tag as Doctor)
     }
 }

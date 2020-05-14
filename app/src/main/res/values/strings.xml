@@ -4,7 +4,7 @@
     <string name="facebook_application_id">113729150041447</string>
     <string name="fb_login_protocol_scheme">fb113729150041447</string>
 
-<!--        <string name="leak_canary_test_class_name">org.assertj.core.api.Assertions</string>-->
+    <!--        <string name="leak_canary_test_class_name">org.assertj.core.api.Assertions</string>-->
 
     <string-array name="sport">
         <item>BasketBall</item>
@@ -56,6 +56,15 @@
     <string-array name="pill_format">
         <item>28</item>
         <item>21 + 7</item>
+        <item>21</item>
+        <item>14</item>
+        <item>12</item>
+        <item>10</item>
+    </string-array>
+
+    <string-array name="pill_value">
+        <item>28</item>
+        <item>29</item>
         <item>21</item>
         <item>14</item>
         <item>12</item>
@@ -234,5 +243,25 @@
     <string name="enter_your_commentary_here">Enter your commentary here</string>
     <string name="commentaries">Commentaries</string>
     <string name="address">Address :</string>
+    <string name="already_comment">You have already saved a commentary for this doctor</string>
+    <string name="saved_data">Saved data</string>
+    <string name="delete_pains">Delete all pain entries?</string>
+    <string name="sure_delete_pains">Are you sure that you want to delete all your saved pain\'s entries</string>
+    <string name="delete_treatments">Delete all treatment\'s data</string>
+    <string name="sure_delete_treatment">Are you sure that you want to delete all your saved treatment\'s entries?</string>
+    <string name="delete_temp_data">Delete all temperatures\' data</string>
+    <string name="sure_delete_temp">Are you sure that you want delete all your saved temperature\'s entries?</string>
+    <string name="delete_mens_data">Delete all menstruation\'s data</string>
+    <string name="sure_delete_mens_data">Are you sure that you want to delete all your menstruation\'s entries?</string>
+    <string name="yes_sure">Yes, i\'m sure</string>
+    <string name="can_delete_pains">You can delete all your saved pain entries</string>
+    <string name="choose_nb_pill">You can choose the number of pill in a tablet to have a display that corresponding to your tablet</string>
+    <string name="reset_treatment_data">You can reset all your treatment saved data</string>
+    <string name="can_delete_mens_data">You can delete all your mensturation\'s saved data.</string>
+    <string name="can_delete_temp_data">You can delete all your temperature\'s saved data.</string>
+    <string name="can_delete_commentary">You can delete a commentary about a doctor</string>
+    <string name="delete_comment">Delete a commentary</string>
+    <string name="click_comment_to_delete">Click on the commentary you want deleted to delete it definitely</string>
+    <string name="network_location">A network access and your location are necessary to find doctors</string>
 
 </resources>

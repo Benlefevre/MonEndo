@@ -18,6 +18,7 @@ import com.benlefevre.monendo.login.LoginActivityViewModel
 import com.benlefevre.monendo.login.UserRepo
 import com.benlefevre.monendo.pain.PainFragmentViewModel
 import com.benlefevre.monendo.pain.PainRepo
+import com.benlefevre.monendo.settings.SettingViewModel
 import com.benlefevre.monendo.utils.API_URL
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -62,6 +63,7 @@ val appModule = module {
         )
     }
     viewModel { FertilityViewModel(get()) }
+    viewModel { SettingViewModel(get(), get(),get()) }
 }
 
 val networkModule = module {

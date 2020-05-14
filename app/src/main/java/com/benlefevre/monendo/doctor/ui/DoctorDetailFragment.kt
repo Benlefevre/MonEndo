@@ -1,13 +1,16 @@
 package com.benlefevre.monendo.doctor.ui
 
+import android.content.Context
 import android.content.Intent
 import android.content.Intent.ACTION_DIAL
 import android.content.Intent.ACTION_VIEW
+import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
 import android.text.method.ScrollingMovementMethod
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.Toast
 import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -21,17 +24,20 @@ import com.benlefevre.monendo.doctor.models.Commentary
 import com.benlefevre.monendo.doctor.models.Doctor
 import com.benlefevre.monendo.doctor.viewmodel.DoctorViewModel
 import com.benlefevre.monendo.login.User
+import com.benlefevre.monendo.utils.COMMENT_ID
 import com.benlefevre.monendo.utils.NO_NAME
+import com.benlefevre.monendo.utils.PREFERENCES
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.custom_dialog_comment.view.*
 import kotlinx.android.synthetic.main.fragment_doctor_detail.*
 import org.koin.androidx.viewmodel.ext.android.stateViewModel
-import timber.log.Timber
 import java.util.*
 
 class DoctorDetailFragment : Fragment(R.layout.fragment_doctor_detail), OnMapReadyCallback {
@@ -41,12 +47,16 @@ class DoctorDetailFragment : Fragment(R.layout.fragment_doctor_detail), OnMapRea
     private lateinit var markerOptions: MarkerOptions
     private lateinit var user: User
     private lateinit var adapter: CommentaryAdapter
+    private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var commentIdList: MutableList<String>
+    private val gson = Gson()
     private val commentaries = mutableListOf<Commentary>()
 
     private val viewModel: DoctorViewModel by stateViewModel()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        sharedPreferences = requireContext().getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)
         user = MainActivity.user
         initMap()
         configureRecyclerView()
@@ -58,7 +68,7 @@ class DoctorDetailFragment : Fragment(R.layout.fragment_doctor_detail), OnMapRea
     }
 
     private fun configureRecyclerView() {
-        adapter = CommentaryAdapter(commentaries, user)
+        adapter = CommentaryAdapter(commentaries)
         fragment_doctor_detail_recyclerview.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = this@DoctorDetailFragment.adapter
@@ -71,9 +81,6 @@ class DoctorDetailFragment : Fragment(R.layout.fragment_doctor_detail), OnMapRea
             commentaries.clear()
             commentaries.addAll(it)
             adapter.notifyDataSetChanged()
-            it.forEach {
-                Timber.i("$it")
-            }
         })
     }
 
@@ -154,6 +161,10 @@ class DoctorDetailFragment : Fragment(R.layout.fragment_doctor_detail), OnMapRea
         }
     }
 
+    /**
+     * Open a browser Activity with an URL that contained a search with the doctor name. The doctor's
+     * name is split to match the http request format
+     */
     private fun startWebSearch() {
         var name = ""
         doctor.name.split(" ").forEach { subString ->
@@ -171,38 +182,64 @@ class DoctorDetailFragment : Fragment(R.layout.fragment_doctor_detail), OnMapRea
     }
 
     private fun createCommentary(rating: Float, text: String) {
-        val commentary = Commentary(doctor.id, rating.toDouble(), text, user.name, user.photoUrl, Date())
-        viewModel.createCommentaryInFirestore(commentary)
+        val commentary =
+            Commentary(doctor.id, doctor.name, rating.toDouble(), text, user.name, user.photoUrl, Date())
+        viewModel.createCommentaryInFirestore(commentary, user)
     }
 
-    private fun openCommentaryDialog() {
-        if (user.name != NO_NAME) {
-            val customDialog =
-                LayoutInflater.from(requireContext()).inflate(R.layout.custom_dialog_comment, null)
-            val slider = customDialog.custom_dialog_comment_slider
-            val userInput = customDialog.custom_dialog_comment_text
-
-            MaterialAlertDialogBuilder(requireContext())
-                .setView(customDialog)
-                .setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
-                    dialog.cancel()
-                }
-                .setPositiveButton(getString(R.string.save)) { dialog, _ ->
-                    if (!userInput.text.isNullOrBlank()) {
-                        createCommentary(slider.value, userInput.text.toString())
-                        viewModel.getCommentaryWithId(doctor.id)
-                    }
-                    dialog.cancel()
-                }
+    private fun alreadyComment(): Boolean {
+        commentIdList = mutableListOf()
+        gson.fromJson<List<String>>(
+            sharedPreferences.getString(COMMENT_ID, ""),
+            object : TypeToken<List<String>>() {}.type
+        )?.let {
+            commentIdList.addAll(it)
+        }
+        return if (commentIdList.contains("${doctor.name}-${user.id}")) {
+            Toast.makeText(requireContext(), getString(R.string.already_comment), Toast.LENGTH_SHORT)
                 .show()
+            true
         } else {
-            val snackbar =
-                Snackbar.make(fragment_doctor_detail_bottom_bar, "You have to sign in to leave a commentary", Snackbar.LENGTH_LONG)
-            snackbar.setAction("Log out and sign in") {
-                findNavController().navigate(R.id.logOut)
-            }
-            snackbar.show()
+            false
         }
     }
 
+    private fun openCommentaryDialog() {
+        if (alreadyComment()) {
+            return
+        } else {
+            if (user.name != NO_NAME) {
+                val customDialog =
+                    LayoutInflater.from(requireContext())
+                        .inflate(R.layout.custom_dialog_comment, null)
+                val slider = customDialog.custom_dialog_comment_slider
+                val userInput = customDialog.custom_dialog_comment_text
+
+                MaterialAlertDialogBuilder(requireContext())
+                    .setView(customDialog)
+                    .setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
+                        dialog.cancel()
+                    }
+                    .setPositiveButton(getString(R.string.save)) { dialog, _ ->
+                        if (!userInput.text.isNullOrBlank()) {
+                            createCommentary(slider.value, userInput.text.toString())
+                            viewModel.getCommentaryWithId(doctor.id)
+                            commentIdList.add("${doctor.name}-${user.id}")
+                            sharedPreferences.edit()
+                                .putString(COMMENT_ID, gson.toJson(commentIdList))
+                                .apply()
+                        }
+                        dialog.cancel()
+                    }
+                    .show()
+            } else {
+                val snackbar =
+                    Snackbar.make(fragment_doctor_detail_bottom_bar, "You have to sign in to leave a commentary", Snackbar.LENGTH_LONG)
+                snackbar.setAction("Log out and sign in") {
+                    findNavController().navigate(R.id.logOut)
+                }
+                snackbar.show()
+            }
+        }
+    }
 }

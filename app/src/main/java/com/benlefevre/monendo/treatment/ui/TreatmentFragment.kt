@@ -61,6 +61,7 @@ class TreatmentFragment : Fragment(R.layout.fragment_treatment) {
         removeFinishTreatment()
         configureRecyclerView()
         calculateElapsedTime()
+        calculateNextPill()
         setHasOptionsMenu(true)
     }
 
@@ -82,7 +83,7 @@ class TreatmentFragment : Fragment(R.layout.fragment_treatment) {
 
     private fun openNumberOfPillsDialog() {
         var userChoice = ""
-        val numberPills = sharedPreferences.getInt(NUMBER_OF_PILLS,28).toString()
+        val numberPills = sharedPreferences.getString(NUMBER_OF_PILLS,"28")
         val customDialog =
             LayoutInflater.from(requireContext()).inflate(R.layout.custom_dialog_nb_pills, null)
         val nbPills = customDialog.custom_dialog_pill_format
@@ -106,7 +107,7 @@ class TreatmentFragment : Fragment(R.layout.fragment_treatment) {
             .setPositiveButton("Ok") { dialog, _ ->
                 if (userChoice.isNotBlank()) {
                     sharedPreferences.edit()
-                        .putInt(NUMBER_OF_PILLS, userChoice.toInt())
+                        .putString(NUMBER_OF_PILLS, userChoice)
                         .remove(CHECKED_PILLS)
                         .apply()
                     pillTablet.setNumberOfPills(userChoice.toInt())
@@ -280,7 +281,7 @@ class TreatmentFragment : Fragment(R.layout.fragment_treatment) {
         if (dayMens.text.isNullOrBlank()) {
             return
         }
-        val nbPills = sharedPreferences.getInt(NUMBER_OF_PILLS, 28)
+        val nbPills = sharedPreferences.getString(NUMBER_OF_PILLS, "28")!!.toInt()
         val nextPillDate = parseStringInDate(dayMens.text.toString())
         val nextPill = if (nextPillDate != Date(-1L)) {
             formatDateWithYear(with(Calendar.getInstance()) {

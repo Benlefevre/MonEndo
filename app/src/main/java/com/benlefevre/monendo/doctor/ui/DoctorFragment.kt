@@ -39,7 +39,7 @@ import timber.log.Timber
 class DoctorFragment : Fragment(R.layout.fragment_doctor), OnMapReadyCallback,
     DoctorAdapter.DoctorListAdapterListener {
 
-    private lateinit var navController : NavController
+    private lateinit var navController: NavController
     private lateinit var map: GoogleMap
     private val viewModel: DoctorViewModel by stateViewModel()
     private val queryMap = mutableMapOf<String, String>()
@@ -133,7 +133,7 @@ class DoctorFragment : Fragment(R.layout.fragment_doctor), OnMapReadyCallback,
      * sets an observer on the viewModel's doctor LiveData.
      */
     private fun getDoctor() {
-        if (MainActivity.isConnected) {
+        if (MainActivity.isConnected && ::lastLocation.isInitialized) {
             configureQueryMap()
             viewModel.doctor.observe(viewLifecycleOwner, Observer {
                 updateUiState(it)
@@ -141,7 +141,7 @@ class DoctorFragment : Fragment(R.layout.fragment_doctor), OnMapReadyCallback,
         } else {
             Toast.makeText(
                 requireContext(),
-                "A network access is necessary to find doctors",
+                getString(R.string.network_location),
                 Toast.LENGTH_SHORT
             ).show()
         }
@@ -168,8 +168,8 @@ class DoctorFragment : Fragment(R.layout.fragment_doctor), OnMapReadyCallback,
                     val marker = addMarkersOnMap(it)
                     markers.add(marker)
                 }
-                if (!searchLocation.isBlank()){
-                    map.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(doctors[0].coordonnees[0],doctors[0].coordonnees[1]),12f))
+                if (!searchLocation.isBlank()) {
+                    map.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(doctors[0].coordonnees[0], doctors[0].coordonnees[1]), 12f))
                 }
             }
             is DoctorUiState.Error -> Timber.e(state.errorMessage)
@@ -180,7 +180,7 @@ class DoctorFragment : Fragment(R.layout.fragment_doctor), OnMapReadyCallback,
      * Adds a marker on the map with the doctor's values and return the added marker with a tag
      * that corresponding to the doctor passed in parameter.
      */
-    private fun addMarkersOnMap(doctor: Doctor) : Marker {
+    private fun addMarkersOnMap(doctor: Doctor): Marker {
         val marker = map.addMarker(
             MarkerOptions().title(doctor.name).snippet("${doctor.spec} at ${doctor.address}")
                 .position(LatLng(doctor.coordonnees[0], doctor.coordonnees[1]))
@@ -217,6 +217,9 @@ class DoctorFragment : Fragment(R.layout.fragment_doctor), OnMapReadyCallback,
         viewModel.getDoctors(queryMap)
     }
 
+    /**
+     * Configures all the map's behaviors when user click on an item
+     */
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
         map.setInfoWindowAdapter(
@@ -224,11 +227,13 @@ class DoctorFragment : Fragment(R.layout.fragment_doctor), OnMapReadyCallback,
                 requireContext()
             )
         )
+
         map.setOnInfoWindowClickListener {
             val doctorDest =
                 DoctorFragmentDirections.actionDoctorFragmentToDoctorDetailFragment(it.tag as Doctor)
             navController.navigate(doctorDest)
         }
+
         map.setOnMarkerClickListener {
             map.animateCamera(
                 CameraUpdateFactory.newLatLngZoom(
@@ -240,6 +245,22 @@ class DoctorFragment : Fragment(R.layout.fragment_doctor), OnMapReadyCallback,
             )
             it.showInfoWindow()
             fragment_doctor_recycler_view.scrollToPosition(doctors.indexOf(it.tag))
+            doctorAdapter.index = doctors.indexOf(it.tag)
+            doctorAdapter.notifyDataSetChanged()
+            true
+        }
+
+        map.setOnMyLocationButtonClickListener {
+            map.animateCamera(
+                CameraUpdateFactory.newLatLngZoom(
+                    LatLng(
+                        lastLocation.latitude,
+                        lastLocation.longitude
+                    ), 12f
+                )
+            )
+            fragment_doctor_search_txt.text?.clear()
+            getDoctor()
             true
         }
     }
@@ -298,11 +319,11 @@ class DoctorFragment : Fragment(R.layout.fragment_doctor), OnMapReadyCallback,
     private fun setOnClickListeners() {
         fragment_doctor_search_txt.addTextChangedListener {
             when {
-                it.toString().isNotEmpty() -> with(fragment_doctor_search_btn){
-                        visibility = View.VISIBLE
-                        text = getString(R.string.search_btn)
-                    }
-                else -> with(fragment_doctor_search_btn){
+                it.toString().isNotEmpty() -> with(fragment_doctor_search_btn) {
+                    visibility = View.VISIBLE
+                    text = getString(R.string.search_btn)
+                }
+                else -> with(fragment_doctor_search_btn) {
                     visibility = View.GONE
                     text = getString(R.string.around_me)
                 }
@@ -330,10 +351,9 @@ class DoctorFragment : Fragment(R.layout.fragment_doctor), OnMapReadyCallback,
             )
         )
         val marker = markers.filter { it.tag == doctor }[0]
-        if (!marker.isInfoWindowShown){
+        if (!marker.isInfoWindowShown) {
             marker.showInfoWindow()
-        }
-        else{
+        } else {
             val doctorDest =
                 DoctorFragmentDirections.actionDoctorFragmentToDoctorDetailFragment(doctor)
             navController.navigate(doctorDest)

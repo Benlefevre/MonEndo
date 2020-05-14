@@ -70,4 +70,8 @@
         <argument android:name="selectedDoctor"
             app:argType="com.benlefevre.monendo.doctor.models.Doctor" />
     </fragment>
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.benlefevre.monendo.settings.SettingsFragment"
+        android:label="@string/settings" />
 </navigation>

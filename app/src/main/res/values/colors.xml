@@ -12,6 +12,7 @@
     <color name="colorOnSurface">#000</color>
     <color name="colorError">#000</color>
     <color name="colorOnError">#000</color>
+    <color name="itemSelected">#1A9768D1</color>
 
     <color name="graph1">#009688</color>
     <color name="graph2">#FA9600</color>

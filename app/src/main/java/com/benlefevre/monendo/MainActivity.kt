@@ -111,6 +111,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.moodDetailFragment -> bottomNav.visibility = GONE
                 R.id.doctorDetailFragment -> bottomNav.visibility = GONE
                 R.id.doctorFragment -> bottomNav.visibility = VISIBLE
+                R.id.settingsFragment -> bottomNav.visibility = GONE
             }
         }
     }

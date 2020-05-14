@@ -6,6 +6,7 @@ import com.benlefevre.monendo.doctor.createDoctorsFromCpamApi
 import com.benlefevre.monendo.doctor.models.Commentary
 import com.benlefevre.monendo.doctor.models.Doctor
 import com.benlefevre.monendo.doctor.repository.CommentaryRepository
+import com.benlefevre.monendo.login.User
 import com.google.firebase.firestore.ktx.toObject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -35,8 +36,8 @@ class DoctorViewModel(
 
     fun isReady(map: Map<String, String>): DoctorUiState {
         val mapQ = handle.get<String>("mapQ") ?: ""
-        val location = handle.get<String>("location")
-        return if (handle.contains("doctor") && mapQ == map["q"] && location == map["geofilter.distance"]) {
+        val location = handle.get<String>("location") ?: ""
+        return if (handle.contains("doctor") && mapQ == map["q"] && (map.containsKey("geofilter.distance") || location == map["refine.nom_com"])) {
             DoctorUiState.DoctorReady(handle.get<List<Doctor>>("doctor")!!)
         } else {
             DoctorUiState.Loading
@@ -71,7 +72,7 @@ class DoctorViewModel(
 
         handle.set("doctor", sortedList)
         handle.set("mapQ", map["q"])
-        handle.set("location", map["geofilter.distance"])
+        handle.set("location", map["refine.nom_com"])
         _doctor.value =
             DoctorUiState.DoctorReady(sortedList)
     }
@@ -89,8 +90,8 @@ class DoctorViewModel(
         return commentaries
     }
 
-    fun createCommentaryInFirestore(commentary: Commentary) {
-        commentaryRepository.createDoctorCommentary(commentary)
+    fun createCommentaryInFirestore(commentary: Commentary,user: User) {
+        commentaryRepository.createDoctorCommentary(commentary,user)
     }
 
     fun getCommentaryWithId(doctorId: String) = viewModelScope.launch {

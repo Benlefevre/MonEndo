@@ -44,7 +44,7 @@ class ContraceptiveTablet(context: Context, attrs: AttributeSet) : View(context,
         needClear = context.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)
             .getBoolean(NEED_CLEAR, false)
         nbPills = context.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)
-            .getInt(NUMBER_OF_PILLS, 28)
+            .getString(NUMBER_OF_PILLS, "28")!!.toInt()
         backPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
             color = getColor(context, R.color.colorPrimary)
             style = Paint.Style.FILL
@@ -409,7 +409,7 @@ class ContraceptiveTablet(context: Context, attrs: AttributeSet) : View(context,
         context.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)
             .edit().apply {
                 putBoolean(NEED_CLEAR, needClear)
-                putInt(NUMBER_OF_PILLS, nbPills)
+                putString(NUMBER_OF_PILLS, nbPills.toString())
                 apply()
             }
     }

@@ -39,3 +39,6 @@ const val DURATION = "duration"
 const val MENS = "mens"
 const val OVUL = "ovul"
 const val FERTI = "fertilization"
+
+
+const val COMMENT_ID = "commentID"
