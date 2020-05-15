@@ -35,7 +35,7 @@
         <item name="itemTextColor">@color/colorOnPrimary</item>
     </style>
 
-    <style name="LoginActivityTheme" parent="@style/Theme.AppCompat.DayNight.NoActionBar">
+    <style name="LoginActivityTheme" parent="@style/Theme.AppCompat.Light.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="colorPrimary">@color/colorOnSurface</item>
         <item name="colorPrimaryDark">@color/colorPrimaryVariant</item>

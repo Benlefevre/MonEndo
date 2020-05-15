@@ -42,8 +42,10 @@ const val MENS = "mens"
 const val OVUL = "ovul"
 const val FERTI = "fertilization"
 
-
 const val COMMENT_ID = "commentID"
 
 const val PILL_ID = 1
 const val PILL_REPEAT_ID = 2
+
+const val PILL_CHANNEL = "Contraceptive Pill notification"
+const val TREATMENT_CHANNEL = "Treatment notification"

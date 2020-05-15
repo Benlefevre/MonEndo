@@ -1,12 +1,10 @@
 package com.benlefevre.monendo.utils
 
-import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.os.Build
 import android.os.Bundle
 import androidx.core.app.NotificationCompat
 import androidx.navigation.NavDeepLinkBuilder
@@ -21,7 +19,7 @@ class AlarmReceiver : BroadcastReceiver() {
 
     private lateinit var manager: NotificationManager
     private lateinit var myContext: Context
-    private lateinit var preferences : SharedPreferences
+    private lateinit var preferences: SharedPreferences
 
     override fun onReceive(context: Context, intent: Intent) {
         Timber.i("onReceive + action = ${intent.action}")
@@ -66,14 +64,7 @@ class AlarmReceiver : BroadcastReceiver() {
             .setDestination(R.id.treatmentFragment)
             .createPendingIntent()
 
-        val channelId = myContext.getString(R.string.contra_pill_notif_id)
-        val channelName = myContext.getString(R.string.contra_pill_notif_name)
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val notificationChannel =
-                NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_HIGH)
-            manager.createNotificationChannel(notificationChannel)
-        }
+        val channelId = PILL_CHANNEL
 
         val title: String
         val text: String
@@ -98,8 +89,9 @@ class AlarmReceiver : BroadcastReceiver() {
                 NotificationCompat.BigTextStyle()
                     .bigText(text)
             )
-            .setAutoCancel(false)
+            .setAutoCancel(true)
             .setContentIntent(pendingIntent)
+            .setChannelId(channelId)
             .build()
 
         manager.notify(id, notification)
@@ -115,14 +107,7 @@ class AlarmReceiver : BroadcastReceiver() {
             .setDestination(R.id.treatmentFragment)
             .createPendingIntent()
 
-        val channelId = myContext.getString(R.string.treatment_channel_id)
-        val channelName = myContext.getString(R.string.treatment_channel_name)
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val notificationChannel =
-                NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_HIGH)
-            manager.createNotificationChannel(notificationChannel)
-        }
+        val channelId = TREATMENT_CHANNEL
 
         val notification = NotificationCompat.Builder(myContext, channelId)
             .setContentTitle(myContext.getString(R.string.treatment_notif_title))
@@ -131,8 +116,9 @@ class AlarmReceiver : BroadcastReceiver() {
                 NotificationCompat.BigTextStyle()
                     .bigText(myContext.getString(R.string.treatment_notif_dosage, data.getString(TREATMENT_DOSAGE), data.getString(TREATMENT_FORMAT), data.getString(TREATMENT_NAME)))
             )
-            .setAutoCancel(false)
+            .setAutoCancel(true)
             .setContentIntent(pendingIntent)
+            .setChannelId(channelId)
             .build()
 
         manager.notify(3, notification)
@@ -186,7 +172,7 @@ class AlarmReceiver : BroadcastReceiver() {
      */
     private fun resetTreatmentNotification(treatmentList: MutableList<Treatment>) {
         Timber.i("resetTreatmentNotification")
-        for ((index,treatment) in treatmentList.withIndex()){
+        for ((index, treatment) in treatmentList.withIndex()) {
             val intent = Intent(myContext, AlarmReceiver::class.java).apply {
                 putExtra(TREATMENT, TREATMENT_TAG)
                 putExtra(TREATMENT_NAME, treatment.name)
@@ -194,7 +180,7 @@ class AlarmReceiver : BroadcastReceiver() {
                 putExtra(TREATMENT_FORMAT, treatment.format)
             }
             if (treatment.morning != "") createAlarmAtTheUserTime(myContext, intent, treatment.morning, index + 10)
-            if (treatment.noon != "") createAlarmAtTheUserTime(myContext, intent, treatment.noon, index +20)
+            if (treatment.noon != "") createAlarmAtTheUserTime(myContext, intent, treatment.noon, index + 20)
             if (treatment.afternoon != "") createAlarmAtTheUserTime(myContext, intent, treatment.afternoon, index + 30)
             if (treatment.evening != "") createAlarmAtTheUserTime(myContext, intent, treatment.evening, index + 40)
         }
