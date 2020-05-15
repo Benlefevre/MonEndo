@@ -28,6 +28,11 @@ fun formatTime(date: Date): String {
     return dateFormat.format(date)
 }
 
+fun parseStringInTime(string: String) : Date{
+    val dateFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
+    return dateFormat.parse(string)?: Date(-1L)
+}
+
 fun setRepeatHour(date: Date): String {
     val repeatHour = with(Calendar.getInstance()) {
         time = date

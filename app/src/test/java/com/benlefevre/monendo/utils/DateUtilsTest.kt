@@ -65,4 +65,11 @@ class DateUtilsTest {
         }
         assertEquals("Sun", formatDateToDayName(date))
     }
+
+    @Test
+    fun parseStringInTime_success_correctDataReturned(){
+        val date = Date(54000000L)
+        if (TimeZone.getDefault() == TimeZone.getTimeZone("Europe/Paris"))
+            assertEquals(date, parseStringInTime("16:00"))
+    }
 }

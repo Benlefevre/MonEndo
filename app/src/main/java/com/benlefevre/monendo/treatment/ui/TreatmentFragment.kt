@@ -3,6 +3,7 @@ package com.benlefevre.monendo.treatment.ui
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.DialogInterface
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.*
@@ -11,8 +12,6 @@ import android.widget.ImageButton
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.work.Data
-import androidx.work.WorkManager
 import com.benlefevre.monendo.R
 import com.benlefevre.monendo.treatment.TreatmentAdapter
 import com.benlefevre.monendo.treatment.TreatmentViewHolder
@@ -82,13 +81,14 @@ class TreatmentFragment : Fragment(R.layout.fragment_treatment) {
 
     private fun openNumberOfPillsDialog() {
         var userChoice = ""
-        val numberPills = sharedPreferences.getString(NUMBER_OF_PILLS,"28")
+        val numberPills = sharedPreferences.getString(NUMBER_OF_PILLS, "28")
         val customDialog =
             LayoutInflater.from(requireContext()).inflate(R.layout.custom_dialog_nb_pills, null)
         val nbPills = customDialog.custom_dialog_pill_format
-        val adapter = ArrayAdapter(requireContext(), R.layout.support_simple_spinner_dropdown_item, resources.getStringArray(R.array.pill_format))
+        val adapter =
+            ArrayAdapter(requireContext(), R.layout.support_simple_spinner_dropdown_item, resources.getStringArray(R.array.pill_format))
         nbPills.apply {
-            setText(if (numberPills == "29")"21 + 7" else numberPills)
+            setText(if (numberPills == "29") "21 + 7" else numberPills)
             setAdapter(adapter)
 
             setOnItemClickListener { parent, _, position, _ ->
@@ -322,25 +322,23 @@ class TreatmentFragment : Fragment(R.layout.fragment_treatment) {
     }
 
     /**
-     * Cancels all works that are enqueued with PILL tags
+     * Cancels all works or Alarms that are enqueued with PILL tags
      */
     private fun cancelPillWorks() {
-        WorkManager.getInstance(requireContext()).apply {
-            cancelUniqueWork(PILL_TAG)
-            cancelUniqueWork(PILL_REPEAT)
-        }
+        Timber.i("cancelPillWorks")
+        cancelPillAlarm(requireContext())
+
+//        cancelPillWorkWithWorker(requireContext())
     }
 
     /**
-     * Cancels all works that are enqueued with different tags created from the treatment's name
+     * Cancels all works or Alarms that are enqueued with different tags created from the treatment's name
      */
     private fun cancelTreatmentWork(treatment: Treatment) {
-        WorkManager.getInstance(requireContext()).apply {
-            cancelUniqueWork("${treatment.name} $MORNING")
-            cancelUniqueWork("${treatment.name} $NOON")
-            cancelUniqueWork("${treatment.name} $AFTERNOON")
-            cancelUniqueWork("${treatment.name} $EVENING")
-        }
+        Timber.i("cancelTreatmentWork")
+        cancelTreatmentAlarm(requireContext(),treatment,treatmentList.indexOf(treatment))
+
+//        cancelTreatmentWorkWithWorker(requireContext(),treatment)
     }
 
     /**
@@ -355,15 +353,36 @@ class TreatmentFragment : Fragment(R.layout.fragment_treatment) {
             sharedPreferences.edit().putString(PILL_HOUR_NOTIF, notifHour.text.toString())
                 .apply()
 
-            val data = Data.Builder().putString(TREATMENT, PILL_TAG).build()
-            context?.let { configureTreatmentNotification(it, data, notifHour.text.toString()) }
-
-            val dataRepeat = Data.Builder().putString(TREATMENT, PILL_REPEAT).build()
             val repeatHour = setRepeatHour(calendar.time)
-            Timber.i("${notifHour.text.toString()} et repeat à $repeatHour")
-            configureTreatmentNotification(requireContext(), dataRepeat, repeatHour, PILL_REPEAT)
+
+            val intent = Intent(requireContext(), AlarmReceiver::class.java).apply {
+                putExtra(TREATMENT, PILL_TAG)
+            }
+            context?.let { createAlarmAtTheUserTime(requireContext(), intent, notifHour.text.toString(), PILL_ID) }
+
+            val repeatIntent = Intent(requireContext(), AlarmReceiver::class.java).apply {
+                putExtra(TREATMENT, PILL_REPEAT)
+            }
+            context?.let { createAlarmAtTheUserTime(requireContext(), repeatIntent, repeatHour, PILL_REPEAT_ID) }
         }
     }
+
+//    private fun updateNotifHourWithWorker(){
+//        cancelPillWorks()
+//        notifHour.setText(formatTime(calendar.time))
+//        if (!notifHour.text.isNullOrBlank()) {
+//            sharedPreferences.edit().putString(PILL_HOUR_NOTIF, notifHour.text.toString())
+//                .apply()
+//
+//            val data = Data.Builder().putString(TREATMENT, PILL_TAG).build()
+//            context?.let { configureTreatmentNotification(it, data, notifHour.text.toString()) }
+//
+//            val dataRepeat = Data.Builder().putString(TREATMENT, PILL_REPEAT).build()
+//            val repeatHour = setRepeatHour(calendar.time)
+//            Timber.i("${notifHour.text.toString()} et repeat à $repeatHour")
+//            configureTreatmentNotification(requireContext(), dataRepeat, repeatHour, PILL_REPEAT)
+//        }
+//    }
 
     /**
      * Sets and open a Dialog with a custom layout
@@ -470,22 +489,42 @@ class TreatmentFragment : Fragment(R.layout.fragment_treatment) {
      * Defines the needed information that are passed to the NotificationWorker
      */
     private fun setTreatmentNotification() {
-        val data = Data.Builder().apply {
-            putString(TREATMENT, TREATMENT_TAG)
-            putString(TREATMENT_NAME, treatment.name)
-            putString(TREATMENT_DOSAGE, treatment.dosage)
-            putString(TREATMENT_FORMAT, treatment.format)
-        }.build()
+        val treatmentId = treatmentList.indexOf(treatment)
+
+        val intent = Intent(requireContext(), AlarmReceiver::class.java).apply {
+            putExtra(TREATMENT, TREATMENT_TAG)
+            putExtra(TREATMENT_NAME, treatment.name)
+            putExtra(TREATMENT_DOSAGE, treatment.dosage)
+            putExtra(TREATMENT_FORMAT, treatment.format)
+        }
 
         if (customDialog.custom_treatment_morning_chip.isChecked)
-            context?.let { configureTreatmentNotification(it, data, treatment.morning, "${treatment.name} $MORNING") }
+            context?.let { createAlarmAtTheUserTime(it, intent, treatment.morning, treatmentId + 10) }
         if (customDialog.custom_treatment_noon_chip.isChecked)
-            context?.let { configureTreatmentNotification(it, data, treatment.noon, "${treatment.name} $NOON") }
+            context?.let { createAlarmAtTheUserTime(it, intent, treatment.noon, treatmentId + 20) }
         if (customDialog.custom_treatment_afternoon_chip.isChecked)
-            context?.let { configureTreatmentNotification(it, data, treatment.afternoon, "${treatment.name} $AFTERNOON") }
+            context?.let { createAlarmAtTheUserTime(it, intent, treatment.afternoon, treatmentId + 30) }
         if (customDialog.custom_treatment_evening_chip.isChecked)
-            context?.let { configureTreatmentNotification(it, data, treatment.evening, "${treatment.name} $EVENING") }
+            context?.let { createAlarmAtTheUserTime(it, intent, treatment.evening, treatmentId + 40) }
     }
+
+//    private fun setTreatmentotificationWithWorker(data: Data) {
+//        val data = Data.Builder().apply {
+//            putString(TREATMENT, TREATMENT_TAG)
+//            putString(TREATMENT_NAME, treatment.name)
+//            putString(TREATMENT_DOSAGE, treatment.dosage)
+//            putString(TREATMENT_FORMAT, treatment.format)
+//        }.build()
+
+//        if (customDialog.custom_treatment_morning_chip.isChecked)
+//            context?.let { configureTreatmentNotification(it, data, treatment.morning, "${treatment.name} $MORNING") }
+//        if (customDialog.custom_treatment_noon_chip.isChecked)
+//            context?.let { configureTreatmentNotification(it, data, treatment.noon, "${treatment.name} $NOON") }
+//        if (customDialog.custom_treatment_afternoon_chip.isChecked)
+//            context?.let { configureTreatmentNotification(it, data, treatment.afternoon, "${treatment.name} $AFTERNOON") }
+//        if (customDialog.custom_treatment_evening_chip.isChecked)
+//            context?.let { configureTreatmentNotification(it, data, treatment.evening, "${treatment.name} $EVENING") }
+//    }
 
     /**
      * Verifies that all the dialog's fields are correctly filled

@@ -5,6 +5,7 @@ import androidx.work.Data
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
+import com.benlefevre.monendo.treatment.models.Treatment
 import timber.log.Timber
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -35,4 +36,20 @@ fun setDelayDuration(hour: String): Long {
     } else {
         selectedHour.timeInMillis - System.currentTimeMillis()
     }
+}
+
+fun cancelPillWorkWithWorker(context: Context){
+            WorkManager.getInstance(context).apply {
+            cancelUniqueWork(PILL_TAG)
+            cancelUniqueWork(PILL_REPEAT)
+        }
+}
+
+fun cancelTreatmentWorkWithWorker(context: Context, treatment: Treatment){
+            WorkManager.getInstance(context).apply {
+            cancelUniqueWork("${treatment.name} $MORNING")
+            cancelUniqueWork("${treatment.name} $NOON")
+            cancelUniqueWork("${treatment.name} $AFTERNOON")
+            cancelUniqueWork("${treatment.name} $EVENING")
+        }
 }

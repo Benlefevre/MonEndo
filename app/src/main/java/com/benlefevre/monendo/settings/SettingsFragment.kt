@@ -10,7 +10,6 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceDataStore
 import androidx.preference.PreferenceFragmentCompat
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.work.WorkManager
 import com.benlefevre.monendo.MainActivity
 import com.benlefevre.monendo.R
 import com.benlefevre.monendo.doctor.CommentaryAdapter
@@ -141,19 +140,15 @@ class SettingsFragment : PreferenceFragmentCompat(), CommentaryAdapter.Commentar
         )?.let {
             treatmentList.addAll(it)
         }
-        val workManager = WorkManager.getInstance(requireContext())
-        treatmentList.forEach {
-            workManager.apply {
-                cancelUniqueWork("${it.name} $MORNING")
-                cancelUniqueWork("${it.name} $NOON")
-                cancelUniqueWork("${it.name} $AFTERNOON")
-                cancelUniqueWork("${it.name} $EVENING")
-            }
+        for((index,treatment) in treatmentList.withIndex()){
+            cancelTreatmentAlarm(requireContext(),treatment,index)
         }
-        workManager.apply {
-            cancelUniqueWork(PILL_TAG)
-            cancelUniqueWork(PILL_REPEAT)
-        }
+//        val workManager = WorkManager.getInstance(requireContext())
+//        treatmentList.forEach {
+//            cancelTreatmentWorkWithWorker(requireContext(),it)
+//        }
+        cancelPillAlarm(requireContext())
+//        cancelPillWorkWithWorker(requireContext())
         preferences.edit().apply {
             remove(PILL_HOUR_NOTIF)
             remove(CHECKED_PILLS)

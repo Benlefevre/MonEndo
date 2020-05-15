@@ -44,3 +44,6 @@ const val FERTI = "fertilization"
 
 
 const val COMMENT_ID = "commentID"
+
+const val PILL_ID = 1
+const val PILL_REPEAT_ID = 2
