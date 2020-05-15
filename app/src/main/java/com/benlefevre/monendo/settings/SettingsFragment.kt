@@ -2,6 +2,7 @@ package com.benlefevre.monendo.settings
 
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
 import androidx.lifecycle.Observer
 import androidx.preference.ListPreference
@@ -9,7 +10,6 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceDataStore
 import androidx.preference.PreferenceFragmentCompat
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import androidx.work.WorkManager
 import com.benlefevre.monendo.MainActivity
 import com.benlefevre.monendo.R
@@ -20,6 +20,7 @@ import com.benlefevre.monendo.utils.*
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import kotlinx.android.synthetic.main.custom_dialog_comment_list.view.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -183,22 +184,26 @@ class SettingsFragment : PreferenceFragmentCompat(), CommentaryAdapter.Commentar
     }
 
     private fun openCommentaryDialog(){
-        val recyclerView = RecyclerView(requireContext())
+        val customView = LayoutInflater.from(requireContext()).inflate(R.layout.custom_dialog_comment_list,null)
+        val recyclerView = customView.custom_dialog_comment_list_recycler_view
+        val posBtn = customView.custom_dialog_comment_list_pos_btn
+        val negBtn = customView.custom_dialog_comment_list_neg_btn
         recyclerView.apply {
             adapter = this@SettingsFragment.adapter
             layoutManager = LinearLayoutManager(requireContext())
         }
-        MaterialAlertDialogBuilder(requireContext())
-            .setView(recyclerView)
+        val dialog = MaterialAlertDialogBuilder(requireContext())
+            .setView(customView)
             .setTitle(getString(R.string.delete_comment))
             .setMessage(getString(R.string.click_comment_to_delete))
-            .setNegativeButton(getString(R.string.cancel)){dialog, _ ->
-                dialog.cancel()
-            }
-            .setPositiveButton(getString(R.string.yes_sure)) { _, _ ->
-                removeCommentaries()
-            }
             .show()
+        posBtn.setOnClickListener {
+            removeCommentaries()
+            dialog.cancel()
+        }
+        negBtn.setOnClickListener {
+            dialog.cancel()
+        }
     }
 
     private fun removeCommentaries() {
