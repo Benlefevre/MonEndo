@@ -239,7 +239,7 @@
     <string name="start_date_of_your_pill_tablet">Start date of your pill tablet</string>
     <string name="pill_tablet_settings">Pill tablet settings</string>
     <string name="add_a_commentary">Add a commentary</string>
-    <string name="doctor_endo_label">On a scale of 0 to 10, how would you assess the management of patients with endometriosis by this doctor?</string>
+    <string name="doctor_endo_label">On a scale of 0 to 5, how would you assess the management of patients with endometriosis by this doctor?</string>
     <string name="enter_your_commentary_here">Enter your commentary here</string>
     <string name="commentaries">Commentaries</string>
     <string name="address">Address :</string>

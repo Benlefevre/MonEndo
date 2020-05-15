@@ -36,6 +36,10 @@ class MoodDetailFragment : Fragment(R.layout.fragment_mood_detail) {
         super.onViewCreated(view, savedInstanceState)
         colorsChart = resources.getIntArray(R.array.chartColors)
         setupChipListener()
+        mood_details_evo_chart.apply {
+            setNoDataText(getString(R.string.click_on_a_pie_chart_s_value_to_see_the_mood_s_evolution_in_time))
+            setNoDataTextColor(getColor(context,R.color.colorSecondary))
+        }
     }
 
     /**
@@ -178,7 +182,7 @@ class MoodDetailFragment : Fragment(R.layout.fragment_mood_detail) {
             axisDependency = YAxis.AxisDependency.LEFT
             lineWidth = 2f
             color = getColor(requireContext(), R.color.design_default_color_secondary)
-            setCircleColor(getColor(requireContext(), R.color.graph2))
+            setCircleColor(getColor(requireContext(), R.color.design_default_color_secondary))
             setDrawValues(false)
         }
 

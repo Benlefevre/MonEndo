@@ -143,11 +143,11 @@ class SettingsFragment : PreferenceFragmentCompat(), CommentaryAdapter.Commentar
         for((index,treatment) in treatmentList.withIndex()){
             cancelTreatmentAlarm(requireContext(),treatment,index)
         }
+        cancelPillAlarm(requireContext())
 //        val workManager = WorkManager.getInstance(requireContext())
 //        treatmentList.forEach {
 //            cancelTreatmentWorkWithWorker(requireContext(),it)
 //        }
-        cancelPillAlarm(requireContext())
 //        cancelPillWorkWithWorker(requireContext())
         preferences.edit().apply {
             remove(PILL_HOUR_NOTIF)

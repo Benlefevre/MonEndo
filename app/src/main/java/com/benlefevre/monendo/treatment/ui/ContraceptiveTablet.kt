@@ -193,7 +193,8 @@ class ContraceptiveTablet(context: Context, attrs: AttributeSet) : View(context,
         createPills()
         if (day != -1)
             setupTablet(day)
-        invalidate()
+        else
+            invalidate()
     }
 
     override fun onDraw(canvas: Canvas) {
@@ -360,8 +361,11 @@ class ContraceptiveTablet(context: Context, attrs: AttributeSet) : View(context,
     private fun isCurrentChecked() {
         Timber.i("isCurrentChecked")
         context.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)
-            .edit()
-            .putBoolean(CURRENT_CHECKED, pills[day].isChecked)
+            .edit().apply {
+                putBoolean(NEED_CLEAR, needClear)
+                putString(NUMBER_OF_PILLS, nbPills.toString())
+                putBoolean(CURRENT_CHECKED, pills[day].isChecked)
+            }
             .apply()
     }
 
@@ -402,15 +406,5 @@ class ContraceptiveTablet(context: Context, attrs: AttributeSet) : View(context,
             }
         }
         return false
-    }
-
-    override fun onDetachedFromWindow() {
-        super.onDetachedFromWindow()
-        context.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)
-            .edit().apply {
-                putBoolean(NEED_CLEAR, needClear)
-                putString(NUMBER_OF_PILLS, nbPills.toString())
-                apply()
-            }
     }
 }

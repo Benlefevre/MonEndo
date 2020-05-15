@@ -508,7 +508,7 @@ class TreatmentFragment : Fragment(R.layout.fragment_treatment) {
             context?.let { createAlarmAtTheUserTime(it, intent, treatment.evening, treatmentId + 40) }
     }
 
-//    private fun setTreatmentotificationWithWorker(data: Data) {
+//    private fun setTreatmentNotificationWithWorker(data: Data) {
 //        val data = Data.Builder().apply {
 //            putString(TREATMENT, TREATMENT_TAG)
 //            putString(TREATMENT_NAME, treatment.name)

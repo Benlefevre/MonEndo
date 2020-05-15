@@ -230,7 +230,7 @@
     <string name="start_date_of_your_pill_tablet">Date d\'entame de votre plaquette</string>
     <string name="pill_tablet_settings">Paramètres de la plaquette</string>
     <string name="add_a_commentary">Ajouter un commentaire</string>
-    <string name="doctor_endo_label">Sur une échelle de 0 à 10, comment évalueriez-vous la prise en charge de patientes atteintes d\'Endométriose par ce médecin?</string>
+    <string name="doctor_endo_label">Sur une échelle de 0 à 5, comment évalueriez-vous la prise en charge de patientes atteintes d\'Endométriose par ce médecin?</string>
     <string name="enter_your_commentary_here">Entrez votre commentaire ici</string>
     <string name="commentaries">Commentaires</string>
     <string name="address">Adresse :</string>

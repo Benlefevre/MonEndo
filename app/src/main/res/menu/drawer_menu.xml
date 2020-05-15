@@ -14,7 +14,7 @@
     <item
         android:id="@+id/fertilityFragment"
         android:title="@string/fertility"
-        android:icon="@drawable/bear"/>
+        android:icon="@drawable/birth"/>
 
     <item
         android:id="@+id/doctorFragment"

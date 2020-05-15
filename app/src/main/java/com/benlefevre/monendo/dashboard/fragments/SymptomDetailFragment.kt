@@ -36,6 +36,10 @@ class SymptomDetailFragment : Fragment(R.layout.fragment_symptom_detail) {
         super.onViewCreated(view, savedInstanceState)
         colorsChart = resources.getIntArray(R.array.chartColors)
         setupChipListener()
+        symptom_details_evo_chart.apply {
+            setNoDataText(getString(R.string.click_on_a_pie_chart_s_value_to_see_the_symptom_evolution_in_time))
+            setNoDataTextColor(getColor(context,R.color.colorSecondary))
+        }
     }
 
     /**
@@ -200,7 +204,7 @@ class SymptomDetailFragment : Fragment(R.layout.fragment_symptom_detail) {
             axisDependency = YAxis.AxisDependency.LEFT
             lineWidth = 2f
             color = getColor(requireContext(), R.color.design_default_color_secondary)
-            setCircleColor(getColor(requireContext(), R.color.graph2))
+            setCircleColor(getColor(requireContext(), R.color.design_default_color_secondary))
             setDrawValues(false)
         }
         val symptomDataSet = BarDataSet(symptomEntries, name).apply {

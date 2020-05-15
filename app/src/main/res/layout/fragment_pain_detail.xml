@@ -35,7 +35,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:layout_margin="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
                     android:text="@string/click_on_a_value_to_see_all_information_you_saved_that_day"
                     android:textColor="@color/colorPrimary" />
 
@@ -62,131 +63,106 @@
                 android:layout_height="match_parent">
 
                 <androidx.constraintlayout.widget.Guideline
-                    android:id="@+id/guideline0.25"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    app:layout_constraintGuide_percent="0.25"/>
-
-                <androidx.constraintlayout.widget.Guideline
                     android:id="@+id/guideline0.50"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     app:layout_constraintGuide_percent="0.50"/>
 
-                <androidx.constraintlayout.widget.Guideline
-                    android:id="@+id/guideline0.75"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    app:layout_constraintGuide_percent="0.75"/>
-
-                <View
-                    android:id="@+id/pain_details_divider0.25"
-                    android:layout_width="1dp"
-                    android:layout_height="0dp"
-                    android:background="@color/colorPrimary"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintStart_toStartOf="@id/guideline0.25"
-                    app:layout_constraintEnd_toEndOf="@id/guideline0.25"
-                    app:layout_constraintBottom_toTopOf="@id/pain_details_dividerhori1"/>
-
                 <View
                     android:id="@+id/pain_details_divider0.50"
                     android:layout_width="1dp"
                     android:layout_height="0dp"
                     android:background="@color/colorPrimary"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintStart_toStartOf="@id/guideline0.50"
+                    app:layout_constraintBottom_toTopOf="@+id/pain_details_dividerhori2"
                     app:layout_constraintEnd_toEndOf="@id/guideline0.50"
-                    app:layout_constraintBottom_toTopOf="@id/pain_details_dividerhori1"/>
-
-                <View
-                    android:id="@+id/pain_details_divider0.75"
-                    android:layout_width="1dp"
-                    android:layout_height="0dp"
-                    android:background="@color/colorPrimary"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintStart_toStartOf="@id/guideline0.75"
-                    app:layout_constraintEnd_toEndOf="@id/guideline0.75"
-                    app:layout_constraintBottom_toTopOf="@id/pain_details_dividerhori1"/>
+                    app:layout_constraintStart_toStartOf="@id/guideline0.50"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <View
                     android:id="@+id/pain_details_dividerhori1"
                     android:layout_width="0dp"
                     android:layout_height="1dp"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="8dp"
                     android:background="@color/colorPrimary"
-                    app:layout_constraintTop_toBottomOf="@id/pain_details_mood_txt"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"/>
+                    app:layout_constraintTop_toBottomOf="@id/pain_details_mood_txt" />
 
                 <View
                     android:id="@+id/pain_details_dividerhori2"
                     android:layout_width="0dp"
                     android:layout_height="1dp"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="8dp"
                     android:background="@color/colorPrimary"
-                    app:layout_constraintTop_toBottomOf="@id/pain_details_symptom_txt"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"/>
+                    app:layout_constraintTop_toBottomOf="@+id/pain_details_value_txt" />
+
+                <View
+                    android:id="@+id/pain_details_dividerhori3"
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@color/colorPrimary"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/pain_details_symptom_txt" />
 
                 <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/pain_details_date"
                     style="@style/CustomSubItem"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/date"
                     android:textAlignment="center"
-                    app:layout_constraintBottom_toBottomOf="@+id/pain_details_value"
-                    app:layout_constraintEnd_toStartOf="@id/pain_details_divider0.25"
+                    app:layout_constraintEnd_toStartOf="@+id/pain_details_divider0.50"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/pain_details_value" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/pain_details_date_txt"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="8dp"
-                    app:layout_constraintBottom_toBottomOf="@+id/pain_details_value_txt"
-                    app:layout_constraintEnd_toStartOf="@id/pain_details_divider0.25"
+                    app:layout_constraintEnd_toStartOf="@+id/guideline0.50"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/pain_details_value_txt"
+                    app:layout_constraintTop_toBottomOf="@+id/pain_details_date"
                     tools:text="19/04" />
 
                 <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/pain_details_value"
                     style="@style/CustomSubItem"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
                     android:text="@string/pain_value"
                     android:textAlignment="center"
                     app:layout_constraintEnd_toStartOf="@id/pain_details_divider0.50"
-                    app:layout_constraintStart_toEndOf="@id/pain_details_divider0.25"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/pain_details_dividerhori1" />
 
                 <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/pain_details_value_txt"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="8dp"
-                    app:layout_constraintEnd_toStartOf="@id/pain_details_divider0.50"
-                    app:layout_constraintStart_toEndOf="@id/pain_details_divider0.25"
+                    app:layout_constraintEnd_toStartOf="@+id/guideline0.50"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/pain_details_value"
                     tools:text="9" />
 
                 <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/pain_details_location"
                     style="@style/CustomSubItem"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
                     android:text="@string/location"
                     android:textAlignment="center"
-                    app:layout_constraintBottom_toBottomOf="@+id/pain_details_value"
-                    app:layout_constraintEnd_toStartOf="@id/pain_details_divider0.75"
-                    app:layout_constraintStart_toEndOf="@id/pain_details_divider0.50"
-                    app:layout_constraintTop_toTopOf="@+id/pain_details_value" />
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/guideline0.50"
+                    app:layout_constraintTop_toBottomOf="@+id/pain_details_dividerhori1" />
 
                 <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/pain_details_location_txt"
@@ -194,23 +170,21 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="8dp"
                     android:textAlignment="center"
-                    app:layout_constraintBottom_toBottomOf="@+id/pain_details_value_txt"
-                    app:layout_constraintEnd_toStartOf="@id/pain_details_divider0.75"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/pain_details_divider0.50"
-                    app:layout_constraintTop_toTopOf="@+id/pain_details_value_txt"
+                    app:layout_constraintTop_toBottomOf="@+id/pain_details_location"
                     tools:text="@string/lower_abdomen" />
 
                 <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/pain_details_mood"
                     style="@style/CustomSubItem"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/mood"
                     android:textAlignment="center"
-                    app:layout_constraintBottom_toBottomOf="@+id/pain_details_value"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/pain_details_divider0.75"
-                    app:layout_constraintTop_toTopOf="@+id/pain_details_value" />
+                    app:layout_constraintStart_toEndOf="@+id/pain_details_divider0.50"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/pain_details_mood_txt"
@@ -218,21 +192,20 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="8dp"
                     android:textAlignment="center"
-                    app:layout_constraintBottom_toBottomOf="@+id/pain_details_value_txt"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/pain_details_divider0.75"
-                    app:layout_constraintTop_toTopOf="@+id/pain_details_value_txt"
+                    app:layout_constraintStart_toEndOf="@+id/pain_details_divider0.50"
+                    app:layout_constraintTop_toBottomOf="@+id/pain_details_mood"
                     tools:text="@string/very_happy" />
 
                 <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/pain_details_symptoms"
+                    style="@style/CustomSubItem"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    style="@style/CustomSubItem"
                     android:text="@string/symptoms"
-                    app:layout_constraintTop_toBottomOf="@id/pain_details_dividerhori1"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"/>
+                    app:layout_constraintTop_toBottomOf="@id/pain_details_dividerhori2"/>
 
                 <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/pain_details_symptom_txt"
@@ -240,19 +213,20 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="8dp"
                     android:textAlignment="center"
-                    app:layout_constraintTop_toBottomOf="@id/pain_details_symptoms"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"/>
+                    app:layout_constraintTop_toBottomOf="@+id/pain_details_symptoms" />
 
                 <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/pain_details_activities"
+                    style="@style/CustomSubItem"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    style="@style/CustomSubItem"
+                    android:layout_marginTop="8dp"
                     android:text="@string/practiced_activities"
-                    app:layout_constraintTop_toBottomOf="@id/pain_details_dividerhori2"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"/>
+                    app:layout_constraintTop_toBottomOf="@+id/pain_details_dividerhori3" />
 
                 <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/pain_details_activities_txt"
@@ -260,6 +234,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="8dp"
                     android:textAlignment="textStart"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/pain_details_activities" />

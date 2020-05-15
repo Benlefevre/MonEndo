@@ -50,7 +50,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
-                        android:layout_margin="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="8dp"
                         android:text="@string/evolution_of_pain_over_the_last_7_days" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
@@ -80,7 +82,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
-                        android:layout_margin="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="8dp"
                         android:text="@string/recurrence_of_symptoms_over_the_last_7_days" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
@@ -110,7 +114,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
-                        android:layout_margin="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="8dp"
                         android:text="@string/practiced_activities_over_the_last_7_days" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
@@ -140,7 +146,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
-                        android:layout_margin="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="8dp"
                         android:text="@string/sleep_quality_over_the_last_7_days" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
@@ -171,7 +179,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
-                        android:layout_margin="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="8dp"
                         android:text="@string/mood_repartition_over_the_last_7_days" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>

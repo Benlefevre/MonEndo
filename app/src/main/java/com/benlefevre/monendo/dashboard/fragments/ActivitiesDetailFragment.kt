@@ -35,6 +35,10 @@ class ActivitiesDetailFragment : Fragment(R.layout.fragment_activities_detail) {
         super.onViewCreated(view, savedInstanceState)
         colorsChart = resources.getIntArray(R.array.chartColors)
         setupChipListener()
+        activities_detail_chart.apply {
+            setNoDataText(getString(R.string.click_on_a_pie_chart_value_to_see_the_evolution_of_pain_with_activities))
+            setNoDataTextColor(getColor(context,R.color.colorSecondary))
+        }
     }
 
     /**
@@ -198,7 +202,7 @@ class ActivitiesDetailFragment : Fragment(R.layout.fragment_activities_detail) {
             axisDependency = YAxis.AxisDependency.LEFT
             lineWidth = 2f
             color = getColor(requireContext(), R.color.design_default_color_secondary)
-            setCircleColor(getColor(requireContext(), R.color.graph2))
+            setCircleColor(getColor(requireContext(), R.color.design_default_color_secondary))
             setDrawValues(false)
         }
 
