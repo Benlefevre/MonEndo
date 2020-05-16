@@ -21,14 +21,27 @@ class AlarmReceiver : BroadcastReceiver() {
     private lateinit var manager: NotificationManager
     private lateinit var myContext: Context
     private lateinit var preferences: SharedPreferences
+    private lateinit var hourPill: String
+    private val treatmentList = mutableListOf<Treatment>()
 
     override fun onReceive(context: Context, intent: Intent) {
         Timber.i("onReceive + action = ${intent.action}")
-        myContext = context
-        preferences = context.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)
+        initMembers(context)
         when (intent.action) {
             "android.intent.action.BOOT_COMPLETED" -> resetAllNotifications()
             else -> sendRightNotification(intent)
+        }
+    }
+
+    private fun initMembers(context: Context) {
+        myContext = context
+        preferences = context.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)
+        hourPill = preferences.getString(PILL_HOUR_NOTIF, "")!!
+        Gson().fromJson<List<Treatment>>(
+            preferences.getString(TREATMENT, ""),
+            object : TypeToken<List<Treatment>>() {}.type
+        )?.let {
+            treatmentList.addAll(it)
         }
     }
 
@@ -44,15 +57,22 @@ class AlarmReceiver : BroadcastReceiver() {
         val repeat = preferences.getBoolean(CURRENT_CHECKED, false)
         tag?.let {
             when {
-                it == PILL_TAG -> sendPillNotification(tag)
-                it == PILL_REPEAT && !repeat -> sendPillNotification(tag)
-                it == TREATMENT_TAG -> extras?.let {
-                    sendTreatmentNotification(it)
+                it == PILL_TAG -> {
+                    sendPillNotification(tag)
+                    resetPillNotification()
+                }
+                it == PILL_REPEAT && !repeat -> {
+                    sendPillNotification(tag)
+                    resetPillRepeatNotification()
+                }
+                it == PILL_REPEAT && repeat -> resetPillNotification()
+                it == TREATMENT_TAG -> extras?.let { bundle ->
+                    sendTreatmentNotification(bundle)
+                    resetTreatmentNotification()
                 }
                 else -> return
             }
         }
-
     }
 
     /**
@@ -129,34 +149,31 @@ class AlarmReceiver : BroadcastReceiver() {
      * Checks if it's necessary to reset the notifications after a device's reboot
      */
     private fun resetAllNotifications() {
-        val hourPill = preferences.getString(PILL_HOUR_NOTIF, "")
-        val treatmentList = mutableListOf<Treatment>()
-        Gson().fromJson<List<Treatment>>(
-            preferences.getString(TREATMENT, ""),
-            object : TypeToken<List<Treatment>>() {}.type
-        )?.let {
-            treatmentList.addAll(it)
-        }
-
-        if (!hourPill.isNullOrBlank()) {
-            resetPillNotification(hourPill)
+        if (!hourPill.isBlank()) {
+            resetPillNotification()
+            resetPillRepeatNotification()
         }
 
         if (treatmentList.isNotEmpty()) {
-            resetTreatmentNotification(treatmentList)
+            resetTreatmentNotification()
         }
     }
 
     /**
      * Resets an alarm with the AlarmManager to send notification about user's contraceptive pill
      */
-    private fun resetPillNotification(hourPill: String) {
+    private fun resetPillNotification() {
         Timber.i("resetPillNotification")
         val intent = Intent(myContext, AlarmReceiver::class.java).apply {
             putExtra(TREATMENT, PILL_TAG)
         }
         createAlarmAtTheUserTime(myContext, intent, hourPill, PILL_ID)
+    }
 
+    /**
+     * Resets an alarm with the AlarmManager to send notification when user forgets to take her pill
+     */
+    private fun resetPillRepeatNotification() {
         val hour = parseStringInTime(hourPill)
         val repeatHour: String
         if (hour != Date(-1L)) {
@@ -171,7 +188,7 @@ class AlarmReceiver : BroadcastReceiver() {
     /**
      * Resets an alarm with the AlarmManager to send notifications about the user's treatment
      */
-    private fun resetTreatmentNotification(treatmentList: MutableList<Treatment>) {
+    private fun resetTreatmentNotification() {
         Timber.i("resetTreatmentNotification")
         for ((index, treatment) in treatmentList.withIndex()) {
             val intent = Intent(myContext, AlarmReceiver::class.java).apply {

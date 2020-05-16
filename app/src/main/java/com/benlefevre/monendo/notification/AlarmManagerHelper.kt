@@ -4,6 +4,7 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import com.benlefevre.monendo.treatment.models.Treatment
 import com.benlefevre.monendo.utils.*
 import timber.log.Timber
@@ -17,11 +18,16 @@ fun createAlarmAtTheUserTime(context: Context, intent: Intent, hour: String, tag
     val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
     val pendingIntent =
         PendingIntent.getBroadcast(context, tag, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-    val repeatInterval = AlarmManager.INTERVAL_DAY
+//    val repeatInterval = AlarmManager.INTERVAL_DAY
     val triggeredTime =
         setTriggeredTime(hour)
 
-    alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, triggeredTime, repeatInterval, pendingIntent)
+//    alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, triggeredTime, repeatInterval, pendingIntent)
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,triggeredTime,pendingIntent)
+    }else{
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP,triggeredTime,pendingIntent)
+    }
 }
 
 /**
