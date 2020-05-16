@@ -7,6 +7,7 @@ import androidx.work.ListenableWorker
 import androidx.work.WorkManager
 import androidx.work.testing.TestWorkerBuilder
 import androidx.work.workDataOf
+import com.benlefevre.monendo.notification.NotificationWorker
 import io.mockk.spyk
 import io.mockk.verify
 import org.junit.After

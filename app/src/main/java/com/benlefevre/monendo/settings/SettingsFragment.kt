@@ -14,6 +14,8 @@ import com.benlefevre.monendo.MainActivity
 import com.benlefevre.monendo.R
 import com.benlefevre.monendo.doctor.CommentaryAdapter
 import com.benlefevre.monendo.doctor.models.Commentary
+import com.benlefevre.monendo.notification.cancelPillAlarm
+import com.benlefevre.monendo.notification.cancelTreatmentAlarm
 import com.benlefevre.monendo.treatment.models.Treatment
 import com.benlefevre.monendo.utils.*
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -141,7 +143,7 @@ class SettingsFragment : PreferenceFragmentCompat(), CommentaryAdapter.Commentar
             treatmentList.addAll(it)
         }
         for((index,treatment) in treatmentList.withIndex()){
-            cancelTreatmentAlarm(requireContext(),treatment,index)
+            cancelTreatmentAlarm(requireContext(), treatment, index)
         }
         cancelPillAlarm(requireContext())
 //        val workManager = WorkManager.getInstance(requireContext())

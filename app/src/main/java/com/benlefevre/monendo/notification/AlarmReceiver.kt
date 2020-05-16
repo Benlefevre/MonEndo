@@ -1,4 +1,4 @@
-package com.benlefevre.monendo.utils
+package com.benlefevre.monendo.notification
 
 import android.app.NotificationManager
 import android.content.BroadcastReceiver
@@ -10,6 +10,7 @@ import androidx.core.app.NotificationCompat
 import androidx.navigation.NavDeepLinkBuilder
 import com.benlefevre.monendo.R
 import com.benlefevre.monendo.treatment.models.Treatment
+import com.benlefevre.monendo.utils.*
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import timber.log.Timber

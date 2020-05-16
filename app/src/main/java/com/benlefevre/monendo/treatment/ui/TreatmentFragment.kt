@@ -13,6 +13,10 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.benlefevre.monendo.R
+import com.benlefevre.monendo.notification.AlarmReceiver
+import com.benlefevre.monendo.notification.cancelPillAlarm
+import com.benlefevre.monendo.notification.cancelTreatmentAlarm
+import com.benlefevre.monendo.notification.createAlarmAtTheUserTime
 import com.benlefevre.monendo.treatment.TreatmentAdapter
 import com.benlefevre.monendo.treatment.TreatmentViewHolder
 import com.benlefevre.monendo.treatment.models.Pill
@@ -336,7 +340,7 @@ class TreatmentFragment : Fragment(R.layout.fragment_treatment) {
      */
     private fun cancelTreatmentWork(treatment: Treatment) {
         Timber.i("cancelTreatmentWork")
-        cancelTreatmentAlarm(requireContext(),treatment,treatmentList.indexOf(treatment))
+        cancelTreatmentAlarm(requireContext(), treatment, treatmentList.indexOf(treatment))
 
 //        cancelTreatmentWorkWithWorker(requireContext(),treatment)
     }

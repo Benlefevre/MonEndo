@@ -1,5 +1,6 @@
 package com.benlefevre.monendo.utils
 
+import com.benlefevre.monendo.notification.setDelayDuration
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.util.*

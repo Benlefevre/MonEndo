@@ -1,4 +1,4 @@
-package com.benlefevre.monendo.utils
+package com.benlefevre.monendo.notification
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -10,6 +10,7 @@ import androidx.work.Data
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.benlefevre.monendo.R
+import com.benlefevre.monendo.utils.*
 import timber.log.Timber
 
 class NotificationWorker(private var context: Context, workerParameters: WorkerParameters) : Worker(context, workerParameters) {

@@ -1,10 +1,11 @@
-package com.benlefevre.monendo.utils
+package com.benlefevre.monendo.notification
 
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import com.benlefevre.monendo.treatment.models.Treatment
+import com.benlefevre.monendo.utils.*
 import timber.log.Timber
 import java.util.*
 
@@ -17,7 +18,8 @@ fun createAlarmAtTheUserTime(context: Context, intent: Intent, hour: String, tag
     val pendingIntent =
         PendingIntent.getBroadcast(context, tag, intent, PendingIntent.FLAG_UPDATE_CURRENT)
     val repeatInterval = AlarmManager.INTERVAL_DAY
-    val triggeredTime = setTriggeredTime(hour)
+    val triggeredTime =
+        setTriggeredTime(hour)
 
     alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, triggeredTime, repeatInterval, pendingIntent)
 }

@@ -1,4 +1,4 @@
-package com.benlefevre.monendo.utils
+package com.benlefevre.monendo.notification
 
 import android.content.Context
 import androidx.work.Data
@@ -6,6 +6,7 @@ import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
 import com.benlefevre.monendo.treatment.models.Treatment
+import com.benlefevre.monendo.utils.*
 import timber.log.Timber
 import java.util.*
 import java.util.concurrent.TimeUnit
