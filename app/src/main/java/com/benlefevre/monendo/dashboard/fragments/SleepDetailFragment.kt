@@ -11,8 +11,11 @@ import com.benlefevre.monendo.dashboard.viewmodels.DashboardViewModel
 import com.benlefevre.monendo.utils.formatDateWithoutYear
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.components.YAxis
-import com.github.mikephil.charting.data.*
+import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.data.LineData
+import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 import kotlinx.android.synthetic.main.chipgroup_duration.*
 import kotlinx.android.synthetic.main.fragment_sleep_detail.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -87,14 +90,15 @@ class SleepDetailFragment : Fragment(R.layout.fragment_sleep_detail) {
      */
     private fun setupSleepChart(){
         val painEntries = mutableListOf<Entry>()
-        val sleepEntries = mutableListOf<BarEntry>()
+        val sleepEntries = mutableListOf<Entry>()
         var index = 0f
+        val listEntries = mutableListOf<ILineDataSet>()
 
         painRelations.forEach {
             painEntries.add(Entry(index,it.pain.intensity.toFloat()))
             it.userActivities.forEach {activity ->
                 if (activity.name == getString(R.string.sleep))
-                    sleepEntries.add(BarEntry(index,activity.intensity.toFloat()))
+                    sleepEntries.add(Entry(index,activity.intensity.toFloat()))
             }
             index++
         }
@@ -107,26 +111,33 @@ class SleepDetailFragment : Fragment(R.layout.fragment_sleep_detail) {
             setDrawValues(false)
         }
 
-        val sleepDataSet = BarDataSet(sleepEntries,getString(R.string.sleep_quality)).apply {
+        val sleepDataSet = LineDataSet(sleepEntries,getString(R.string.sleep_quality)).apply {
             axisDependency = YAxis.AxisDependency.LEFT
+            lineWidth = 2f
             setDrawValues(false)
             color = getColor(requireContext(),R.color.graph2)
+            setCircleColor(getColor(requireContext(),R.color.graph2))
         }
 
+        listEntries.add(painDataSet)
+        listEntries.add(sleepDataSet)
+
         sleep_details_chart.apply {
+            legend.apply {
+                textColor = getColor(context,R.color.colorPrimary)
+            }
             isHighlightPerTapEnabled = false
             description = null
             xAxis.granularity = 1f
             xAxis.valueFormatter = IndexAxisValueFormatter(dates)
+            xAxis.textColor = getColor(context, R.color.colorPrimary)
             axisLeft.granularity = 1f
             axisLeft.setDrawZeroLine(true)
             axisLeft.axisMinimum = 0f
             axisLeft.axisMaximum = 10f
+            axisLeft.textColor = getColor(context, R.color.colorPrimary)
             axisRight.isEnabled = false
-            data = CombinedData().apply {
-                setData(LineData(painDataSet))
-                setData(BarData(sleepDataSet))
-            }
+            data = LineData(listEntries)
             animateX(2000, Easing.EaseOutBack)
             invalidate()
         }

@@ -15,12 +15,11 @@ import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.github.mikephil.charting.formatter.PercentFormatter
-import com.github.mikephil.charting.highlight.Highlight
-import com.github.mikephil.charting.listener.OnChartValueSelectedListener
+import com.github.mikephil.charting.formatter.ValueFormatter
+import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
 import kotlinx.android.synthetic.main.chipgroup_duration.*
 import kotlinx.android.synthetic.main.fragment_mood_detail.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import timber.log.Timber
 
 class MoodDetailFragment : Fragment(R.layout.fragment_mood_detail) {
 
@@ -52,9 +51,7 @@ class MoodDetailFragment : Fragment(R.layout.fragment_mood_detail) {
                 viewModel.getPainRelationsBy7LastDays().observe(viewLifecycleOwner, Observer {
                     setupList(it)
                     setupRepartitionChart()
-                    if (!mood_details_evo_chart.isEmpty) {
-                        setupDetailChart(selectedMood)
-                    }
+                    setupDetailChart()
                 })
             }
         }
@@ -63,9 +60,7 @@ class MoodDetailFragment : Fragment(R.layout.fragment_mood_detail) {
                 viewModel.getPainRelationsByLastMonth().observe(viewLifecycleOwner, Observer {
                     setupList(it)
                     setupRepartitionChart()
-                    if (!mood_details_evo_chart.isEmpty) {
-                        setupDetailChart(selectedMood)
-                    }
+                    setupDetailChart()
                 })
             }
         }
@@ -74,9 +69,7 @@ class MoodDetailFragment : Fragment(R.layout.fragment_mood_detail) {
                 viewModel.getPainRelationsByLast6Months().observe(viewLifecycleOwner, Observer {
                     setupList(it)
                     setupRepartitionChart()
-                    if (!mood_details_evo_chart.isEmpty) {
-                        setupDetailChart(selectedMood)
-                    }
+                    setupDetailChart()
                 })
             }
         }
@@ -85,9 +78,7 @@ class MoodDetailFragment : Fragment(R.layout.fragment_mood_detail) {
                 viewModel.getPainRelationsByLastYear().observe(viewLifecycleOwner, Observer {
                     setupList(it)
                     setupRepartitionChart()
-                    if (!mood_details_evo_chart.isEmpty) {
-                        setupDetailChart(selectedMood)
-                    }
+                    setupDetailChart()
                 })
             }
         }
@@ -137,20 +128,10 @@ class MoodDetailFragment : Fragment(R.layout.fragment_mood_detail) {
             valueTextColor = getColor(requireContext(), R.color.colorOnPrimary)
             valueTextSize = 10f
             colors = pieColors
+            selectionShift = 0f
         }
 
         mood_details_rep_chart.apply {
-            setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
-                override fun onNothingSelected() {
-                }
-
-                override fun onValueSelected(e: Entry?, h: Highlight?) {
-                    Timber.i(e?.data.toString())
-                    selectedMood = e?.data.toString()
-                    setupDetailChart(selectedMood)
-                }
-
-            })
             description = null
             setUsePercentValues(true)
             setDrawEntryLabels(false)
@@ -162,18 +143,28 @@ class MoodDetailFragment : Fragment(R.layout.fragment_mood_detail) {
     }
 
     /**
-     * Configures a CombinedChart to see the selected mood vs pain evolution in time
+     * Configures a CombinedChart to see moods vs pain evolution in time
      */
-    private fun setupDetailChart(name: String) {
+    private fun setupDetailChart(){
+        val dataSetList: MutableList<IBarDataSet> = mutableListOf()
         val painEntries = mutableListOf<Entry>()
-        val moodEntries = mutableListOf<BarEntry>()
+        val sadEntries = Pair(mutableListOf<BarEntry>(),getString(R.string.sad))
+        val sickEntries = Pair(mutableListOf<BarEntry>(),getString(R.string.sick))
+        val irritatedEntries = Pair(mutableListOf<BarEntry>(),getString(R.string.irritated))
+        val happyEntries = Pair(mutableListOf<BarEntry>(),getString(R.string.happy))
+        val veryHappyEntries = Pair(mutableListOf<BarEntry>(),getString(R.string.very_happy))
         var index = 0f
 
         painRelations.forEach {
             painEntries.add(Entry(index, it.pain.intensity.toFloat()))
             it.moods.forEach { mood ->
-                if (mood.value == name)
-                    moodEntries.add(BarEntry(index, 1f))
+                when(mood.value){
+                    getString(R.string.sad) -> sadEntries.first.add(BarEntry(index,0.25f))
+                    getString(R.string.sick) -> sickEntries.first.add(BarEntry(index,0.5f))
+                    getString(R.string.irritated) -> irritatedEntries.first.add(BarEntry(index,0.75f))
+                    getString(R.string.happy) -> happyEntries.first.add(BarEntry(index,1f))
+                    getString(R.string.very_happy) -> veryHappyEntries.first.add(BarEntry(index,1.25f))
+                }
             }
             index++
         }
@@ -183,32 +174,49 @@ class MoodDetailFragment : Fragment(R.layout.fragment_mood_detail) {
             lineWidth = 2f
             color = getColor(requireContext(), R.color.design_default_color_secondary)
             setCircleColor(getColor(requireContext(), R.color.design_default_color_secondary))
-            setDrawValues(false)
-        }
-
-        val moodDataSet = BarDataSet(moodEntries, name).apply {
-            axisDependency = YAxis.AxisDependency.RIGHT
-            setDrawValues(false)
-            color = when(name){
-                getString(R.string.sad) -> colorsChart[2]
-                getString(R.string.sick) -> colorsChart[6]
-                getString(R.string.irritated) -> colorsChart[8]
-                getString(R.string.happy) -> colorsChart[5]
-                getString(R.string.very_happy) -> colorsChart[4]
-                else -> getColor(requireContext(), R.color.graph2)
+            setDrawValues(true)
+            valueTextSize = 10f
+            valueFormatter = object: ValueFormatter(){
+                override fun getFormattedValue(value: Float): String {
+                    return (value.toInt()).toString()
+                }
             }
         }
 
+        val listEntries = listOf(sadEntries,sickEntries,irritatedEntries,happyEntries,veryHappyEntries)
+        listEntries.forEach {
+            val dataSet = BarDataSet(it.first,it.second).apply {
+                axisDependency = YAxis.AxisDependency.RIGHT
+                setDrawValues(false)
+                color = when(it.second){
+                    getString(R.string.sad) -> colorsChart[2]
+                    getString(R.string.sick) -> colorsChart[6]
+                    getString(R.string.irritated) -> colorsChart[8]
+                    getString(R.string.happy) -> colorsChart[5]
+                    getString(R.string.very_happy) -> colorsChart[4]
+                    else -> getColor(requireContext(), R.color.graph2)
+                }
+            }
+            dataSetList.add(dataSet)
+        }
+
         mood_details_evo_chart.apply {
+            legend.apply {
+                textColor = getColor(context,R.color.colorPrimary)
+                isWordWrapEnabled = true
+            }
             highlightValues(null)
             isHighlightPerTapEnabled = false
+            isHighlightFullBarEnabled = false
             description = null
             xAxis.granularity = 1f
             xAxis.valueFormatter = IndexAxisValueFormatter(dates)
+            xAxis.textColor = getColor(requireContext(), R.color.colorPrimary)
             axisLeft.granularity = 1f
             axisLeft.setDrawZeroLine(true)
             axisLeft.axisMinimum = 0f
             axisLeft.axisMaximum = 10f
+            axisLeft.isEnabled = false
             axisRight.granularity = 1f
             axisRight.axisMinimum = 0f
             axisRight.axisMaximum = 1.25f
@@ -217,7 +225,7 @@ class MoodDetailFragment : Fragment(R.layout.fragment_mood_detail) {
                 setData(LineData(painDataSet)).apply {
                     isHighlightEnabled = false
                 }
-                setData(BarData(moodDataSet))
+                setData(BarData(dataSetList))
             }
             animateX(2000,Easing.EaseOutBack)
         }

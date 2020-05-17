@@ -368,13 +368,13 @@ class FertilityCalendar(context: Context, attrs: AttributeSet) : View(context, a
         canvas.drawRect(rectF, linePaint)
         backPaint.color = getColor(context, R.color.colorPrimaryVariant)
         canvas.drawRect(dayRectF, backPaint)
-        canvas.drawText("Mon", (dividedWidth / 2), (dividedHeight / 2) + (textSize / 2), textPaint)
-        canvas.drawText("Tue", (dividedWidth / 2 * 3), (dividedHeight / 2) + (textSize / 2), textPaint)
-        canvas.drawText("Wed", (dividedWidth / 2 * 5), (dividedHeight / 2) + (textSize / 2), textPaint)
-        canvas.drawText("Thu", (dividedWidth / 2 * 7), (dividedHeight / 2) + (textSize / 2), textPaint)
-        canvas.drawText("Fri", (dividedWidth / 2 * 9), (dividedHeight / 2) + (textSize / 2), textPaint)
-        canvas.drawText("Sat", (dividedWidth / 2 * 11), (dividedHeight / 2) + (textSize / 2), textPaint)
-        canvas.drawText("Sun", (dividedWidth / 2 * 13), (dividedHeight / 2) + (textSize / 2), textPaint)
+        canvas.drawText(context.getString(R.string.monday), (dividedWidth / 2), (dividedHeight / 2) + (textSize / 2), textPaint)
+        canvas.drawText(context.getString(R.string.tuesday), (dividedWidth / 2 * 3), (dividedHeight / 2) + (textSize / 2), textPaint)
+        canvas.drawText(context.getString(R.string.wednesday), (dividedWidth / 2 * 5), (dividedHeight / 2) + (textSize / 2), textPaint)
+        canvas.drawText(context.getString(R.string.thursday), (dividedWidth / 2 * 7), (dividedHeight / 2) + (textSize / 2), textPaint)
+        canvas.drawText(context.getString(R.string.friday), (dividedWidth / 2 * 9), (dividedHeight / 2) + (textSize / 2), textPaint)
+        canvas.drawText(context.getString(R.string.saturday), (dividedWidth / 2 * 11), (dividedHeight / 2) + (textSize / 2), textPaint)
+        canvas.drawText(context.getString(R.string.sunday), (dividedWidth / 2 * 13), (dividedHeight / 2) + (textSize / 2), textPaint)
 
         calendarDays.forEach {
             backPaint.color = it.color

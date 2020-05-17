@@ -254,5 +254,12 @@
     <string name="delete_comment">Effacer un commentaire</string>
     <string name="click_comment_to_delete">Sélectionnez le(s) commentaire(s) que vous souhaitez effacer et valider votre choix.</string>
     <string name="network_location">Un accès réseau et votre position sont nécessaires pour rechercher des médecins.</string>
+    <string name="monday">Lun</string>
+    <string name="tuesday">Mar</string>
+    <string name="wednesday">Mer</string>
+    <string name="thursday">Jeu</string>
+    <string name="friday">Ven</string>
+    <string name="saturday">Sam</string>
+    <string name="sunday">Dim</string>
 
 </resources>

@@ -263,5 +263,12 @@
     <string name="delete_comment">Delete a commentary</string>
     <string name="click_comment_to_delete">Click on the commentary you want deleted to delete it definitely</string>
     <string name="network_location">A network access and your location are necessary to find doctors</string>
+    <string name="monday">Mon</string>
+    <string name="tuesday">Tue</string>
+    <string name="wednesday">Wed</string>
+    <string name="thursday">Thu</string>
+    <string name="friday">Fri</string>
+    <string name="saturday">Sat</string>
+    <string name="sunday">Sun</string>
 
 </resources>
