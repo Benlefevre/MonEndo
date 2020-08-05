@@ -28,17 +28,10 @@
                 <com.github.mikephil.charting.charts.PieChart
                     android:id="@+id/activities_details_rep_chart"
                     android:layout_width="match_parent"
-                    android:layout_height="300dp"
+                    android:layout_height="250dp"
                     android:layout_margin="8dp" />
 
                 <include layout="@layout/chipgroup_duration" />
-
-<!--                <com.google.android.material.textview.MaterialTextView-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_margin="8dp"-->
-<!--                    android:text="@string/click_on_a_pie_chart_value_to_see_the_evolution_of_pain_with_activities"-->
-<!--                    android:textColor="@color/colorPrimary" />-->
 
             </LinearLayout>
         </androidx.cardview.widget.CardView>
@@ -68,6 +61,7 @@
                     android:layout_margin="8dp" />
 
                 <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/activities_detail_chart_details_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"

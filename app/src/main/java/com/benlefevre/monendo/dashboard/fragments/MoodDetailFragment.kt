@@ -48,41 +48,36 @@ class MoodDetailFragment : Fragment(R.layout.fragment_mood_detail) {
     private fun setupChipListener() {
         chip_week.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                viewModel.getPainRelationsBy7LastDays().observe(viewLifecycleOwner, Observer {
-                    setupList(it)
-                    setupRepartitionChart()
-                    setupDetailChart()
-                })
+                viewModel.getPainRelationsBy7LastDays().observe(viewLifecycleOwner, configuresObserver())
             }
         }
         chip_month.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                viewModel.getPainRelationsByLastMonth().observe(viewLifecycleOwner, Observer {
-                    setupList(it)
-                    setupRepartitionChart()
-                    setupDetailChart()
-                })
+                viewModel.getPainRelationsByLastMonth().observe(viewLifecycleOwner, configuresObserver())
             }
         }
         chip_6months.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                viewModel.getPainRelationsByLast6Months().observe(viewLifecycleOwner, Observer {
-                    setupList(it)
-                    setupRepartitionChart()
-                    setupDetailChart()
-                })
+                viewModel.getPainRelationsByLast6Months().observe(viewLifecycleOwner, configuresObserver())
             }
         }
         chip_year.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                viewModel.getPainRelationsByLastYear().observe(viewLifecycleOwner, Observer {
-                    setupList(it)
-                    setupRepartitionChart()
-                    setupDetailChart()
-                })
+                viewModel.getPainRelationsByLastYear().observe(viewLifecycleOwner, configuresObserver())
             }
         }
         chip_week.isChecked = true
+    }
+
+    /**
+     * Defines the called functions when the ViewModel return a new value
+     */
+    private fun configuresObserver() : Observer<List<PainWithRelations>>{
+        return Observer<List<PainWithRelations>> {
+            setupList(it)
+            setupRepartitionChart()
+            setupDetailChart()
+        }
     }
 
     private fun setupList(pains: List<PainWithRelations>) {
@@ -132,6 +127,10 @@ class MoodDetailFragment : Fragment(R.layout.fragment_mood_detail) {
         }
 
         mood_details_rep_chart.apply {
+            legend.apply {
+                textColor = getColor(context,R.color.colorPrimary)
+                isWordWrapEnabled = true
+            }
             description = null
             setUsePercentValues(true)
             setDrawEntryLabels(false)
@@ -209,18 +208,24 @@ class MoodDetailFragment : Fragment(R.layout.fragment_mood_detail) {
             isHighlightPerTapEnabled = false
             isHighlightFullBarEnabled = false
             description = null
-            xAxis.granularity = 1f
-            xAxis.valueFormatter = IndexAxisValueFormatter(dates)
-            xAxis.textColor = getColor(requireContext(), R.color.colorPrimary)
-            axisLeft.granularity = 1f
-            axisLeft.setDrawZeroLine(true)
-            axisLeft.axisMinimum = 0f
-            axisLeft.axisMaximum = 10f
-            axisLeft.isEnabled = false
-            axisRight.granularity = 1f
-            axisRight.axisMinimum = 0f
-            axisRight.axisMaximum = 1.25f
-            axisRight.isEnabled = false
+            xAxis.apply {
+                granularity = 1f
+                valueFormatter = IndexAxisValueFormatter(dates)
+                textColor = getColor(requireContext(), R.color.colorPrimary)
+            }
+            axisLeft.apply {
+                granularity = 1f
+                setDrawZeroLine(true)
+                axisMinimum = 0f
+                axisMaximum = 11f
+                isEnabled = false
+            }
+            axisRight.apply {
+                granularity = 1f
+                axisMinimum = 0f
+                axisMaximum = 1.45f
+                isEnabled = false
+            }
             data = CombinedData().apply {
                 setData(LineData(painDataSet)).apply {
                     isHighlightEnabled = false

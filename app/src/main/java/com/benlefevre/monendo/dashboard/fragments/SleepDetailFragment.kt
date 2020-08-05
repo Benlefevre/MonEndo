@@ -128,14 +128,18 @@ class SleepDetailFragment : Fragment(R.layout.fragment_sleep_detail) {
             }
             isHighlightPerTapEnabled = false
             description = null
-            xAxis.granularity = 1f
-            xAxis.valueFormatter = IndexAxisValueFormatter(dates)
-            xAxis.textColor = getColor(context, R.color.colorPrimary)
-            axisLeft.granularity = 1f
-            axisLeft.setDrawZeroLine(true)
-            axisLeft.axisMinimum = 0f
-            axisLeft.axisMaximum = 10f
-            axisLeft.textColor = getColor(context, R.color.colorPrimary)
+            xAxis.apply {
+                granularity = 1f
+                valueFormatter = IndexAxisValueFormatter(dates)
+                textColor = getColor(context, R.color.colorPrimary)
+            }
+            axisLeft.apply {
+                granularity = 1f
+                setDrawZeroLine(true)
+                axisMinimum = 0f
+                axisMaximum = 11f
+                textColor = getColor(context, R.color.colorPrimary)
+            }
             axisRight.isEnabled = false
             data = LineData(listEntries)
             animateX(2000, Easing.EaseOutBack)

@@ -92,13 +92,23 @@ class PainDetailFragment : Fragment(R.layout.fragment_pain_detail) {
         }
 
         painChart.apply {
+            legend.apply {
+                textColor = getColor(context,R.color.colorPrimary)
+                isWordWrapEnabled = true
+            }
             description = null
             setDrawBorders(false)
-            xAxis.valueFormatter = IndexAxisValueFormatter(dates)
-            axisLeft.granularity = 1f
-            axisLeft.setDrawZeroLine(true)
-            axisLeft.axisMinimum = 0f
-            axisLeft.axisMaximum = 10f
+            xAxis.apply {
+                valueFormatter = IndexAxisValueFormatter(dates)
+                textColor = getColor(context,R.color.colorPrimary)
+            }
+            axisLeft.apply {
+                granularity = 1f
+                setDrawZeroLine(true)
+                axisMinimum = 0f
+                axisMaximum = 11f
+                textColor = getColor(context,R.color.colorPrimary)
+            }
             axisRight.isEnabled = false
             data = LineData(dataSet)
             setOnChartValueSelectedListener(object : OnChartValueSelectedListener {

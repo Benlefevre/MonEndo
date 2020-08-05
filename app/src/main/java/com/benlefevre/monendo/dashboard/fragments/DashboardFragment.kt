@@ -42,12 +42,16 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
     private lateinit var activitiesChart: BarChart
     private lateinit var sleepChart: LineChart
     private lateinit var moodChart: PieChart
+    private var colorSecondary : Int = 0
+    private var colorPrimary : Int = 0
 
     private lateinit var colorsChart : IntArray
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         colorsChart = resources.getIntArray(R.array.chartColors)
+        colorSecondary = getColor(requireContext(), R.color.colorSecondary)
+        colorPrimary = getColor(requireContext(), R.color.colorPrimary)
         setupOnClickListener()
         initAllCharts()
         getLast7DaysUserInputs()
@@ -59,23 +63,23 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
     private fun initAllCharts() {
         painChart = dashboard_chart_pain.apply {
             setNoDataText(getString(R.string.pain_history_appear))
-            setNoDataTextColor(getColor(context, R.color.colorSecondary))
+            setNoDataTextColor(colorSecondary)
         }
         symptomsChart = dashboard_chart_symptom.apply {
             setNoDataText(getString(R.string.symptom_history_appear))
-            setNoDataTextColor(getColor(context, R.color.colorSecondary))
+            setNoDataTextColor(colorSecondary)
         }
         activitiesChart = dashboard_chart_activities.apply {
             setNoDataText(getString(R.string.activities_history_appear))
-            setNoDataTextColor(getColor(context, R.color.colorSecondary))
+            setNoDataTextColor(colorSecondary)
         }
         sleepChart = dashboard_chart_sleep.apply {
             setNoDataText(getString(R.string.sleep_quality_history_appear))
-            setNoDataTextColor(getColor(context, R.color.colorSecondary))
+            setNoDataTextColor(colorSecondary)
         }
         moodChart = dashboard_chart_mood.apply {
             setNoDataText(getString(R.string.mood_history_appear))
-            setNoDataTextColor(getColor(context, R.color.colorSecondary))
+            setNoDataTextColor(colorSecondary)
         }
     }
 
@@ -129,21 +133,32 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
         val dataSet = LineDataSet(entries, getString(R.string.my_pain))
         with(dataSet) {
             lineWidth = 2.0f
-            color = getColor(requireContext(), R.color.colorSecondary)
-            setCircleColor(getColor(requireContext(), R.color.colorSecondary))
+            color = colorSecondary
+            setCircleColor(colorSecondary)
             setDrawValues(false)
         }
 
         painChart.apply {
+            legend.apply {
+                textColor = colorPrimary
+                isWordWrapEnabled = true
+            }
             description = null
             setDrawBorders(false)
             setTouchEnabled(false)
-            xAxis.granularity = 1.0f
-            xAxis.valueFormatter = IndexAxisValueFormatter(dates)
-            axisLeft.granularity = 1.0f
-            axisLeft.setDrawZeroLine(true)
-            axisLeft.axisMinimum = 0.0f
-            axisLeft.axisMaximum = 10.0f
+            xAxis.apply {
+                granularity = 1.0f
+                valueFormatter = IndexAxisValueFormatter(dates)
+                textColor = colorPrimary
+            }
+
+            axisLeft.apply {
+                granularity = 1.0f
+                setDrawZeroLine(true)
+                axisMinimum = 0.0f
+                axisMaximum = 11.0f
+                textColor = colorPrimary
+            }
             axisRight.isEnabled = false
             data = LineData(dataSet)
             animateX(900, Easing.EaseOutBack)
@@ -201,14 +216,20 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
         }
 
         symptomsChart.apply {
+            legend.apply {
+                textColor = colorPrimary
+                isWordWrapEnabled = true
+            }
             description = null
             setTouchEnabled(false)
             setFitBars(true)
-            legend.isWordWrapEnabled = true
             xAxis.isEnabled = false
-            axisLeft.granularity = 1.0f
-            axisLeft.setDrawZeroLine(true)
-            axisLeft.axisMinimum = 0.0f
+            axisLeft.apply {
+                granularity = 1.0f
+                setDrawZeroLine(true)
+                axisMinimum = 0.0f
+                textColor = colorPrimary
+            }
             axisRight.isEnabled = false
             data = BarData(dataSet)
             animateX(900, Easing.EaseOutBack)
@@ -293,6 +314,7 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
                     color = colorsChart[colorCounter]
                     axisDependency = YAxis.AxisDependency.RIGHT
                     valueTextSize = 10f
+                    valueTextColor = colorPrimary
                 }
                 indexDataSet++
                 colorCounter++
@@ -307,6 +329,7 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
                         color = colorsChart[colorCounter]
                         axisDependency = YAxis.AxisDependency.LEFT
                         valueTextSize = 10f
+                        valueTextColor = colorPrimary
                     }
                     indexDataSet++
                     colorCounter++
@@ -322,6 +345,7 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
                         color = colorsChart[colorCounter]
                         axisDependency = YAxis.AxisDependency.RIGHT
                         valueTextSize = 10f
+                        valueTextColor = colorPrimary
                     }
                     indexDataSet++
                     colorCounter++
@@ -331,18 +355,27 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
         }
 
         activitiesChart.apply {
+            legend.apply {
+                textColor = colorPrimary
+                isWordWrapEnabled = true
+                textSize = 9f
+            }
             description = null
             setTouchEnabled(false)
             setFitBars(true)
-            legend.isWordWrapEnabled = true
-            legend.textSize = 8f
             xAxis.isEnabled = false
-            axisLeft.axisMinimum = 0f
-            axisLeft.setDrawGridLines(false)
-            axisLeft.granularity = 20f
-            axisRight.setDrawGridLines(false)
-            axisRight.axisMinimum = 0f
-            axisRight.granularity = 1f
+            axisLeft.apply {
+                axisMinimum = 0f
+                setDrawGridLines(false)
+                granularity = 20f
+                textColor = colorPrimary
+            }
+            axisRight.apply {
+                setDrawGridLines(false)
+                axisMinimum = 0f
+                granularity = 1f
+                textColor =colorPrimary
+            }
             data = BarData(dataSet)
             animateX(900, Easing.EaseOutBack)
         }
@@ -371,13 +404,23 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
         }
 
         sleepChart.apply {
+            legend.apply {
+                textColor = colorPrimary
+                isWordWrapEnabled = true
+            }
             description = null
             setTouchEnabled(false)
-            xAxis.granularity = 1f
-            xAxis.valueFormatter = IndexAxisValueFormatter(dates)
-            axisLeft.granularity = 1f
-            axisLeft.axisMinimum = 0f
-            axisLeft.axisMaximum = 10f
+            xAxis.apply {
+                granularity = 1f
+                valueFormatter = IndexAxisValueFormatter(dates)
+                textColor = colorPrimary
+            }
+            axisLeft.apply {
+                granularity = 1f
+                axisMinimum = 0f
+                axisMaximum = 11f
+                textColor = colorPrimary
+            }
             axisRight.isEnabled = false
             data = LineData(dataSet)
             animateX(900, Easing.EaseOutBack)
@@ -448,6 +491,10 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
         }
 
         moodChart.apply {
+            legend.apply {
+                textColor = colorPrimary
+                isWordWrapEnabled = true
+            }
             description = null
             setUsePercentValues(true)
             setDrawEntryLabels(false)

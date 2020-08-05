@@ -81,6 +81,8 @@
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/fertility_day_mens_label"
                     style="@style/CustomTextInputLayout"
+                    app:startIconDrawable="@drawable/calendar"
+                    app:startIconTint="@color/colorPrimary"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
