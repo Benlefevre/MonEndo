@@ -39,7 +39,7 @@ class SymptomDetailFragment : Fragment(R.layout.fragment_symptom_detail) {
         setupChipListener()
     }
 
-    private fun setupEmptyChartsMessages(){
+    private fun setupEmptyChartsMessages() {
         symptom_details_evo_chart.apply {
             setNoDataText(getString(R.string.click_on_a_pie_chart_s_value_to_see_the_symptom_evolution_in_time))
             setNoDataTextColor(getColor(context, R.color.colorSecondary))
@@ -49,6 +49,7 @@ class SymptomDetailFragment : Fragment(R.layout.fragment_symptom_detail) {
             setNoDataText("No data for this period")
             setNoDataTextColor(getColor(context, R.color.colorSecondary))
         }
+        symptom_filter_legend.visibility = View.GONE
     }
 
     /**
@@ -58,61 +59,43 @@ class SymptomDetailFragment : Fragment(R.layout.fragment_symptom_detail) {
     private fun setupChipListener() {
         chip_week.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                viewModel.getPainRelationsBy7LastDays().observe(viewLifecycleOwner, Observer {
-                    clearDetailChart()
-                    if (it.isNotEmpty()) {
-                        setupList(it)
-                        setupRepartitionChart()
-                        displayAllSymptomsDetails()
-                    }else{
-                        setupEmptyChartsMessages()
-                    }
-                })
+                viewModel.getPainRelationsBy7LastDays()
+                    .observe(viewLifecycleOwner, configuresObserver())
             }
         }
         chip_month.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                viewModel.getPainRelationsByLastMonth().observe(viewLifecycleOwner, Observer {
-                    clearDetailChart()
-                    if (it.isNotEmpty()) {
-                        setupList(it)
-                        setupRepartitionChart()
-                        displayAllSymptomsDetails()
-                    }else{
-                        setupEmptyChartsMessages()
-                    }
-                })
+                viewModel.getPainRelationsByLastMonth()
+                    .observe(viewLifecycleOwner, configuresObserver())
             }
         }
         chip_6months.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                viewModel.getPainRelationsByLast6Months().observe(viewLifecycleOwner, Observer {
-                    clearDetailChart()
-                    if (it.isNotEmpty()) {
-                        setupList(it)
-                        setupRepartitionChart()
-                        displayAllSymptomsDetails()
-                    }else{
-                        setupEmptyChartsMessages()
-                    }
-                })
+                viewModel.getPainRelationsByLast6Months()
+                    .observe(viewLifecycleOwner, configuresObserver())
             }
         }
         chip_year.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                viewModel.getPainRelationsByLastYear().observe(viewLifecycleOwner, Observer {
-                    clearDetailChart()
-                    if (it.isNotEmpty()) {
-                        setupList(it)
-                        setupRepartitionChart()
-                        displayAllSymptomsDetails()
-                    }else{
-                        setupEmptyChartsMessages()
-                    }
-                })
+                viewModel.getPainRelationsByLastYear()
+                    .observe(viewLifecycleOwner, configuresObserver())
             }
         }
         chip_week.isChecked = true
+    }
+
+    private fun configuresObserver(): Observer<List<PainWithRelations>> {
+        return Observer<List<PainWithRelations>> {
+            clearDetailChart()
+            if (it.isNotEmpty()) {
+                setupList(it)
+                setupRepartitionChart()
+                displayAllSymptomsDetails()
+                symptom_filter_legend.visibility = View.VISIBLE
+            } else {
+                setupEmptyChartsMessages()
+            }
+        }
     }
 
     private fun setupList(pains: List<PainWithRelations>) {
@@ -261,9 +244,16 @@ class SymptomDetailFragment : Fragment(R.layout.fragment_symptom_detail) {
         painRelations.forEach { pain ->
             painEntries.add(Entry(index, pain.pain.intensity.toFloat()))
             if (!pain.symptoms.isNullOrEmpty()) {
-                var yValue = when (pain.pain.intensity) {
-                    in 0..10 -> pain.pain.intensity - (0.5f * pain.symptoms.size)
-                    else -> 0.0f
+                var yValue = when {
+                    pain.pain.intensity == 0 -> 0.5f
+                    pain.symptoms.size <= 2 && pain.pain.intensity == 1 -> pain.pain.intensity - (0.5f * pain.symptoms.size)
+                    pain.symptoms.size > 2 && pain.pain.intensity == 1 -> pain.pain.intensity + 0.5f
+                    pain.symptoms.size <= 3 && pain.pain.intensity in 2..3 -> pain.pain.intensity - (0.5f * pain.symptoms.size)
+                    pain.symptoms.size > 3 && pain.pain.intensity in 2..3 -> pain.pain.intensity + 0.5f
+                    pain.symptoms.size <= 6 && pain.pain.intensity in 4..7 -> pain.pain.intensity - (0.5f * pain.symptoms.size)
+                    pain.symptoms.size > 6 && pain.pain.intensity in 4..7 -> pain.pain.intensity - (0.5f * pain.symptoms.size / 2)
+                    pain.pain.intensity in 8..10 -> pain.pain.intensity - (0.5f * pain.symptoms.size)
+                    else -> 0.5f
                 }
                 pain.symptoms.forEach {
                     when (it.name) {
@@ -305,7 +295,7 @@ class SymptomDetailFragment : Fragment(R.layout.fragment_symptom_detail) {
                         getString(R.string.tired) -> tiredEntries.first.add(Entry(index, yValue))
                         else -> getColor(requireContext(), R.color.colorSecondary)
                     }
-                    yValue += 0.7f
+                    yValue += 0.5f
                 }
             }
             index++
@@ -316,16 +306,9 @@ class SymptomDetailFragment : Fragment(R.layout.fragment_symptom_detail) {
             lineWidth = 2f
             color = getColor(requireContext(), R.color.design_default_color_secondary)
             setCircleColor(getColor(requireContext(), R.color.design_default_color_secondary))
-//            setDrawCircles(false)
             setDrawValues(false)
             setDrawFilled(true)
             fillColor = getColor(requireContext(), R.color.design_default_color_secondary)
-//            valueTextSize = 10f
-//            valueFormatter = object : ValueFormatter() {
-//                override fun getFormattedValue(value: Float): String {
-//                    return (value.toInt()).toString()
-//                }
-//            }
         }
 
         val listLineSet =
@@ -346,7 +329,7 @@ class SymptomDetailFragment : Fragment(R.layout.fragment_symptom_detail) {
             val dataSet = ScatterDataSet(it.first, it.second).apply {
                 axisDependency = YAxis.AxisDependency.LEFT
                 setDrawValues(false)
-                scatterShapeSize = 30f
+                scatterShapeSize = 25f
                 color = when (it.second) {
                     getString(R.string.burns) -> colorsChart[0]
                     getString(R.string.cramps) -> colorsChart[1]
@@ -370,16 +353,6 @@ class SymptomDetailFragment : Fragment(R.layout.fragment_symptom_detail) {
                 textColor = getColor(context, R.color.colorPrimary)
                 isWordWrapEnabled = true
             }
-//            setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
-//                override fun onNothingSelected() {
-//                }
-//
-//                override fun onValueSelected(e: Entry?, h: Highlight?) {
-//                    val pain: PainWithRelations = e?.data as PainWithRelations
-//                    Toast.makeText(context, getString(R.string.symptom_detailed_click,name,pain.pain.intensity,pain.pain.location), Toast.LENGTH_LONG)
-//                        .show()
-//                }
-//            })
             highlightValues(null)
             description = null
             xAxis.apply {
@@ -392,14 +365,9 @@ class SymptomDetailFragment : Fragment(R.layout.fragment_symptom_detail) {
             axisLeft.apply {
                 granularity = 1f
                 setDrawZeroLine(true)
-//                axisMinimum = -0.5f
-//                axisMaximum = 11f
                 textColor = getColor(context, R.color.colorPrimary)
             }
             axisRight.apply {
-                granularity = 1f
-                axisMinimum = 0f
-                axisMaximum = 1.25f
                 isEnabled = false
             }
             data = CombinedData().apply {
@@ -424,7 +392,7 @@ class SymptomDetailFragment : Fragment(R.layout.fragment_symptom_detail) {
             val filterSymptom = pain.symptoms.filter { it.name == name }
             painEntries.add(Entry(index, pain.pain.intensity.toFloat()))
             if (!filterSymptom.isNullOrEmpty()) {
-                selectedSymptomEntries.add(Entry(index, pain.pain.intensity - 0.5f))
+                selectedSymptomEntries.add(Entry(index, pain.pain.intensity + 0.5f))
             }
             index++
         }
@@ -441,7 +409,7 @@ class SymptomDetailFragment : Fragment(R.layout.fragment_symptom_detail) {
         val dataSet = ScatterDataSet(selectedSymptomEntries, name).apply {
             axisDependency = YAxis.AxisDependency.LEFT
             setDrawValues(false)
-            scatterShapeSize = 30f
+            scatterShapeSize = 25f
             color = when (name) {
                 getString(R.string.burns) -> colorsChart[0]
                 getString(R.string.cramps) -> colorsChart[1]
@@ -463,16 +431,6 @@ class SymptomDetailFragment : Fragment(R.layout.fragment_symptom_detail) {
                 textColor = getColor(context, R.color.colorPrimary)
                 isWordWrapEnabled = true
             }
-//            setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
-//                override fun onNothingSelected() {
-//                }
-//
-//                override fun onValueSelected(e: Entry?, h: Highlight?) {
-//                    val pain: PainWithRelations = e?.data as PainWithRelations
-//                    Toast.makeText(context, getString(R.string.symptom_detailed_click, name, pain.pain.intensity, pain.pain.location), Toast.LENGTH_LONG)
-//                        .show()
-//                }
-//            })
             highlightValues(null)
             description = null
             xAxis.apply {
@@ -488,9 +446,6 @@ class SymptomDetailFragment : Fragment(R.layout.fragment_symptom_detail) {
                 textColor = getColor(context, R.color.colorPrimary)
             }
             axisRight.apply {
-                granularity = 1f
-                axisMinimum = 0f
-                axisMaximum = 1.25f
                 isEnabled = false
             }
             data = CombinedData().apply {

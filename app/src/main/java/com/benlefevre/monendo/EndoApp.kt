@@ -15,6 +15,7 @@ import com.facebook.stetho.Stetho
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
+import org.koin.core.logger.Level
 import timber.log.Timber
 
 class EndoApp : Application() {
@@ -29,7 +30,7 @@ class EndoApp : Application() {
         INSTANCE = this
         Stetho.initializeWithDefaults(INSTANCE)
         startKoin {
-            androidLogger()
+            androidLogger(Level.ERROR)
             androidContext(this@EndoApp)
             modules(listOf(appModule, networkModule))
         }

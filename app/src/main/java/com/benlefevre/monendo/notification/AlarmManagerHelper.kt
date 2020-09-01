@@ -18,11 +18,9 @@ fun createAlarmAtTheUserTime(context: Context, intent: Intent, hour: String, tag
     val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
     val pendingIntent =
         PendingIntent.getBroadcast(context, tag, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-//    val repeatInterval = AlarmManager.INTERVAL_DAY
     val triggeredTime =
         setTriggeredTime(hour)
 
-//    alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, triggeredTime, repeatInterval, pendingIntent)
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
         alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,triggeredTime,pendingIntent)
     }else{
@@ -45,10 +43,10 @@ fun setTriggeredTime(hour: String): Long {
     }
     return if (now.after(selectedHour)) {
         selectedHour.add(Calendar.DAY_OF_YEAR, 1)
-        Timber.i("${System.currentTimeMillis()} et selectedHour = ${selectedHour.timeInMillis}")
+        Timber.i("now = ${System.currentTimeMillis()} et selectedHour = ${selectedHour.timeInMillis}, différence = ${(selectedHour.timeInMillis - System.currentTimeMillis()) / 1000}sec")
         selectedHour.timeInMillis
     } else {
-        Timber.i("${System.currentTimeMillis()} et selectedHour = ${selectedHour.timeInMillis}")
+        Timber.i("now = ${System.currentTimeMillis()} et selectedHour = ${selectedHour.timeInMillis}, différence = ${(selectedHour.timeInMillis - System.currentTimeMillis()) / 1000}sec")
         selectedHour.timeInMillis
     }
 }

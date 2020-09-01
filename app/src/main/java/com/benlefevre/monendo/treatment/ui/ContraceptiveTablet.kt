@@ -383,17 +383,17 @@ class ContraceptiveTablet(context: Context, attrs: AttributeSet) : View(context,
         var isTouchPill: Boolean
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
-                pills.forEach {
-                    isTouchPill = it.checkTouchInCircle(event.x, event.y)
+                pills.forEach { pill ->
+                    isTouchPill = pill.checkTouchInCircle(event.x, event.y)
                     if (isTouchPill) {
                         if (day != -1) {
                             isCurrentChecked()
                         }
-                        if (!it.isChecked) {
-                            it.color = getColor(context, R.color.colorBackground)
-                            it.isChecked = true
+                        if (!pill.isChecked) {
+                            pill.color = getColor(context, R.color.colorBackground)
+                            pill.isChecked = true
                         } else
-                            it.isChecked = false
+                            pill.isChecked = false
                     }
                     invalidate()
                 }
