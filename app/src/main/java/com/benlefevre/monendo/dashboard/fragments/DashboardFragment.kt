@@ -305,20 +305,20 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
 
         activitiesCount.forEach {
             if (it.first.first != 0f) {
-                val barSet =
-                    BarDataSet(
-                        listOf(BarEntry(indexDataSet, it.first.first)),
-                        getString(R.string.activity_session, it.second)
-                    )
-                barSet.apply {
-                    color = colorsChart[colorCounter]
-                    axisDependency = YAxis.AxisDependency.RIGHT
-                    valueTextSize = 10f
-                    valueTextColor = colorPrimary
-                }
-                indexDataSet++
-                colorCounter++
-                dataSet.add(barSet)
+//                val barSet =
+//                    BarDataSet(
+//                        listOf(BarEntry(indexDataSet, it.first.first)),
+//                        getString(R.string.activity_session, it.second)
+//                    )
+//                barSet.apply {
+//                    color = colorsChart[colorCounter]
+//                    axisDependency = YAxis.AxisDependency.RIGHT
+//                    valueTextSize = 10f
+//                    valueTextColor = colorPrimary
+//                }
+//                indexDataSet++
+//                colorCounter++
+//                dataSet.add(barSet)
                 if (it.first.second != 0f) {
                     val barSetDuration =
                         BarDataSet(
@@ -358,7 +358,7 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
             legend.apply {
                 textColor = colorPrimary
                 isWordWrapEnabled = true
-                textSize = 9f
+                textSize = 10f
             }
             description = null
             setTouchEnabled(false)
