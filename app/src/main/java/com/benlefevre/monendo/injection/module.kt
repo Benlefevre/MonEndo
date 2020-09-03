@@ -24,6 +24,7 @@ import com.benlefevre.monendo.pain.PainRepo
 import com.benlefevre.monendo.settings.SettingViewModel
 import com.benlefevre.monendo.utils.API_URL
 import com.benlefevre.monendo.utils.PREFERENCES
+import com.facebook.stetho.okhttp3.StethoInterceptor
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import okhttp3.OkHttpClient
@@ -95,6 +96,7 @@ fun provideRetrofit(client: OkHttpClient): Retrofit {
 fun provideHttpClient(): OkHttpClient {
     return OkHttpClient.Builder()
         .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+        .addNetworkInterceptor(StethoInterceptor())
         .build()
 }
 

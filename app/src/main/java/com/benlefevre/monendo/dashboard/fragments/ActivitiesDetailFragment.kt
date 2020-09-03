@@ -23,6 +23,7 @@ import kotlinx.android.synthetic.main.chipgroup_duration.*
 import kotlinx.android.synthetic.main.fragment_activities_detail.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
+import java.util.*
 
 class ActivitiesDetailFragment : Fragment(R.layout.fragment_activities_detail) {
 
@@ -266,9 +267,10 @@ class ActivitiesDetailFragment : Fragment(R.layout.fragment_activities_detail) {
                 }
 
                 override fun onValueSelected(e: Entry?, h: Highlight?) {
-                    displayActivitiesInformations(h)
+                    displayActivitiesInformations(h, "")
                 }
             })
+            setVisibleXRange(7f,15f)
             legend.apply {
                 textColor = colorPrimary
                 isWordWrapEnabled = true
@@ -299,15 +301,15 @@ class ActivitiesDetailFragment : Fragment(R.layout.fragment_activities_detail) {
 
     }
 
-    private fun displaySelectedUserActivityDetails(name: String) {
-        Timber.i(name)
+    private fun displaySelectedUserActivityDetails(activityName: String) {
+        Timber.i(activityName)
         val painEntries = mutableListOf<Entry>()
         val selectedActivityEntries = mutableListOf<Entry>()
         var index = 0f
 
         painRelations.forEach { pain ->
             val filterActivities = pain.userActivities.filter {
-                it.name == name || it.name.contains(name) || it.name.contains(name)
+                it.name == activityName || it.name.contains(activityName)
             }
             painEntries.add(Entry(index, pain.pain.intensity.toFloat()))
             if (filterActivities.isNotEmpty()) {
@@ -325,11 +327,11 @@ class ActivitiesDetailFragment : Fragment(R.layout.fragment_activities_detail) {
             setDrawFilled(true)
             fillColor = getColor(requireContext(), R.color.design_default_color_secondary)
         }
-        val dataSet = ScatterDataSet(selectedActivityEntries, name).apply {
+        val dataSet = ScatterDataSet(selectedActivityEntries, activityName).apply {
             axisDependency = YAxis.AxisDependency.LEFT
             setDrawValues(false)
             scatterShapeSize = 25f
-            color = setScatterColor(name)
+            color = setScatterColor(activityName)
         }
 
         activities_detail_chart.apply {
@@ -338,9 +340,10 @@ class ActivitiesDetailFragment : Fragment(R.layout.fragment_activities_detail) {
                 }
 
                 override fun onValueSelected(e: Entry?, h: Highlight?) {
-                    displayActivitiesInformations(h)
+                    displayActivitiesInformations(h, activityName)
                 }
             })
+            setVisibleXRange(7f,15f)
             legend.apply {
                 textColor = colorPrimary
                 isWordWrapEnabled = true
@@ -381,23 +384,28 @@ class ActivitiesDetailFragment : Fragment(R.layout.fragment_activities_detail) {
         }
     }
 
-    private fun displayActivitiesInformations(highLight: Highlight?) {
+    private fun displayActivitiesInformations(highLight: Highlight?, activityName: String) {
         Timber.i(" x : ${highLight?.x} / dataSet : ${highLight?.dataSetIndex} / dataIndex = ${highLight?.dataIndex} / x.toInt = $${highLight?.x?.toInt()} / y = ${highLight?.y}")
         var activitiesText =
             "${formatDateWithYear(painRelations[highLight?.x?.toInt()!!].pain.date)} \n"
-        painRelations[highLight.x.toInt()].userActivities.filter { it.name != getString(R.string.sleep) }
+        painRelations[highLight.x.toInt()].userActivities.filter {
+            when {
+                activityName.isBlank() -> it.name != getString(R.string.sleep)
+                else -> it.name == activityName || it.name.contains(activityName)
+            }
+        }
             .forEach {
                 activitiesText += when (it.name) {
                     getString(R.string.stress) ->
                         getString(
                             R.string.stress_detail_activity,
-                            it.name.toUpperCase(),
+                            it.name.toUpperCase(Locale.ROOT),
                             it.intensity
                         ) + "\n"
                     else ->
                         getString(
                             R.string.other_detail_activity,
-                            it.name.toUpperCase(),
+                            it.name.toUpperCase(Locale.ROOT),
                             it.duration,
                             it.intensity
                         ) + "\n"
@@ -426,8 +434,7 @@ class ActivitiesDetailFragment : Fragment(R.layout.fragment_activities_detail) {
                 .toFloat() / size, getString(R.string.relaxation))
         val other = Pair(activities.count {
             it.name != getString(R.string.stress) && it.name != getString(R.string.relaxation) &&
-                    it.name != getString(R.string.sex) && it.name != getString(R.string.sleep) &&
-                    !resources.getStringArray(R.array.sport).contains(it.name)
+                    it.name != getString(R.string.sex) && it.name != getString(R.string.sleep) && !it.name.contains(getString(R.string.sport))
         }.toFloat() / size, getString(R.string.other))
 
         return arrayOf(sport, stress, sex, relaxation, other)

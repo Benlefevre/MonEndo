@@ -14,9 +14,6 @@ import com.benlefevre.monendo.dashboard.models.UserActivities
 import com.benlefevre.monendo.dashboard.viewmodels.DashboardViewModel
 import com.benlefevre.monendo.utils.formatDateWithoutYear
 import com.github.mikephil.charting.animation.Easing
-import com.github.mikephil.charting.charts.BarChart
-import com.github.mikephil.charting.charts.LineChart
-import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
@@ -36,11 +33,6 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
     private val activities: MutableList<UserActivities> = mutableListOf()
     private val moods: MutableList<Mood> = mutableListOf()
     private val dates: MutableList<String> = mutableListOf()
-    private lateinit var painChart: LineChart
-    private lateinit var symptomsChart: BarChart
-    private lateinit var activitiesChart: BarChart
-    private lateinit var sleepChart: LineChart
-    private lateinit var moodChart: PieChart
     private var colorSecondary : Int = 0
     private var colorPrimary : Int = 0
 
@@ -60,23 +52,23 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
      * Initializes the empty data text for each chart
      */
     private fun initAllCharts() {
-        painChart = dashboard_chart_pain.apply {
+        dashboard_chart_pain.apply {
             setNoDataText(getString(R.string.pain_history_appear))
             setNoDataTextColor(colorSecondary)
         }
-        symptomsChart = dashboard_chart_symptom.apply {
+        dashboard_chart_symptom.apply {
             setNoDataText(getString(R.string.symptom_history_appear))
             setNoDataTextColor(colorSecondary)
         }
-        activitiesChart = dashboard_chart_activities.apply {
+        dashboard_chart_activities.apply {
             setNoDataText(getString(R.string.activities_history_appear))
             setNoDataTextColor(colorSecondary)
         }
-        sleepChart = dashboard_chart_sleep.apply {
+        dashboard_chart_sleep.apply {
             setNoDataText(getString(R.string.sleep_quality_history_appear))
             setNoDataTextColor(colorSecondary)
         }
-        moodChart = dashboard_chart_mood.apply {
+        dashboard_chart_mood.apply {
             setNoDataText(getString(R.string.mood_history_appear))
             setNoDataTextColor(colorSecondary)
         }
@@ -137,7 +129,7 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
             setDrawValues(false)
         }
 
-        painChart.apply {
+        dashboard_chart_pain.apply {
             legend.apply {
                 textColor = colorPrimary
                 isWordWrapEnabled = true
@@ -214,7 +206,7 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
             colorCounter++
         }
 
-        symptomsChart.apply {
+        dashboard_chart_symptom.apply {
             legend.apply {
                 textColor = colorPrimary
                 isWordWrapEnabled = true
@@ -339,7 +331,7 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
             }
         }
 
-        activitiesChart.apply {
+        dashboard_chart_activities.apply {
             legend.apply {
                 textColor = colorPrimary
                 isWordWrapEnabled = true
@@ -388,7 +380,7 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
             setDrawValues(false)
         }
 
-        sleepChart.apply {
+        dashboard_chart_sleep.apply {
             legend.apply {
                 textColor = colorPrimary
                 isWordWrapEnabled = true
@@ -475,7 +467,7 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
             colors = moodColor
         }
 
-        moodChart.apply {
+        dashboard_chart_mood.apply {
             legend.apply {
                 textColor = colorPrimary
                 isWordWrapEnabled = true
