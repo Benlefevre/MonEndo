@@ -16,9 +16,7 @@ import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.github.mikephil.charting.formatter.PercentFormatter
-import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.highlight.Highlight
-import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
 import com.github.mikephil.charting.interfaces.datasets.IScatterDataSet
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import kotlinx.android.synthetic.main.chipgroup_duration.*
@@ -41,9 +39,18 @@ class ActivitiesDetailFragment : Fragment(R.layout.fragment_activities_detail) {
         colorsChart = resources.getIntArray(R.array.chartColors)
         colorSecondary = getColor(requireContext(), R.color.colorSecondary)
         colorPrimary = getColor(requireContext(), R.color.colorPrimary)
+        setupEmptyChartsMessages()
         setupChipListener()
-        activities_detail_chart.apply {
+    }
+
+    private fun setupEmptyChartsMessages() {
+        activities_details_rep_chart.apply {
             setNoDataText(getString(R.string.click_on_a_pie_chart_value_to_see_the_evolution_of_pain_with_activities))
+            setNoDataTextColor(getColor(context, R.color.colorSecondary))
+        }
+        activities_detail_chart.apply {
+            data = null
+            setNoDataText("No data for this period")
             setNoDataTextColor(getColor(context, R.color.colorSecondary))
         }
     }
@@ -85,12 +92,14 @@ class ActivitiesDetailFragment : Fragment(R.layout.fragment_activities_detail) {
      */
     private fun configuresObserver(): Observer<List<PainWithRelations>> {
         return Observer<List<PainWithRelations>> {
-            setupList(it)
-            setupRepartitionChart()
-//            setupDetailsGroupedChart()
-            displayAllActivities()
-            activities_detail_chart_details_text.text =
-                getString(R.string.click_on_a_value_to_see_the_detail_of_the_chosen_practiced_activity)
+            clearDetailChart()
+            if (it.isNotEmpty()) {
+                setupList(it)
+                setupRepartitionChart()
+                displayAllActivities()
+                activities_detail_chart_details_text.text =
+                    getString(R.string.click_on_a_value_to_see_the_detail_of_the_chosen_practiced_activity)
+            }
         }
     }
 
@@ -107,6 +116,21 @@ class ActivitiesDetailFragment : Fragment(R.layout.fragment_activities_detail) {
         painRelations.clear()
         activities.clear()
         dates.clear()
+    }
+
+    /**
+     * Clears the highlight and data values for each chart
+     */
+    private fun clearDetailChart() {
+        activities_detail_chart.apply {
+            data = null
+            fitScreen()
+        }
+        activities_details_rep_chart.apply {
+            highlightValues(null)
+        }
+        activities_detail_chart_details_text.text =
+            getString(R.string.click_on_a_value_to_see_the_detail_of_the_chosen_practiced_activity)
     }
 
     /**
@@ -135,6 +159,19 @@ class ActivitiesDetailFragment : Fragment(R.layout.fragment_activities_detail) {
         }
 
         activities_details_rep_chart.apply {
+            setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
+                override fun onNothingSelected() {
+                    Timber.i("nothing")
+                    clearDetailChart()
+                    displayAllActivities()
+                }
+
+                override fun onValueSelected(e: Entry, h: Highlight?) {
+                    Timber.i("${e.data}")
+                    displaySelectedUserActivityDetails(e.data.toString())
+                    activities_detail_chart.fitScreen()
+                }
+            })
             legend.apply {
                 textColor = colorPrimary
                 isWordWrapEnabled = true
@@ -177,7 +214,7 @@ class ActivitiesDetailFragment : Fragment(R.layout.fragment_activities_detail) {
             userActivities.forEach { activity ->
                 when {
                     resources.getStringArray(R.array.sport)
-                        .contains(activity.name) -> sportEntries.first.add(
+                        .contains(activity.name) || activity.name.contains(getString(R.string.sport)) -> sportEntries.first.add(
                         Entry(index, yValue)
                     )
                     activity.name == getString(R.string.sex) ->
@@ -200,6 +237,8 @@ class ActivitiesDetailFragment : Fragment(R.layout.fragment_activities_detail) {
             color = getColor(requireContext(), R.color.design_default_color_secondary)
             setCircleColor(getColor(requireContext(), R.color.design_default_color_secondary))
             setDrawValues(false)
+            setDrawFilled(true)
+            fillColor = getColor(requireContext(), R.color.design_default_color_secondary)
         }
 
         val listLineSet =
@@ -216,14 +255,7 @@ class ActivitiesDetailFragment : Fragment(R.layout.fragment_activities_detail) {
                 axisDependency = YAxis.AxisDependency.LEFT
                 setDrawValues(false)
                 scatterShapeSize = 25f
-                color = when (it.second) {
-                    getString(R.string.sport) -> colorsChart[4]
-                    getString(R.string.sex) -> colorsChart[6]
-                    getString(R.string.relaxation) -> colorsChart[7]
-                    getString(R.string.stress) -> colorsChart[5]
-                    getString(R.string.other) -> colorsChart[8]
-                    else -> getColor(requireContext(), R.color.colorSecondary)
-                }
+                color = setScatterColor(it.second)
             }
             dataSetList.add(dataSet)
         }
@@ -234,28 +266,7 @@ class ActivitiesDetailFragment : Fragment(R.layout.fragment_activities_detail) {
                 }
 
                 override fun onValueSelected(e: Entry?, h: Highlight?) {
-                    Timber.i(" x : ${h?.x} / dataSet : ${h?.dataSetIndex} / dataIndex = ${h?.dataIndex} / x.toInt = $${h?.x?.toInt()} / y = ${h?.y}")
-                    var activitiesText =
-                        "${formatDateWithYear(painRelations[h?.x?.toInt()!!].pain.date)} \n"
-                    painRelations[h.x.toInt()].userActivities.filter { it.name != getString(R.string.sleep) }
-                        .forEach {
-                            activitiesText += when (it.name) {
-                                getString(R.string.stress) ->
-                                    getString(
-                                        R.string.stress_detail_activity,
-                                        it.name.toUpperCase(),
-                                        it.intensity
-                                    ) + "\n"
-                                else ->
-                                    getString(
-                                        R.string.other_detail_activity,
-                                        it.name.toUpperCase(),
-                                        it.duration,
-                                        it.intensity
-                                    ) + "\n"
-                            }
-                        }
-                    activities_detail_chart_details_text.text = activitiesText
+                    displayActivitiesInformations(h)
                 }
             })
             legend.apply {
@@ -288,69 +299,19 @@ class ActivitiesDetailFragment : Fragment(R.layout.fragment_activities_detail) {
 
     }
 
-    /**
-     * Configures a CombinedChart to see the selected activity vs pain evolution in time
-     */
-    private fun setupDetailsGroupedChart() {
-        Timber.i("setupDetailsGroupedChart")
-        val dataSetList: MutableList<IBarDataSet> = mutableListOf()
+    private fun displaySelectedUserActivityDetails(name: String) {
+        Timber.i(name)
         val painEntries = mutableListOf<Entry>()
-        val sportEntries = Pair(mutableListOf<BarEntry>(), getString(R.string.sport))
-        val stressEntries = Pair(mutableListOf<BarEntry>(), getString(R.string.stress))
-        val sexEntries = Pair(mutableListOf<BarEntry>(), getString(R.string.sex))
-        val relaxationEntries = Pair(mutableListOf<BarEntry>(), getString(R.string.relaxation))
-        val otherEntries = Pair(mutableListOf<BarEntry>(), getString(R.string.other))
+        val selectedActivityEntries = mutableListOf<Entry>()
         var index = 0f
 
-        painRelations.forEach {
-            painEntries.add(Entry(index + 0.5f, it.pain.intensity.toFloat()))
-            it.userActivities.filter { it.name != getString(R.string.sleep) }.forEach { activity ->
-                val sportIntensity =
-                    if (resources.getStringArray(R.array.sport).contains(activity.name))
-                        activity.intensity.toFloat() else 0.0f
-                sportEntries.first.add(
-                    BarEntry(
-                        index + 0.16f,
-                        sportIntensity,
-                        activity
-                    )
-                )
-                val relaxationIntensity =
-                    if (activity.name == getString(R.string.relaxation)) activity.intensity.toFloat() else 0.0f
-                relaxationEntries.first.add(
-                    BarEntry(
-                        index + 0.34f,
-                        relaxationIntensity,
-                        activity
-                    )
-                )
-                val stressIntensity =
-                    if (activity.name == getString(R.string.stress)) activity.intensity.toFloat() else 0.0f
-                stressEntries.first.add(
-                    BarEntry(
-                        index + 0.52f,
-                        stressIntensity,
-                        activity
-                    )
-                )
-                val sexIntensity =
-                    if (activity.name == getString(R.string.sex)) activity.intensity.toFloat() else 0.0f
-                sexEntries.first.add(
-                    BarEntry(
-                        index + 0.70f,
-                        sexIntensity,
-                        activity
-                    )
-                )
-                val otherIntensity =
-                    if (activity.name.contains(getString(R.string.other))) activity.intensity.toFloat() else 0.0f
-                otherEntries.first.add(
-                    BarEntry(
-                        index + 0.88f,
-                        otherIntensity,
-                        activity
-                    )
-                )
+        painRelations.forEach { pain ->
+            val filterActivities = pain.userActivities.filter {
+                it.name == name || it.name.contains(name) || it.name.contains(name)
+            }
+            painEntries.add(Entry(index, pain.pain.intensity.toFloat()))
+            if (filterActivities.isNotEmpty()) {
+                selectedActivityEntries.add(Entry(index, pain.pain.intensity + 0.4f))
             }
             index++
         }
@@ -360,81 +321,41 @@ class ActivitiesDetailFragment : Fragment(R.layout.fragment_activities_detail) {
             lineWidth = 2f
             color = getColor(requireContext(), R.color.design_default_color_secondary)
             setCircleColor(getColor(requireContext(), R.color.design_default_color_secondary))
-            setDrawValues(true)
-            valueTextSize = 10f
-            valueFormatter = object : ValueFormatter() {
-                override fun getFormattedValue(value: Float): String {
-                    return (value.toInt()).toString()
-                }
-            }
+            setDrawValues(false)
+            setDrawFilled(true)
+            fillColor = getColor(requireContext(), R.color.design_default_color_secondary)
         }
-
-        val listBarEntries =
-            listOf(sportEntries, stressEntries, sexEntries, relaxationEntries, otherEntries)
-        listBarEntries.forEach {
-            val dataSet = BarDataSet(it.first, it.second).apply {
-                axisDependency = YAxis.AxisDependency.LEFT
-                setDrawValues(false)
-                color = when (it.second) {
-                    getString(R.string.sport) -> colorsChart[4]
-                    getString(R.string.stress) -> colorsChart[5]
-                    getString(R.string.sex) -> colorsChart[6]
-                    getString(R.string.relaxation) -> colorsChart[7]
-                    getString(R.string.other) -> colorsChart[8]
-                    else -> colorSecondary
-                }
-            }
-            dataSetList.add(dataSet)
+        val dataSet = ScatterDataSet(selectedActivityEntries, name).apply {
+            axisDependency = YAxis.AxisDependency.LEFT
+            setDrawValues(false)
+            scatterShapeSize = 25f
+            color = setScatterColor(name)
         }
 
         activities_detail_chart.apply {
-            legend.apply {
-                textColor = colorPrimary
-                isWordWrapEnabled = true
-            }
             setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
                 override fun onNothingSelected() {
                 }
 
                 override fun onValueSelected(e: Entry?, h: Highlight?) {
-                    Timber.i(" x : ${h?.x} / dataSet : ${h?.dataSetIndex} / dataIndex = ${h?.dataIndex} / x.toInt = $${h?.x?.toInt()} / y = ${h?.y}")
-                    var activitiesText =
-                        "${formatDateWithYear(painRelations[h?.x?.toInt()!!].pain.date)} \n"
-                    painRelations[h.x.toInt()].userActivities.filter { it.name != getString(R.string.sleep) }
-                        .forEach {
-                            activitiesText += when (it.name) {
-                                getString(R.string.stress) ->
-                                    getString(
-                                        R.string.stress_detail_activity,
-                                        it.name,
-                                        it.intensity
-                                    ) + "\n"
-                                else ->
-                                    getString(
-                                        R.string.other_detail_activity,
-                                        it.name,
-                                        it.duration,
-                                        it.intensity
-                                    ) + "\n"
-                            }
-                        }
-                    activities_detail_chart_details_text.text = activitiesText
+                    displayActivitiesInformations(h)
                 }
             })
+            legend.apply {
+                textColor = colorPrimary
+                isWordWrapEnabled = true
+            }
             highlightValues(null)
             description = null
             xAxis.apply {
                 granularity = 1f
                 valueFormatter = IndexAxisValueFormatter(dates)
                 isGranularityEnabled = true
-                setCenterAxisLabels(true)
                 textColor = colorPrimary
             }
             axisLeft.apply {
                 granularity = 1f
                 setDrawZeroLine(true)
-                axisMinimum = 0f
-                axisMaximum = 11f
                 textColor = colorPrimary
             }
             axisRight.isEnabled = false
@@ -442,16 +363,48 @@ class ActivitiesDetailFragment : Fragment(R.layout.fragment_activities_detail) {
                 setData(LineData(painDataSet)).apply {
                     isHighlightEnabled = false
                 }
-                setData(BarData(dataSetList))
-            }
-            barData.apply {
-                barWidth = 0.16f
+                setData(ScatterData(dataSet))
             }
             xAxis.axisMaximum = dates.size.toFloat()
             animateX(2000, Easing.EaseOutBack)
         }
     }
 
+    private fun setScatterColor(activityName: String): Int {
+        return when (activityName) {
+            getString(R.string.sport) -> colorsChart[4]
+            getString(R.string.sex) -> colorsChart[6]
+            getString(R.string.relaxation) -> colorsChart[7]
+            getString(R.string.stress) -> colorsChart[5]
+            getString(R.string.other) -> colorsChart[8]
+            else -> getColor(requireContext(), R.color.colorSecondary)
+        }
+    }
+
+    private fun displayActivitiesInformations(highLight: Highlight?) {
+        Timber.i(" x : ${highLight?.x} / dataSet : ${highLight?.dataSetIndex} / dataIndex = ${highLight?.dataIndex} / x.toInt = $${highLight?.x?.toInt()} / y = ${highLight?.y}")
+        var activitiesText =
+            "${formatDateWithYear(painRelations[highLight?.x?.toInt()!!].pain.date)} \n"
+        painRelations[highLight.x.toInt()].userActivities.filter { it.name != getString(R.string.sleep) }
+            .forEach {
+                activitiesText += when (it.name) {
+                    getString(R.string.stress) ->
+                        getString(
+                            R.string.stress_detail_activity,
+                            it.name.toUpperCase(),
+                            it.intensity
+                        ) + "\n"
+                    else ->
+                        getString(
+                            R.string.other_detail_activity,
+                            it.name.toUpperCase(),
+                            it.duration,
+                            it.intensity
+                        ) + "\n"
+                }
+            }
+        activities_detail_chart_details_text.text = activitiesText
+    }
 
     /**
      * Computes the division in percents of each activity vs the number of practiced activities
@@ -460,7 +413,7 @@ class ActivitiesDetailFragment : Fragment(R.layout.fragment_activities_detail) {
         val size = activities.size.toFloat()
         val sport = Pair(activities.count {
             resources.getStringArray(R.array.sport)
-                .contains(it.name)
+                .contains(it.name) || it.name.contains(getString(R.string.sport))
         }.toFloat() / size, getString(R.string.sport))
         val stress =
             Pair(activities.count { it.name == getString(R.string.stress) }

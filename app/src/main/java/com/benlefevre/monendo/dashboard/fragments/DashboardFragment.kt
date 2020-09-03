@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.content.ContextCompat.getColor
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.benlefevre.monendo.R
 import com.benlefevre.monendo.dashboard.models.Mood
@@ -87,7 +86,7 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
      * Fetches the user's inputs from locale room db and add them into MutableList
      */
     private fun getLast7DaysUserInputs() {
-        viewModel.getPainRelationsBy7LastDays().observe(viewLifecycleOwner, Observer { list ->
+        viewModel.getPainRelationsBy7LastDays().observe(viewLifecycleOwner, { list ->
             clearLists()
             list.forEach {
                 pains.add(it.pain)
@@ -255,7 +254,7 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
 
         activities.forEach {
             when {
-                resources.getStringArray(R.array.sport).contains(it.name) -> {
+                resources.getStringArray(R.array.sport).contains(it.name) || it.name.contains(getString(R.string.sport)) -> {
                     sportNb++
                     sportIntensity += it.intensity
                     sportDuration += it.duration
@@ -305,20 +304,6 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
 
         activitiesCount.forEach {
             if (it.first.first != 0f) {
-//                val barSet =
-//                    BarDataSet(
-//                        listOf(BarEntry(indexDataSet, it.first.first)),
-//                        getString(R.string.activity_session, it.second)
-//                    )
-//                barSet.apply {
-//                    color = colorsChart[colorCounter]
-//                    axisDependency = YAxis.AxisDependency.RIGHT
-//                    valueTextSize = 10f
-//                    valueTextColor = colorPrimary
-//                }
-//                indexDataSet++
-//                colorCounter++
-//                dataSet.add(barSet)
                 if (it.first.second != 0f) {
                     val barSetDuration =
                         BarDataSet(

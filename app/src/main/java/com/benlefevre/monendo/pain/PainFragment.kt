@@ -193,7 +193,7 @@ class PainFragment : Fragment(R.layout.fragment_pain) {
                     )
                     dialog_sport_choice_text.setAdapter(sportAdapter)
                     dialog_sport_choice_text.setOnItemClickListener { parent, _, position, _ ->
-                        activityChoice = parent.getItemAtPosition(position).toString()
+                        activityChoice = getString(R.string.sport_activities, parent.getItemAtPosition(position).toString().capitalize())
                     }
                 }
                 R.id.pain_card_sleep -> {
@@ -240,7 +240,7 @@ class PainFragment : Fragment(R.layout.fragment_pain) {
     }
 
     private fun createChipWhenUserActivityAdded() {
-        viewModel.activitiesLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        viewModel.activitiesLiveData.observe(viewLifecycleOwner, {
             pain_activity_chipgroup.removeAllViews()
             it.forEach { activity ->
                 val chip = Chip(context).apply {
