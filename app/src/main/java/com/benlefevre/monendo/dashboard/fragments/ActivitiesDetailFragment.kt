@@ -40,18 +40,66 @@ class ActivitiesDetailFragment : Fragment(R.layout.fragment_activities_detail) {
         colorsChart = resources.getIntArray(R.array.chartColors)
         colorSecondary = getColor(requireContext(), R.color.colorSecondary)
         colorPrimary = getColor(requireContext(), R.color.colorPrimary)
+        viewModel.pains.observe(viewLifecycleOwner, configuresObserver())
         setupEmptyChartsMessages()
+        setupCharts()
         setupChipListener()
+    }
+
+    private fun setupCharts() {
+        activities_details_rep_chart.apply {
+            setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
+                override fun onNothingSelected() {
+                    clearDetailChart()
+                    displayAllActivities()
+                }
+
+                override fun onValueSelected(e: Entry, h: Highlight?) {
+                    displaySelectedUserActivityDetails(e.data.toString())
+                }
+            })
+            legend.apply {
+                textColor = colorPrimary
+                isWordWrapEnabled = true
+            }
+            description = null
+            isDrawHoleEnabled = false
+            setUsePercentValues(true)
+            setDrawEntryLabels(false)
+            legend.isWordWrapEnabled = true
+        }
+
+        activities_detail_chart.apply {
+            setVisibleXRange(7f, 15f)
+            legend.apply {
+                textColor = colorPrimary
+                isWordWrapEnabled = true
+            }
+            highlightValues(null)
+            description = null
+            isScaleYEnabled = false
+            xAxis.apply {
+                granularity = 1f
+                isGranularityEnabled = true
+                textColor = colorPrimary
+            }
+            axisLeft.apply {
+                granularity = 1f
+                setDrawZeroLine(true)
+                textColor = colorPrimary
+            }
+            axisRight.isEnabled = false
+        }
     }
 
     private fun setupEmptyChartsMessages() {
         activities_details_rep_chart.apply {
-            setNoDataText(getString(R.string.click_on_a_pie_chart_value_to_see_the_evolution_of_pain_with_activities))
+            setNoDataText(getString(R.string.no_data_period))
             setNoDataTextColor(getColor(context, R.color.colorSecondary))
         }
         activities_detail_chart.apply {
             data = null
-            setNoDataText("No data for this period")
+            setNoDataText(getString(R.string.no_data_period))
             setNoDataTextColor(getColor(context, R.color.colorSecondary))
         }
     }
@@ -63,26 +111,25 @@ class ActivitiesDetailFragment : Fragment(R.layout.fragment_activities_detail) {
     private fun setupChipListener() {
         chip_week.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                viewModel.getPainRelationsBy7LastDays()
-                    .observe(viewLifecycleOwner, configuresObserver())
+                viewModel.getPainsRelations7days()
             }
         }
         chip_month.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                viewModel.getPainRelationsByLastMonth()
-                    .observe(viewLifecycleOwner, configuresObserver())
+                viewModel.getPainsRelations30days()
+
             }
         }
         chip_6months.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                viewModel.getPainRelationsByLast6Months()
-                    .observe(viewLifecycleOwner, configuresObserver())
+                viewModel.getPainsRelations180days()
+
             }
         }
         chip_year.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                viewModel.getPainRelationsByLastYear()
-                    .observe(viewLifecycleOwner, configuresObserver())
+                viewModel.getPainsRelations360days()
+
             }
         }
         chip_week.isChecked = true
@@ -125,7 +172,6 @@ class ActivitiesDetailFragment : Fragment(R.layout.fragment_activities_detail) {
     private fun clearDetailChart() {
         activities_detail_chart.apply {
             data = null
-            fitScreen()
         }
         activities_details_rep_chart.apply {
             highlightValues(null)
@@ -160,28 +206,6 @@ class ActivitiesDetailFragment : Fragment(R.layout.fragment_activities_detail) {
         }
 
         activities_details_rep_chart.apply {
-            setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
-                override fun onNothingSelected() {
-                    Timber.i("nothing")
-                    clearDetailChart()
-                    displayAllActivities()
-                }
-
-                override fun onValueSelected(e: Entry, h: Highlight?) {
-                    Timber.i("${e.data}")
-                    displaySelectedUserActivityDetails(e.data.toString())
-                    activities_detail_chart.fitScreen()
-                }
-            })
-            legend.apply {
-                textColor = colorPrimary
-                isWordWrapEnabled = true
-            }
-            description = null
-            isDrawHoleEnabled = false
-            setUsePercentValues(true)
-            setDrawEntryLabels(false)
-            legend.isWordWrapEnabled = true
             data = PieData(pieDataSet)
             animateX(500, Easing.EaseOutCirc)
         }
@@ -270,33 +294,17 @@ class ActivitiesDetailFragment : Fragment(R.layout.fragment_activities_detail) {
                     displayActivitiesInformations(h, "")
                 }
             })
-            setVisibleXRange(7f,15f)
-            legend.apply {
-                textColor = colorPrimary
-                isWordWrapEnabled = true
-            }
-            highlightValues(null)
-            description = null
-            xAxis.apply {
-                granularity = 1f
-                valueFormatter = IndexAxisValueFormatter(dates)
-                isGranularityEnabled = true
-                textColor = colorPrimary
-            }
-            axisLeft.apply {
-                granularity = 1f
-                setDrawZeroLine(true)
-                textColor = colorPrimary
-            }
-            axisRight.isEnabled = false
+            xAxis.valueFormatter = IndexAxisValueFormatter(dates)
             data = CombinedData().apply {
                 setData(LineData(painDataSet)).apply {
                     isHighlightEnabled = false
                 }
                 setData(ScatterData(dataSetList))
             }
-            xAxis.axisMaximum = dates.size.toFloat()
-            animateX(2000, Easing.EaseOutBack)
+            fitScreen()
+            setVisibleXRangeMaximum(10.0f)
+            moveViewToAnimated(data.xMax, 5F, YAxis.AxisDependency.RIGHT, 2000)
+            animateX(1000, Easing.EaseOutBack)
         }
 
     }
@@ -343,36 +351,23 @@ class ActivitiesDetailFragment : Fragment(R.layout.fragment_activities_detail) {
                     displayActivitiesInformations(h, activityName)
                 }
             })
-            setVisibleXRange(7f,15f)
-            legend.apply {
-                textColor = colorPrimary
-                isWordWrapEnabled = true
-            }
-            highlightValues(null)
-            description = null
-            xAxis.apply {
-                granularity = 1f
-                valueFormatter = IndexAxisValueFormatter(dates)
-                isGranularityEnabled = true
-                textColor = colorPrimary
-            }
-            axisLeft.apply {
-                granularity = 1f
-                setDrawZeroLine(true)
-                textColor = colorPrimary
-            }
-            axisRight.isEnabled = false
+            xAxis.valueFormatter = IndexAxisValueFormatter(dates)
             data = CombinedData().apply {
                 setData(LineData(painDataSet)).apply {
                     isHighlightEnabled = false
                 }
                 setData(ScatterData(dataSet))
             }
-            xAxis.axisMaximum = dates.size.toFloat()
-            animateX(2000, Easing.EaseOutBack)
+            fitScreen()
+            setVisibleXRangeMaximum(10.0f)
+            moveViewToAnimated(data.xMax, 5F, YAxis.AxisDependency.RIGHT, 2000)
+            animateX(1000, Easing.EaseOutBack)
         }
     }
 
+    /**
+     * Sets the chart's entries' color according to the name of the practiced activity
+     */
     private fun setScatterColor(activityName: String): Int {
         return when (activityName) {
             getString(R.string.sport) -> colorsChart[4]
@@ -383,6 +378,7 @@ class ActivitiesDetailFragment : Fragment(R.layout.fragment_activities_detail) {
             else -> getColor(requireContext(), R.color.colorSecondary)
         }
     }
+
 
     private fun displayActivitiesInformations(highLight: Highlight?, activityName: String) {
         Timber.i(" x : ${highLight?.x} / dataSet : ${highLight?.dataSetIndex} / dataIndex = ${highLight?.dataIndex} / x.toInt = $${highLight?.x?.toInt()} / y = ${highLight?.y}")
@@ -434,7 +430,9 @@ class ActivitiesDetailFragment : Fragment(R.layout.fragment_activities_detail) {
                 .toFloat() / size, getString(R.string.relaxation))
         val other = Pair(activities.count {
             it.name != getString(R.string.stress) && it.name != getString(R.string.relaxation) &&
-                    it.name != getString(R.string.sex) && it.name != getString(R.string.sleep) && !it.name.contains(getString(R.string.sport))
+                    it.name != getString(R.string.sex) && it.name != getString(R.string.sleep) && !it.name.contains(
+                getString(R.string.sport)
+            )
         }.toFloat() / size, getString(R.string.other))
 
         return arrayOf(sport, stress, sex, relaxation, other)

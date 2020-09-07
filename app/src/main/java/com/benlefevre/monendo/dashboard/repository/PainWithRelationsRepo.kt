@@ -7,4 +7,7 @@ class PainWithRelationsRepo(private val painWithRelationsDao: PainWithRelationsD
 
     fun getPainWithRelationByPeriod(dateBegin: Date, dateEnd: Date) =
         painWithRelationsDao.getAllPainsWithRelations(dateBegin, dateEnd)
+
+    suspend fun getPainRelationByPeriod(dateBegin: Date, dateEnd: Date) =
+        painWithRelationsDao.getAllPainsRelations(dateBegin, dateEnd)
 }

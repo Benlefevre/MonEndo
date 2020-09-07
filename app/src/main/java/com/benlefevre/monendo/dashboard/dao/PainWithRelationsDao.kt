@@ -13,4 +13,8 @@ interface PainWithRelationsDao {
     @Transaction
     @Query("SELECT * FROM Pain WHERE date BETWEEN :dateBegin AND :dateEnd ORDER BY date")
     fun getAllPainsWithRelations(dateBegin : Date,dateEnd : Date) : LiveData<List<PainWithRelations>>
+
+    @Transaction
+    @Query("SELECT * FROM Pain WHERE date BETWEEN :dateBegin AND :dateEnd ORDER BY date")
+    suspend fun getAllPainsRelations(dateBegin : Date,dateEnd : Date) : List<PainWithRelations>
 }

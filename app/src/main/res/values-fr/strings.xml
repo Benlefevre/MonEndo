@@ -262,5 +262,6 @@
     <string name="friday">Ven</string>
     <string name="saturday">Sam</string>
     <string name="sunday">Dim</string>
+    <string name="no_data_period">Aucune donnée pour cette période</string>
 
 </resources>

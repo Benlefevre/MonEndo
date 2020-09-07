@@ -35,21 +35,74 @@ class SymptomDetailFragment : Fragment(R.layout.fragment_symptom_detail) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         colorsChart = resources.getIntArray(R.array.chartColors)
+        viewModel.pains.observe(viewLifecycleOwner, configuresObserver())
         setupEmptyChartsMessages()
+        setupCharts()
         setupChipListener()
     }
 
     private fun setupEmptyChartsMessages() {
         symptom_details_evo_chart.apply {
-            setNoDataText(getString(R.string.click_on_a_pie_chart_s_value_to_see_the_symptom_evolution_in_time))
+            setNoDataText(getString(R.string.no_data_period))
             setNoDataTextColor(getColor(context, R.color.colorSecondary))
         }
         symptom_details_rep_chart.apply {
             data = null
-            setNoDataText("No data for this period")
+            setNoDataText(context.getString(R.string.no_data_period))
             setNoDataTextColor(getColor(context, R.color.colorSecondary))
         }
         symptom_filter_legend.visibility = View.GONE
+    }
+
+    /**
+     * Configures charts' style and defines their onValueClickListener's
+     * behavior.
+     */
+    private fun setupCharts() {
+        symptom_details_rep_chart.apply {
+            legend.apply {
+                textColor = getColor(context, R.color.colorPrimary)
+                isWordWrapEnabled = true
+            }
+            setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
+                override fun onNothingSelected() {
+                    Timber.i("nothing")
+                    clearDetailChart()
+                    displayAllSymptomsDetails()
+                }
+
+                override fun onValueSelected(e: Entry, h: Highlight?) {
+                    Timber.i("${e.data}")
+                    displaySelectedSymptomDetails(e.data.toString())
+                }
+            })
+            description = null
+            setDrawEntryLabels(false)
+            setUsePercentValues(true)
+            isDrawHoleEnabled = false
+            legend.isWordWrapEnabled = true
+        }
+
+        symptom_details_evo_chart.apply {
+            legend.apply {
+                textColor = getColor(context, R.color.colorPrimary)
+                isWordWrapEnabled = true
+            }
+            isScaleYEnabled = false
+            highlightValues(null)
+            description = null
+            xAxis.apply {
+                textColor = getColor(context, R.color.colorPrimary)
+            }
+            axisLeft.apply {
+                granularity = 1f
+                setDrawZeroLine(true)
+                textColor = getColor(context, R.color.colorPrimary)
+            }
+            axisRight.apply {
+                isEnabled = false
+            }
+        }
     }
 
     /**
@@ -59,26 +112,22 @@ class SymptomDetailFragment : Fragment(R.layout.fragment_symptom_detail) {
     private fun setupChipListener() {
         chip_week.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                viewModel.getPainRelationsBy7LastDays()
-                    .observe(viewLifecycleOwner, configuresObserver())
+                viewModel.getPainsRelations7days()
             }
         }
         chip_month.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                viewModel.getPainRelationsByLastMonth()
-                    .observe(viewLifecycleOwner, configuresObserver())
+                viewModel.getPainsRelations30days()
             }
         }
         chip_6months.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                viewModel.getPainRelationsByLast6Months()
-                    .observe(viewLifecycleOwner, configuresObserver())
+                viewModel.getPainsRelations180days()
             }
         }
         chip_year.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                viewModel.getPainRelationsByLastYear()
-                    .observe(viewLifecycleOwner, configuresObserver())
+                viewModel.getPainsRelations360days()
             }
         }
         chip_week.isChecked = true
@@ -129,8 +178,7 @@ class SymptomDetailFragment : Fragment(R.layout.fragment_symptom_detail) {
     }
 
     /**
-     * Configures the pie chart with the right value and defines the on value clickListener
-     * behavior.
+     * Configures the pie chart with the right value
      */
     private fun setupRepartitionChart() {
         val symptomsRep = calculateSymptomRepartition()
@@ -154,27 +202,6 @@ class SymptomDetailFragment : Fragment(R.layout.fragment_symptom_detail) {
         }
 
         symptom_details_rep_chart.apply {
-            legend.apply {
-                textColor = getColor(context, R.color.colorPrimary)
-                isWordWrapEnabled = true
-            }
-            setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
-                override fun onNothingSelected() {
-                    Timber.i("nothing")
-                    clearDetailChart()
-                    displayAllSymptomsDetails()
-                }
-
-                override fun onValueSelected(e: Entry, h: Highlight?) {
-                    Timber.i("${e.data}")
-                    displaySelectedSymptomDetails(e.data.toString())
-                }
-            })
-            description = null
-            setDrawEntryLabels(false)
-            setUsePercentValues(true)
-            isDrawHoleEnabled = false
-            legend.isWordWrapEnabled = true
             data = PieData(pieDataSet)
             animateX(500, Easing.EaseOutCirc)
         }
@@ -225,6 +252,9 @@ class SymptomDetailFragment : Fragment(R.layout.fragment_symptom_detail) {
         )
     }
 
+    /**
+     * Configures a CombinedChart to see all symptoms' evolution in time
+     */
     private fun displayAllSymptomsDetails() {
         val dataSetList: MutableList<IScatterDataSet> = mutableListOf()
         val painEntries = mutableListOf<Entry>()
@@ -330,58 +360,28 @@ class SymptomDetailFragment : Fragment(R.layout.fragment_symptom_detail) {
                 axisDependency = YAxis.AxisDependency.LEFT
                 setDrawValues(false)
                 scatterShapeSize = 25f
-                color = when (it.second) {
-                    getString(R.string.burns) -> colorsChart[0]
-                    getString(R.string.cramps) -> colorsChart[1]
-                    getString(R.string.bleeding) -> colorsChart[2]
-                    getString(R.string.chills) -> colorsChart[3]
-                    getString(R.string.fever) -> colorsChart[4]
-                    getString(R.string.bloating) -> colorsChart[5]
-                    getString(R.string.hot_flush) -> colorsChart[6]
-                    getString(R.string.diarrhea) -> colorsChart[7]
-                    getString(R.string.constipation) -> colorsChart[8]
-                    getString(R.string.nausea) -> colorsChart[9]
-                    getString(R.string.tired) -> colorsChart[10]
-                    else -> getColor(requireContext(), R.color.colorSecondary)
-                }
+                color = setChartEntriesColors(it.second)
             }
             dataSetList.add(dataSet)
         }
 
         symptom_details_evo_chart.apply {
-            legend.apply {
-                textColor = getColor(context, R.color.colorPrimary)
-                isWordWrapEnabled = true
-            }
-            highlightValues(null)
-            description = null
-            xAxis.apply {
-                axisMinimum = -0.5f
-                spaceMax = 0.5f
-                granularity = 1f
-                valueFormatter = IndexAxisValueFormatter(dates)
-                textColor = getColor(context, R.color.colorPrimary)
-            }
-            axisLeft.apply {
-                granularity = 1f
-                setDrawZeroLine(true)
-                textColor = getColor(context, R.color.colorPrimary)
-            }
-            axisRight.apply {
-                isEnabled = false
-            }
+            xAxis.valueFormatter = IndexAxisValueFormatter(dates)
             data = CombinedData().apply {
                 setData(ScatterData(dataSetList))
                 setData(LineData(painDataSet)).apply {
                     isHighlightEnabled = false
                 }
             }
-            animateX(2000, Easing.EaseOutBack)
+            fitScreen()
+            setVisibleXRangeMaximum(10.0f)
+            moveViewToAnimated(data.xMax, 5F, YAxis.AxisDependency.RIGHT, 2000)
+            animateX(1000, Easing.EaseOutBack)
         }
     }
 
     /**
-     * Configures a LineChart to see the selected symptom evolution in time
+     * Configures a CombinedChart to see the selected symptom's evolution in time
      */
     private fun displaySelectedSymptomDetails(name: String) {
         val painEntries = mutableListOf<Entry>()
@@ -410,51 +410,40 @@ class SymptomDetailFragment : Fragment(R.layout.fragment_symptom_detail) {
             axisDependency = YAxis.AxisDependency.LEFT
             setDrawValues(false)
             scatterShapeSize = 25f
-            color = when (name) {
-                getString(R.string.burns) -> colorsChart[0]
-                getString(R.string.cramps) -> colorsChart[1]
-                getString(R.string.bleeding) -> colorsChart[2]
-                getString(R.string.chills) -> colorsChart[3]
-                getString(R.string.fever) -> colorsChart[4]
-                getString(R.string.bloating) -> colorsChart[5]
-                getString(R.string.hot_flush) -> colorsChart[6]
-                getString(R.string.diarrhea) -> colorsChart[7]
-                getString(R.string.constipation) -> colorsChart[8]
-                getString(R.string.nausea) -> colorsChart[9]
-                getString(R.string.tired) -> colorsChart[10]
-                else -> getColor(requireContext(), R.color.colorSecondary)
-            }
+            color = setChartEntriesColors(name)
         }
 
         symptom_details_evo_chart.apply {
-            legend.apply {
-                textColor = getColor(context, R.color.colorPrimary)
-                isWordWrapEnabled = true
-            }
-            highlightValues(null)
-            description = null
-            xAxis.apply {
-                granularity = 1f
-                valueFormatter = IndexAxisValueFormatter(dates)
-                textColor = getColor(context, R.color.colorPrimary)
-            }
-            axisLeft.apply {
-                granularity = 1f
-                setDrawZeroLine(true)
-                axisMinimum = 0f
-                axisMaximum = 11f
-                textColor = getColor(context, R.color.colorPrimary)
-            }
-            axisRight.apply {
-                isEnabled = false
-            }
             data = CombinedData().apply {
                 setData(LineData(painDataSet)).apply {
                     isHighlightEnabled = false
                 }
                 setData(ScatterData(dataSet))
             }
-            animateX(2000, Easing.EaseOutBack)
+            fitScreen()
+            setVisibleXRangeMaximum(10.0f)
+            moveViewToAnimated(data.xMax, 5F, YAxis.AxisDependency.RIGHT, 2000)
+            animateX(1000, Easing.EaseOutBack)
+        }
+    }
+
+    /**
+     * Sets the right Entry's color according to the symptom's name
+     */
+    private fun setChartEntriesColors(symptomName: String): Int {
+        return when (symptomName) {
+            getString(R.string.burns) -> colorsChart[0]
+            getString(R.string.cramps) -> colorsChart[1]
+            getString(R.string.bleeding) -> colorsChart[2]
+            getString(R.string.chills) -> colorsChart[3]
+            getString(R.string.fever) -> colorsChart[4]
+            getString(R.string.bloating) -> colorsChart[5]
+            getString(R.string.hot_flush) -> colorsChart[6]
+            getString(R.string.diarrhea) -> colorsChart[7]
+            getString(R.string.constipation) -> colorsChart[8]
+            getString(R.string.nausea) -> colorsChart[9]
+            getString(R.string.tired) -> colorsChart[10]
+            else -> getColor(requireContext(), R.color.colorSecondary)
         }
     }
 }

@@ -271,5 +271,6 @@
     <string name="friday">Fri</string>
     <string name="saturday">Sat</string>
     <string name="sunday">Sun</string>
+    <string name="no_data_period">No data for this period</string>
 
 </resources>
