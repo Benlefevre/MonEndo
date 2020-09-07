@@ -29,6 +29,7 @@ class SleepDetailFragment : Fragment(R.layout.fragment_sleep_detail) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel.pains.observe(viewLifecycleOwner, configuresObserver())
         setupChipListener()
     }
 
@@ -39,37 +40,37 @@ class SleepDetailFragment : Fragment(R.layout.fragment_sleep_detail) {
     private fun setupChipListener() {
         chip_week.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                viewModel.getPainRelationsBy7LastDays().observe(viewLifecycleOwner, Observer {
-                    setupList(it)
-                    setupSleepChart()
-                })
+                viewModel.getPainsRelations7days()
             }
         }
         chip_month.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                viewModel.getPainRelationsByLastMonth().observe(viewLifecycleOwner, Observer {
-                    setupList(it)
-                    setupSleepChart()
-                })
+                viewModel.getPainsRelations30days()
             }
         }
         chip_6months.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                viewModel.getPainRelationsByLast6Months().observe(viewLifecycleOwner, Observer {
-                    setupList(it)
-                    setupSleepChart()
-                })
+                viewModel.getPainsRelations180days()
             }
         }
         chip_year.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                viewModel.getPainRelationsByLastYear().observe(viewLifecycleOwner, Observer {
-                    setupList(it)
-                    setupSleepChart()
-                })
+                viewModel.getPainsRelations360days()
             }
         }
         chip_week.isChecked = true
+    }
+
+    /**
+     * Defines the called functions when the ViewModel return a new value
+     */
+    private fun configuresObserver(): Observer<List<PainWithRelations>> {
+        return Observer<List<PainWithRelations>> {
+            if (it.isNotEmpty()) {
+                setupList(it)
+                setupSleepChart()
+            }
+        }
     }
 
     private fun setupList(pains: List<PainWithRelations>) {
@@ -109,6 +110,8 @@ class SleepDetailFragment : Fragment(R.layout.fragment_sleep_detail) {
             color = getColor(requireContext(), R.color.design_default_color_secondary)
             setCircleColor(getColor(requireContext(), R.color.graph1))
             setDrawValues(false)
+            setDrawFilled(true)
+            fillColor = getColor(requireContext(), R.color.design_default_color_secondary)
         }
 
         val sleepDataSet = LineDataSet(sleepEntries,getString(R.string.sleep_quality)).apply {
@@ -126,6 +129,7 @@ class SleepDetailFragment : Fragment(R.layout.fragment_sleep_detail) {
             legend.apply {
                 textColor = getColor(context,R.color.colorPrimary)
             }
+            isScaleYEnabled = false
             isHighlightPerTapEnabled = false
             description = null
             xAxis.apply {
@@ -142,8 +146,10 @@ class SleepDetailFragment : Fragment(R.layout.fragment_sleep_detail) {
             }
             axisRight.isEnabled = false
             data = LineData(listEntries)
-            animateX(2000, Easing.EaseOutBack)
-            invalidate()
+            fitScreen()
+            setVisibleXRangeMaximum(29.0f)
+            moveViewToAnimated(data.xMax, 5F, YAxis.AxisDependency.RIGHT, 2000)
+            animateX(1000, Easing.EaseOutBack)
         }
     }
 }

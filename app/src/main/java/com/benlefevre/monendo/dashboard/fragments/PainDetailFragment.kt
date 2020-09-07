@@ -10,6 +10,7 @@ import com.benlefevre.monendo.dashboard.models.PainWithRelations
 import com.benlefevre.monendo.dashboard.viewmodels.DashboardViewModel
 import com.benlefevre.monendo.utils.formatDateWithoutYear
 import com.github.mikephil.charting.animation.Easing
+import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
@@ -28,7 +29,14 @@ class PainDetailFragment : Fragment(R.layout.fragment_pain_detail) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel.pains.observe(viewLifecycleOwner,configuresObserver())
         setupChipListener()
+    }
+
+    private fun configuresObserver(): Observer<List<PainWithRelations>> {
+        return Observer {
+            setupPainChart(it)
+        }
     }
 
     /**
@@ -38,30 +46,22 @@ class PainDetailFragment : Fragment(R.layout.fragment_pain_detail) {
     private fun setupChipListener() {
         chip_week.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                viewModel.getPainRelationsBy7LastDays().observe(viewLifecycleOwner, Observer {
-                    setupPainChart(it)
-                })
+                viewModel.getPainsRelations7days()
             }
         }
         chip_month.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                viewModel.getPainRelationsByLastMonth().observe(viewLifecycleOwner, Observer {
-                    setupPainChart(it)
-                })
+                viewModel.getPainsRelations30days()
             }
         }
         chip_6months.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                viewModel.getPainRelationsByLast6Months().observe(viewLifecycleOwner, Observer {
-                    setupPainChart(it)
-                })
+                viewModel.getPainsRelations180days()
             }
         }
         chip_year.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                viewModel.getPainRelationsByLastYear().observe(viewLifecycleOwner, Observer {
-                    setupPainChart(it)
-                })
+                viewModel.getPainsRelations360days()
             }
         }
         chip_week.isChecked = true
@@ -89,6 +89,8 @@ class PainDetailFragment : Fragment(R.layout.fragment_pain_detail) {
             color = getColor(requireContext(), R.color.colorSecondary)
             setCircleColor(getColor(requireContext(), R.color.colorSecondary))
             setDrawValues(false)
+            setDrawFilled(true)
+            fillColor = getColor(requireContext(), R.color.colorSecondary)
         }
 
         painChart.apply {
@@ -120,7 +122,10 @@ class PainDetailFragment : Fragment(R.layout.fragment_pain_detail) {
                         displaySelectedPain(e.x.toInt())
                 }
             })
-            animateX(500, Easing.EaseOutBack)
+            fitScreen()
+            setVisibleXRangeMaximum(29.0f)
+            moveViewToAnimated(data.xMax, 5F, YAxis.AxisDependency.RIGHT, 2000)
+            animateX(1000, Easing.EaseOutBack)
         }
     }
 
