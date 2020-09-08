@@ -272,5 +272,6 @@
     <string name="saturday">Sat</string>
     <string name="sunday">Sun</string>
     <string name="no_data_period">No data for this period</string>
+    <string name="detail_of_selected_activity">%1$s during %2$d min with an intensity of %3$d</string>
 
 </resources>

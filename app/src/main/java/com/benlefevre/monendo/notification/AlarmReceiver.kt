@@ -54,18 +54,18 @@ class AlarmReceiver : BroadcastReceiver() {
             myContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val extras = intent.extras
         val tag = intent.getStringExtra(TREATMENT)
-        val repeat = preferences.getBoolean(CURRENT_CHECKED, false)
+        val currentChecked = preferences.getBoolean(CURRENT_CHECKED, false)
         tag?.let {
             when {
                 it == PILL_TAG -> {
                     sendPillNotification(tag)
                     resetPillNotification()
                 }
-                it == PILL_REPEAT && !repeat -> {
+                it == PILL_REPEAT && !currentChecked -> {
                     sendPillNotification(tag)
                     resetPillRepeatNotification()
                 }
-                it == PILL_REPEAT && repeat -> resetPillNotification()
+                it == PILL_REPEAT && currentChecked -> resetPillRepeatNotification()
                 it == TREATMENT_TAG -> extras?.let { bundle ->
                     sendTreatmentNotification(bundle)
                     resetTreatmentNotification()
@@ -174,6 +174,7 @@ class AlarmReceiver : BroadcastReceiver() {
      * Resets an alarm with the AlarmManager to send notification when user forgets to take her pill
      */
     private fun resetPillRepeatNotification() {
+        Timber.i("resetPillRepeatNotification")
         val hour = parseStringInTime(hourPill)
         val repeatHour: String
         if (hour != Date(-1L)) {

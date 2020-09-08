@@ -115,10 +115,11 @@
 
                     <com.google.android.material.chip.ChipGroup
                         android:id="@+id/pain_location_chipgroup"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         app:chipSpacingHorizontal="4dp"
                         app:singleLine="false"
+                        android:layout_gravity="center_horizontal"
                         app:singleSelection="true">
 
                         <com.google.android.material.chip.Chip
@@ -204,9 +205,10 @@
 
                     <com.google.android.material.chip.ChipGroup
                         android:id="@+id/pain_symptom_chipgroup"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         app:chipSpacingHorizontal="4dp"
+                        android:layout_gravity="center_horizontal"
                         app:singleLine="false">
 
                         <com.google.android.material.chip.Chip

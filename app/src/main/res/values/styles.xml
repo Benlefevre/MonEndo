@@ -63,8 +63,8 @@
         <item name="chipBackgroundColor">@color/background_color_chip</item>
         <item name="chipStrokeColor">@color/stroke_color_chip</item>
         <item name="android:textColor">@color/text_color_chip</item>
-        <item name="checkedIcon">@drawable/ic_check_24dp</item>
-        <item name="checkedIconVisible">true</item>
+<!--        <item name="checkedIcon">@drawable/ic_check_24dp</item>-->
+        <item name="checkedIconVisible">false</item>
         <item name="rippleColor">@color/colorSecondary</item>
         <item name="chipStrokeWidth">1dp</item>
         <item name="android:textAlignment">center</item>
@@ -75,8 +75,8 @@
         <item name="chipBackgroundColor">@color/background_color_chip</item>
         <item name="chipStrokeColor">@color/stroke_color_chip</item>
         <item name="android:textColor">@color/text_color_chip</item>
-        <item name="checkedIcon">@drawable/ic_check_24dp</item>
-        <item name="checkedIconVisible">true</item>
+<!--        <item name="checkedIcon">@drawable/ic_check_24dp</item>-->
+        <item name="checkedIconVisible">false</item>
         <item name="rippleColor">@color/colorSecondary</item>
         <item name="chipStrokeWidth">1dp</item>
         <item name="android:textAlignment">center</item>

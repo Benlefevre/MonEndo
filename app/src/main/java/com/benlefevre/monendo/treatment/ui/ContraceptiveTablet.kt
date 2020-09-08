@@ -1,6 +1,7 @@
 package com.benlefevre.monendo.treatment.ui
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Path
@@ -19,6 +20,10 @@ import timber.log.Timber
 
 class ContraceptiveTablet(context: Context, attrs: AttributeSet) : View(context, attrs) {
 
+    private val sharedPreferences: SharedPreferences by lazy {
+        context.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)
+    }
+
     private var dividedWidth7Pills = 0f
     private var dividedWidth6Pills = 0f
     private var dividedWidth5Pills = 0f
@@ -30,6 +35,7 @@ class ContraceptiveTablet(context: Context, attrs: AttributeSet) : View(context,
     private var day = -1
     private var needClear = false
     private var nbPills = 28
+    private var isChanged = false
 
     private lateinit var rectF: RectF
     private var triangle: Path = Path()
@@ -41,10 +47,8 @@ class ContraceptiveTablet(context: Context, attrs: AttributeSet) : View(context,
 
     init {
         Timber.i("Pill init")
-        needClear = context.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)
-            .getBoolean(NEED_CLEAR, false)
-        nbPills = context.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)
-            .getString(NUMBER_OF_PILLS, "28")!!.toInt()
+        needClear = sharedPreferences.getBoolean(NEED_CLEAR, false)
+        nbPills = sharedPreferences.getString(NUMBER_OF_PILLS, "28")!!.toInt()
         backPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
             color = getColor(context, R.color.colorPrimary)
             style = Paint.Style.FILL
@@ -272,10 +276,34 @@ class ContraceptiveTablet(context: Context, attrs: AttributeSet) : View(context,
 
         for (index in 1..nbLines) {
             canvas.apply {
-                drawLine(width * lineLength, (height * index) + 40, width * lineLength, (height * index) + (height / 2), linePaint)
-                drawLine((width * lineLength) + 5, (height * index) + (height / 2), width - 50, (height * index) + (height / 2), linePaint)
-                drawLine(width - 45, (height * index) + (height / 2), width - 45, height * (index + 1), linePaint)
-                drawLine(width - 50, height * (index + 1), width - 25, height * (index + 1), linePaint)
+                drawLine(
+                    width * lineLength,
+                    (height * index) + 40,
+                    width * lineLength,
+                    (height * index) + (height / 2),
+                    linePaint
+                )
+                drawLine(
+                    (width * lineLength) + 5,
+                    (height * index) + (height / 2),
+                    width - 50,
+                    (height * index) + (height / 2),
+                    linePaint
+                )
+                drawLine(
+                    width - 45,
+                    (height * index) + (height / 2),
+                    width - 45,
+                    height * (index + 1),
+                    linePaint
+                )
+                drawLine(
+                    width - 50,
+                    height * (index + 1),
+                    width - 25,
+                    height * (index + 1),
+                    linePaint
+                )
             }
         }
 
@@ -306,14 +334,34 @@ class ContraceptiveTablet(context: Context, attrs: AttributeSet) : View(context,
     }
 
     fun setupTablet(elapsedDays: Int) {
-        Timber.i("setupTablet + days = $elapsedDays / ${pills.size}")
+        Timber.i("setupTablet + days = $elapsedDays / nb pills = ${pills.size} / needClear = $needClear")
         day = elapsedDays
-        if (day >= pills.size) day -= pills.size
+        if (day >= pills.size) {
+            when (nbPills) {
+                21 -> day = 20
+                else -> {
+                    while (day >= pills.size) {
+                        day -= pills.size
+                    }
+                }
+            }
+        }
         if (day == 0 && needClear) clearTablet()
         setMissingPills(day)
         setCurrentPill(day)
         setPillNotClickable(day)
+        isNeededClear(day)
+        isCurrentChecked()
         invalidate()
+    }
+
+    fun clearTablet() {
+        Timber.i("clearTablet")
+        pills.forEach {
+            it.isChecked = false
+            it.isClickable = true
+        }
+        needClear = false
     }
 
     private fun setMissingPills(elapsedDays: Int) {
@@ -347,6 +395,10 @@ class ContraceptiveTablet(context: Context, attrs: AttributeSet) : View(context,
                 isClickable = true
             }
         }
+    }
+
+    private fun isNeededClear(elapsedDays: Int) {
+        Timber.i("isNeededClear")
         when (nbPills) {
             10 -> if (elapsedDays == 9) needClear = true
             12 -> if (elapsedDays == 11) needClear = true
@@ -355,27 +407,16 @@ class ContraceptiveTablet(context: Context, attrs: AttributeSet) : View(context,
             28 -> if (elapsedDays == 27) needClear = true
             29 -> if (elapsedDays == 27) needClear = true
         }
-        isCurrentChecked()
     }
 
     private fun isCurrentChecked() {
         Timber.i("isCurrentChecked")
-        context.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)
-            .edit().apply {
-                putBoolean(NEED_CLEAR, needClear)
-                putString(NUMBER_OF_PILLS, nbPills.toString())
-                putBoolean(CURRENT_CHECKED, pills[day].isChecked)
-            }
-            .apply()
-    }
-
-    private fun clearTablet() {
-        Timber.i("clearTablet")
-        pills.forEach {
-            it.isChecked = false
-            it.isClickable = true
+        sharedPreferences.edit().apply {
+            putBoolean(NEED_CLEAR, needClear)
+            putString(NUMBER_OF_PILLS, nbPills.toString())
+            putBoolean(CURRENT_CHECKED, pills[day].isChecked)
         }
-        needClear = false
+            .apply()
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
@@ -385,23 +426,25 @@ class ContraceptiveTablet(context: Context, attrs: AttributeSet) : View(context,
             MotionEvent.ACTION_DOWN -> {
                 pills.forEach { pill ->
                     isTouchPill = pill.checkTouchInCircle(event.x, event.y)
-                    if (isTouchPill) {
-                        if (day != -1) {
-                            isCurrentChecked()
-                        }
+                    if (isTouchPill && pill.isClickable) {
                         if (!pill.isChecked) {
                             pill.color = getColor(context, R.color.colorBackground)
                             pill.isChecked = true
                         } else
                             pill.isChecked = false
+                        isChanged = true
                     }
-                    invalidate()
                 }
                 return true
             }
             MotionEvent.ACTION_UP -> {
-                if (day != -1)
-                    setupTablet(day)
+                if (isChanged) {
+                    if (day != -1)
+                        setupTablet(day)
+                    else
+                        invalidate()
+                    isChanged = false
+                }
                 return true
             }
         }

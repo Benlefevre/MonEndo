@@ -15,16 +15,50 @@ import java.util.*
  */
 fun createAlarmAtTheUserTime(context: Context, intent: Intent, hour: String, tag: Int) {
     Timber.i("$tag")
+    val preferences = context.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)
     val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
     val pendingIntent =
         PendingIntent.getBroadcast(context, tag, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+    val stop7Days = preferences.getBoolean(NEED_CLEAR, false)
+            && preferences.getString(NUMBER_OF_PILLS, "28")?.toInt() == 21
     val triggeredTime =
-        setTriggeredTime(hour)
+        if (stop7Days) {
+            setTriggeredTimeToNextPill(hour, preferences.getString(NEXT_PILL_DATE,"")!!)
+        } else {
+            setTriggeredTime(hour)
+        }
 
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,triggeredTime,pendingIntent)
-    }else{
-        alarmManager.setExact(AlarmManager.RTC_WAKEUP,triggeredTime,pendingIntent)
+        alarmManager.setExactAndAllowWhileIdle(
+            AlarmManager.RTC_WAKEUP,
+            triggeredTime,
+            pendingIntent
+        )
+    } else {
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, triggeredTime, pendingIntent)
+    }
+}
+
+fun setTriggeredTimeToNextPill(hour: String, nextPillDate : String): Long {
+    Timber.i("SetTriggeredTimeNextPill")
+    val now = Calendar.getInstance()
+    val selectedHour = Calendar.getInstance()
+    if (!hour.isBlank()) {
+        selectedHour.apply {
+            set(Calendar.DAY_OF_MONTH, nextPillDate.substring(0,2).toInt())
+            set(Calendar.MONTH, nextPillDate.substring(3, 5).toInt() - 1)
+            set(Calendar.HOUR_OF_DAY, hour.substring(0, 2).toInt())
+            set(Calendar.MINUTE, hour.substring(3).toInt())
+            set(Calendar.SECOND, 0)
+        }
+    }
+    return if (now.after(selectedHour)) {
+        selectedHour.add(Calendar.DAY_OF_YEAR, 1)
+        Timber.i("now after = ${System.currentTimeMillis()} et selectedHour = ${selectedHour.timeInMillis}, différence = ${(selectedHour.timeInMillis - System.currentTimeMillis()) / 1000}sec")
+        selectedHour.timeInMillis
+    } else {
+        Timber.i("now = ${System.currentTimeMillis()} et selectedHour = ${selectedHour.timeInMillis}, différence = ${(selectedHour.timeInMillis - System.currentTimeMillis()) / 1000}sec")
+        selectedHour.timeInMillis
     }
 }
 
@@ -32,6 +66,7 @@ fun createAlarmAtTheUserTime(context: Context, intent: Intent, hour: String, tag
  * Checks if the passed hour is after now and returns a long that corresponding to time in millis
  */
 fun setTriggeredTime(hour: String): Long {
+    Timber.i("SetTriggeredTime")
     val now = Calendar.getInstance()
     val selectedHour = Calendar.getInstance()
     if (!hour.isBlank()) {
@@ -43,7 +78,7 @@ fun setTriggeredTime(hour: String): Long {
     }
     return if (now.after(selectedHour)) {
         selectedHour.add(Calendar.DAY_OF_YEAR, 1)
-        Timber.i("now = ${System.currentTimeMillis()} et selectedHour = ${selectedHour.timeInMillis}, différence = ${(selectedHour.timeInMillis - System.currentTimeMillis()) / 1000}sec")
+        Timber.i("now after = ${System.currentTimeMillis()} et selectedHour = ${selectedHour.timeInMillis}, différence = ${(selectedHour.timeInMillis - System.currentTimeMillis()) / 1000}sec")
         selectedHour.timeInMillis
     } else {
         Timber.i("now = ${System.currentTimeMillis()} et selectedHour = ${selectedHour.timeInMillis}, différence = ${(selectedHour.timeInMillis - System.currentTimeMillis()) / 1000}sec")
@@ -62,8 +97,22 @@ fun cancelPillAlarm(context: Context) {
     val repeatIntent = Intent(context, AlarmReceiver::class.java).apply {
         putExtra(TREATMENT, PILL_REPEAT)
     }
-    alarmManager.cancel(PendingIntent.getBroadcast(context, PILL_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT))
-    alarmManager.cancel(PendingIntent.getBroadcast(context, PILL_REPEAT_ID, repeatIntent, PendingIntent.FLAG_UPDATE_CURRENT))
+    alarmManager.cancel(
+        PendingIntent.getBroadcast(
+            context,
+            PILL_ID,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT
+        )
+    )
+    alarmManager.cancel(
+        PendingIntent.getBroadcast(
+            context,
+            PILL_REPEAT_ID,
+            repeatIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT
+        )
+    )
 }
 
 /**
@@ -78,6 +127,13 @@ fun cancelTreatmentAlarm(context: Context, treatment: Treatment, position: Int) 
         putExtra(TREATMENT_FORMAT, treatment.format)
     }
     for (index in 1..4) {
-        alarmManager.cancel(PendingIntent.getBroadcast(context, (position + (index * 10)), intent, PendingIntent.FLAG_UPDATE_CURRENT))
+        alarmManager.cancel(
+            PendingIntent.getBroadcast(
+                context,
+                (position + (index * 10)),
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT
+            )
+        )
     }
 }

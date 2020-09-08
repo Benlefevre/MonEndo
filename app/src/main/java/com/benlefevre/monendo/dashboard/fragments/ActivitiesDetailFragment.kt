@@ -86,6 +86,8 @@ class ActivitiesDetailFragment : Fragment(R.layout.fragment_activities_detail) {
             axisLeft.apply {
                 granularity = 1f
                 setDrawZeroLine(true)
+                axisMinimum = 0.0f
+                axisMaximum = 11.0f
                 textColor = colorPrimary
             }
             axisRight.isEnabled = false

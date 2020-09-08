@@ -216,13 +216,13 @@ class TreatmentFragment : Fragment(R.layout.fragment_treatment) {
     private fun configureRecyclerView() {
         adapter =
             TreatmentAdapter(treatmentList)
-        adapter.setOnClickListener(View.OnClickListener {
+        adapter.setOnClickListener {
             val holder = it.tag as TreatmentViewHolder
             val position = holder.adapterPosition
             cancelTreatmentWork(treatmentList[position])
             treatmentList.removeAt(position)
             adapter.notifyDataSetChanged()
-        })
+        }
         recyclerView.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
         recyclerView.adapter = adapter
     }
@@ -273,6 +273,7 @@ class TreatmentFragment : Fragment(R.layout.fragment_treatment) {
                 .putString(LAST_PILL_DATE, dayMens.text.toString())
                 .apply()
         }
+        pillTablet.clearTablet()
         calculateNextPill()
         calculateElapsedTime()
     }
@@ -289,7 +290,7 @@ class TreatmentFragment : Fragment(R.layout.fragment_treatment) {
         val nextPill = if (nextPillDate != Date(-1L)) {
             formatDateWithYear(with(Calendar.getInstance()) {
                 time = nextPillDate
-                add(Calendar.DAY_OF_YEAR, if (nbPills == 29) 28 else nbPills)
+                add(Calendar.DAY_OF_YEAR, if (nbPills == 29 || nbPills == 21) 28 else nbPills)
                 time
             })
         } else {
@@ -298,6 +299,7 @@ class TreatmentFragment : Fragment(R.layout.fragment_treatment) {
         sharedPreferences.edit()
             .putString(NEXT_PILL_DATE, nextPill)
             .apply()
+        getUserInput()
     }
 
     /**
@@ -370,23 +372,6 @@ class TreatmentFragment : Fragment(R.layout.fragment_treatment) {
             context?.let { createAlarmAtTheUserTime(requireContext(), repeatIntent, repeatHour, PILL_REPEAT_ID) }
         }
     }
-
-//    private fun updateNotifHourWithWorker(){
-//        cancelPillWorks()
-//        notifHour.setText(formatTime(calendar.time))
-//        if (!notifHour.text.isNullOrBlank()) {
-//            sharedPreferences.edit().putString(PILL_HOUR_NOTIF, notifHour.text.toString())
-//                .apply()
-//
-//            val data = Data.Builder().putString(TREATMENT, PILL_TAG).build()
-//            context?.let { configureTreatmentNotification(it, data, notifHour.text.toString()) }
-//
-//            val dataRepeat = Data.Builder().putString(TREATMENT, PILL_REPEAT).build()
-//            val repeatHour = setRepeatHour(calendar.time)
-//            Timber.i("${notifHour.text.toString()} et repeat à $repeatHour")
-//            configureTreatmentNotification(requireContext(), dataRepeat, repeatHour, PILL_REPEAT)
-//        }
-//    }
 
     /**
      * Sets and open a Dialog with a custom layout
@@ -471,7 +456,7 @@ class TreatmentFragment : Fragment(R.layout.fragment_treatment) {
         treatment.dosage = customDialog.custom_treatment_dosage.text.toString()
         treatment.duration =
             calculateTreatmentDuration(customDialog.custom_treatment_duration.text.toString())
-        treatment.name = customDialog.custom_treatment_name.text.toString().capitalize()
+        treatment.name = customDialog.custom_treatment_name.text.toString().capitalize(Locale.ROOT)
         treatmentList.add(treatment)
         adapter.notifyDataSetChanged()
     }
@@ -511,24 +496,6 @@ class TreatmentFragment : Fragment(R.layout.fragment_treatment) {
         if (customDialog.custom_treatment_evening_chip.isChecked)
             context?.let { createAlarmAtTheUserTime(it, intent, treatment.evening, treatmentId + 40) }
     }
-
-//    private fun setTreatmentNotificationWithWorker(data: Data) {
-//        val data = Data.Builder().apply {
-//            putString(TREATMENT, TREATMENT_TAG)
-//            putString(TREATMENT_NAME, treatment.name)
-//            putString(TREATMENT_DOSAGE, treatment.dosage)
-//            putString(TREATMENT_FORMAT, treatment.format)
-//        }.build()
-
-//        if (customDialog.custom_treatment_morning_chip.isChecked)
-//            context?.let { configureTreatmentNotification(it, data, treatment.morning, "${treatment.name} $MORNING") }
-//        if (customDialog.custom_treatment_noon_chip.isChecked)
-//            context?.let { configureTreatmentNotification(it, data, treatment.noon, "${treatment.name} $NOON") }
-//        if (customDialog.custom_treatment_afternoon_chip.isChecked)
-//            context?.let { configureTreatmentNotification(it, data, treatment.afternoon, "${treatment.name} $AFTERNOON") }
-//        if (customDialog.custom_treatment_evening_chip.isChecked)
-//            context?.let { configureTreatmentNotification(it, data, treatment.evening, "${treatment.name} $EVENING") }
-//    }
 
     /**
      * Verifies that all the dialog's fields are correctly filled

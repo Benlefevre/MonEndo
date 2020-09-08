@@ -97,6 +97,8 @@ class SymptomDetailFragment : Fragment(R.layout.fragment_symptom_detail) {
             axisLeft.apply {
                 granularity = 1f
                 setDrawZeroLine(true)
+                axisMinimum = 0.0f
+                axisMaximum = 11.0f
                 textColor = getColor(context, R.color.colorPrimary)
             }
             axisRight.apply {

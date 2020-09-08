@@ -2,12 +2,12 @@ package com.benlefevre.monendo.treatment.models
 
 import android.graphics.RectF
 
-class Pill(width: Float, var multiWith: Int, height: Float, var multiHeight: Int, var radius: Float, var color: Int) {
+class Pill(width: Float, var multiWidth: Int, height: Float, var multiHeight: Int, var radius: Float, var color: Int) {
 
     var width = width
         set(value) {
             field = value
-            x = value * multiWith
+            x = value * multiWidth
         }
     var height = height
         set(value) {
@@ -18,11 +18,11 @@ class Pill(width: Float, var multiWith: Int, height: Float, var multiHeight: Int
     var x = 0f
     var y = 0f
     var isChecked: Boolean = false
-    var isClickable: Boolean = true
+    var isClickable: Boolean = false
     var shadowRectF: RectF = RectF()
 
     init {
-        x = width * multiWith
+        x = width * multiWidth
         y = height * multiHeight
         shadowRectF =
             RectF(x - radius / 1.2f, y - radius / 1.2f, x + radius / 1.2f, y + radius / 1.2f)

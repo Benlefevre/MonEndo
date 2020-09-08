@@ -60,7 +60,7 @@ class PainFragment : Fragment(R.layout.fragment_pain) {
         when (item.itemId) {
             R.id.pain_fragment_save -> {
                 saveUserInputInDb()
-                navController.navigate(R.id.dashboardFragment)
+                navController.popBackStack()
             }
         }
         return super.onOptionsItemSelected(item)
@@ -193,7 +193,10 @@ class PainFragment : Fragment(R.layout.fragment_pain) {
                     )
                     dialog_sport_choice_text.setAdapter(sportAdapter)
                     dialog_sport_choice_text.setOnItemClickListener { parent, _, position, _ ->
-                        activityChoice = getString(R.string.sport_activities, parent.getItemAtPosition(position).toString().capitalize())
+                        activityChoice = getString(
+                            R.string.sport_activities,
+                            parent.getItemAtPosition(position).toString().capitalize(Locale.ROOT)
+                        )
                     }
                 }
                 R.id.pain_card_sleep -> {
@@ -225,7 +228,7 @@ class PainFragment : Fragment(R.layout.fragment_pain) {
             setPositiveButton(getString(R.string.save)) { _, _ ->
                 if (view.tag == getString(R.string.other)) activityChoice = getString(
                     R.string.other_activities,
-                    otherTextInput.text.toString().capitalize()
+                    otherTextInput.text.toString().capitalize(Locale.ROOT)
                 )
                 val activity =
                     UserActivities(
@@ -248,7 +251,16 @@ class PainFragment : Fragment(R.layout.fragment_pain) {
                     setTextColor(getColor(context, R.color.colorOnPrimary))
                     setChipBackgroundColorResource(R.color.colorSecondary)
                     setOnClickListener {
-                        Snackbar.make(pain_root, "${activity.name} during ${activity.duration} min with an intensity of ${activity.intensity}", Snackbar.LENGTH_SHORT)
+                        Snackbar.make(
+                            pain_root,
+                            getString(
+                                R.string.detail_of_selected_activity,
+                                activity.name,
+                                activity.duration,
+                                activity.intensity
+                            ),
+                            Snackbar.LENGTH_SHORT
+                        )
                             .setAction(getString(R.string.delete)) {
                                 viewModel.removeActivities(activity)
                             }
@@ -281,7 +293,7 @@ class PainFragment : Fragment(R.layout.fragment_pain) {
     private fun setupOnClickListener() {
         pain_save_btn.setOnClickListener {
             saveUserInputInDb()
-            navController.navigate(R.id.dashboardFragment)
+            navController.popBackStack()
         }
         pain_card_sport.setOnClickListener {
             openCustomDialog(it)
