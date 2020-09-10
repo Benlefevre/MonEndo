@@ -10,6 +10,7 @@ import android.view.View
 import android.widget.ArrayAdapter
 import androidx.core.content.ContextCompat.getColor
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.benlefevre.monendo.R
 import com.benlefevre.monendo.dashboard.models.Mood
@@ -50,6 +51,16 @@ class PainFragment : Fragment(R.layout.fragment_pain) {
         pain_card_date.setText(formatDateWithYear(Date()))
         setupOnClickListener()
         createChipWhenUserActivityAdded()
+        viewModel.insertDone.observe(viewLifecycleOwner,configureObserver())
+    }
+
+    private fun configureObserver() : Observer<Boolean> {
+        return Observer {
+            when(it){
+                true -> navController.popBackStack()
+                false -> return@Observer
+            }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -60,7 +71,7 @@ class PainFragment : Fragment(R.layout.fragment_pain) {
         when (item.itemId) {
             R.id.pain_fragment_save -> {
                 saveUserInputInDb()
-                navController.popBackStack()
+//                navController.popBackStack()
             }
         }
         return super.onOptionsItemSelected(item)
@@ -293,7 +304,7 @@ class PainFragment : Fragment(R.layout.fragment_pain) {
     private fun setupOnClickListener() {
         pain_save_btn.setOnClickListener {
             saveUserInputInDb()
-            navController.popBackStack()
+//            navController.popBackStack()
         }
         pain_card_sport.setOnClickListener {
             openCustomDialog(it)

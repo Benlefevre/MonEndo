@@ -24,8 +24,16 @@ class PainFragmentViewModel(
     private val activities = mutableListOf<UserActivities>()
     private val _activitiesLiveData = MutableLiveData<List<UserActivities>>()
 
+    private val _insertDone = MutableLiveData<Boolean>()
+    val insertDone: LiveData<Boolean>
+        get() = _insertDone
+
     val activitiesLiveData: LiveData<List<UserActivities>>
         get() = _activitiesLiveData
+
+    init {
+        _insertDone.value = false
+    }
 
     fun addActivities(userActivities: UserActivities) {
         activities.add(userActivities)
@@ -37,7 +45,8 @@ class PainFragmentViewModel(
         _activitiesLiveData.value = activities
     }
 
-    suspend fun insertPain(pain: Pain): Long = withContext(viewModelScope.coroutineContext) { painRepo.insertPain(pain) }
+    suspend fun insertPain(pain: Pain): Long =
+        withContext(viewModelScope.coroutineContext) { painRepo.insertPain(pain) }
 
     suspend fun insertMood(mood: Mood, rowId: Long) {
         mood.painId = rowId
@@ -62,5 +71,6 @@ class PainFragmentViewModel(
         mood?.let { insertMood(mood, row) }
         if (!symptoms.isNullOrEmpty()) insertSymptoms(symptoms, row)
         if (!activities.isNullOrEmpty()) insertUserActivities(activities, row)
+        _insertDone.value = true
     }
 }
