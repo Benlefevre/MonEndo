@@ -4,7 +4,6 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import androidx.lifecycle.Observer
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceDataStore
@@ -119,7 +118,7 @@ class SettingsFragment : PreferenceFragmentCompat(), CommentaryAdapter.Commentar
             commentIdList.addAll(it)
         }
         viewModel.getUserCommentaries(commentIdList)
-        viewModel.commentLiveData.observe(viewLifecycleOwner, Observer {
+        viewModel.commentLiveData.observe(viewLifecycleOwner, {
             comments.clear()
             comments.addAll(it)
             adapter.notifyDataSetChanged()
@@ -146,11 +145,8 @@ class SettingsFragment : PreferenceFragmentCompat(), CommentaryAdapter.Commentar
             cancelTreatmentAlarm(requireContext(), treatment, index)
         }
         cancelPillAlarm(requireContext())
-//        val workManager = WorkManager.getInstance(requireContext())
-//        treatmentList.forEach {
-//            cancelTreatmentWorkWithWorker(requireContext(),it)
-//        }
-//        cancelPillWorkWithWorker(requireContext())
+        cancelResetCurrentWorker(requireContext())
+
         preferences.edit().apply {
             remove(PILL_HOUR_NOTIF)
             remove(CHECKED_PILLS)

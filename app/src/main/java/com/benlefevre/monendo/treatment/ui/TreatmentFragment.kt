@@ -279,6 +279,7 @@ class TreatmentFragment : Fragment(R.layout.fragment_treatment) {
                 .apply()
         }
         pillTablet.clearTablet()
+        configureResetCurrentChecked(requireContext())
         calculateNextPill()
         calculateElapsedTime()
     }

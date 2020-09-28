@@ -1,15 +1,18 @@
-package com.benlefevre.monendo.notification
+package com.benlefevre.monendo.utils
 
 import android.content.Context
 import androidx.work.Data
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
+import com.benlefevre.monendo.notification.NotificationWorker
+import com.benlefevre.monendo.treatment.ResetPillWorker
 import com.benlefevre.monendo.treatment.models.Treatment
-import com.benlefevre.monendo.utils.*
 import timber.log.Timber
 import java.util.*
 import java.util.concurrent.TimeUnit
+
+const val RESET_CURRENT_CHECKED = "resetCurrentChecked"
 
 fun configureTreatmentNotification(context: Context, data: Data, hour: String, tag: String = PILL_TAG) {
     Timber.i(tag)
@@ -20,6 +23,27 @@ fun configureTreatmentNotification(context: Context, data: Data, hour: String, t
             .addTag(tag)
             .build()
     WorkManager.getInstance(context).enqueueUniquePeriodicWork(tag,ExistingPeriodicWorkPolicy.REPLACE,treatmentWorker)
+}
+
+fun configureResetCurrentChecked(context: Context){
+    val resetWorker =
+        PeriodicWorkRequest.Builder(ResetPillWorker::class.java,1,TimeUnit.DAYS)
+            .setInitialDelay(setResetDelayDuration(),TimeUnit.MILLISECONDS)
+            .addTag(RESET_CURRENT_CHECKED)
+            .build()
+    WorkManager.getInstance(context).enqueueUniquePeriodicWork(RESET_CURRENT_CHECKED,ExistingPeriodicWorkPolicy.REPLACE,resetWorker)
+}
+
+fun setResetDelayDuration() : Long{
+    val now = Calendar.getInstance()
+    now.apply {
+        add(Calendar.DAY_OF_YEAR,1)
+        set(Calendar.HOUR_OF_DAY,0)
+        set(Calendar.MINUTE,0)
+        set(Calendar.SECOND,0)
+    }
+    Timber.i("now : ${now.timeInMillis} et system : ${System.currentTimeMillis()} / différence : ${now.timeInMillis - System.currentTimeMillis()}")
+    return now.timeInMillis - System.currentTimeMillis()
 }
 
 fun setDelayDuration(hour: String): Long {
@@ -37,6 +61,10 @@ fun setDelayDuration(hour: String): Long {
     } else {
         selectedHour.timeInMillis - System.currentTimeMillis()
     }
+}
+
+fun cancelResetCurrentWorker(context: Context){
+    WorkManager.getInstance(context).cancelUniqueWork(RESET_CURRENT_CHECKED)
 }
 
 fun cancelPillWorkWithWorker(context: Context){

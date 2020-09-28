@@ -8,6 +8,7 @@ import androidx.work.WorkManager
 import androidx.work.testing.TestWorkerBuilder
 import androidx.work.workDataOf
 import com.benlefevre.monendo.notification.NotificationWorker
+import com.benlefevre.monendo.treatment.ResetPillWorker
 import io.mockk.spyk
 import io.mockk.verify
 import org.junit.After
@@ -19,7 +20,7 @@ import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 
 @RunWith(AndroidJUnit4::class)
-class NotificationWorkerTest {
+class WorkerTest {
 
     private lateinit var context: Context
     private lateinit var executor: Executor
@@ -51,7 +52,8 @@ class NotificationWorkerTest {
 
     @Test
     fun doWorkPillRepeat_success_correctResultReturned() {
-        context.getSharedPreferences(PREFERENCES,Context.MODE_PRIVATE).edit().putBoolean(CURRENT_CHECKED,false).apply()
+        context.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE).edit()
+            .putBoolean(CURRENT_CHECKED, false).apply()
         val notificationWorker = spyk(
             TestWorkerBuilder<NotificationWorker>(
                 context = context,
@@ -66,7 +68,8 @@ class NotificationWorkerTest {
 
     @Test
     fun doWorkPillRepeat_successButChecked_correctResultReturned() {
-        context.getSharedPreferences(PREFERENCES,Context.MODE_PRIVATE).edit().putBoolean(CURRENT_CHECKED,true).apply()
+        context.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE).edit()
+            .putBoolean(CURRENT_CHECKED, true).apply()
         val notificationWorker = spyk(
             TestWorkerBuilder<NotificationWorker>(
                 context = context,
@@ -108,5 +111,20 @@ class NotificationWorkerTest {
         val result = notificationWorker.doWork()
         verify(exactly = 0) { notificationWorker.sendPillNotification(any()) }
         assertEquals(ListenableWorker.Result.failure(), result)
+    }
+
+    @Test
+    fun doWork_success_correctDataInsertedInSharedPreferences() {
+        val sharedPreferences = context.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)
+        sharedPreferences.edit().putBoolean(CURRENT_CHECKED, true)
+        val resetPillWorker = spyk(
+            TestWorkerBuilder<ResetPillWorker>(
+                context = context,
+                executor = executor
+            ).build()
+        )
+        val result = resetPillWorker.doWork()
+        assertEquals(ListenableWorker.Result.success(), result)
+        assertEquals(false, sharedPreferences.getBoolean(CURRENT_CHECKED, true))
     }
 }
