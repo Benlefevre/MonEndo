@@ -264,5 +264,10 @@
     <string name="sunday">Dim</string>
     <string name="no_data_period">Aucune donnée pour cette période</string>
     <string name="detail_of_selected_activity">%1$s durant %2$d min avec une intensité de %3$d</string>
+    <string name="start_date_pill">Merci d\'entrer la date d\'entame de votre plaquette</string>
+    <string name="enter_treatment_name">Merci d\'entrer le nom du traitement</string>
+    <string name="enter_treatment_duration">Merci d\'entrer la durée du traitement</string>
+    <string name="enter_treatment_dosage">Merci d\'entrer le dosage du traitement</string>
+    <string name="enter_treatment_format">Merci d\'entrer le format du traitement</string>
 
 </resources>

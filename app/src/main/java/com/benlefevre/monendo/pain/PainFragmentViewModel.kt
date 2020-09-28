@@ -31,10 +31,6 @@ class PainFragmentViewModel(
     val activitiesLiveData: LiveData<List<UserActivities>>
         get() = _activitiesLiveData
 
-    init {
-        _insertDone.value = false
-    }
-
     fun addActivities(userActivities: UserActivities) {
         activities.add(userActivities)
         _activitiesLiveData.value = activities

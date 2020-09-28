@@ -7,7 +7,6 @@ import android.view.View.VISIBLE
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.view.GravityCompat
-import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 import com.benlefevre.monendo.login.LoginActivity
@@ -34,7 +33,7 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         var isConnected = false
-        lateinit var user : User
+        lateinit var user: User
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,7 +58,7 @@ class MainActivity : AppCompatActivity() {
      */
     private fun verifyConnectivity() {
         connectivityLiveData = ConnectivityLivedata(this)
-        connectivityLiveData.observe(this, Observer {
+        connectivityLiveData.observe(this, {
             isConnected = it
         })
     }
@@ -83,7 +82,8 @@ class MainActivity : AppCompatActivity() {
             Glide.with(this).load(user.photoUrl).apply(RequestOptions.circleCropTransform())
                 .into(headerPhoto)
         else
-            Glide.with(this).load(R.drawable.ic_girl_white).apply(RequestOptions.circleCropTransform()).into(headerPhoto)
+            Glide.with(this).load(R.drawable.ic_girl_white)
+                .apply(RequestOptions.circleCropTransform()).into(headerPhoto)
     }
 
     /**

@@ -37,7 +37,7 @@
 
     <style name="LoginActivityTheme" parent="@style/Theme.AppCompat.Light.NoActionBar">
         <item name="windowActionBar">false</item>
-        <item name="colorPrimary">@color/colorOnSurface</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryVariant</item>
         <item name="colorAccent">@color/colorSecondary</item>
         <item name="android:windowBackground">@color/colorBackground</item>

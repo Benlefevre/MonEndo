@@ -4,6 +4,7 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Build
 import com.benlefevre.monendo.treatment.models.Treatment
 import com.benlefevre.monendo.utils.*
@@ -19,11 +20,9 @@ fun createAlarmAtTheUserTime(context: Context, intent: Intent, hour: String, tag
     val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
     val pendingIntent =
         PendingIntent.getBroadcast(context, tag, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-    val stop7Days = preferences.getBoolean(NEED_CLEAR, false)
-            && preferences.getString(NUMBER_OF_PILLS, "28")?.toInt() == 21
     val triggeredTime =
-        if (stop7Days) {
-            setTriggeredTimeToNextPill(hour, preferences.getString(NEXT_PILL_DATE,"")!!)
+        if (isNeededStop7Days(preferences)) {
+            setTriggeredTimeToNextPill(hour, preferences.getString(NEXT_PILL_DATE, "")!!)
         } else {
             setTriggeredTime(hour)
         }
@@ -39,27 +38,40 @@ fun createAlarmAtTheUserTime(context: Context, intent: Intent, hour: String, tag
     }
 }
 
-fun setTriggeredTimeToNextPill(hour: String, nextPillDate : String): Long {
+private fun isNeededStop7Days(preferences: SharedPreferences): Boolean {
+    val nextPillDate = preferences.getString(NEXT_PILL_DATE, "")!!
+    val today = Calendar.getInstance().apply {
+        set(Calendar.HOUR_OF_DAY, 12)
+        set(Calendar.MINUTE, 0)
+        set(Calendar.SECOND, 0)
+    }
+    val newPill = Calendar.getInstance().apply {
+        set(Calendar.DAY_OF_MONTH, nextPillDate.substring(0, 2).toInt())
+        set(Calendar.MONTH, nextPillDate.substring(3, 5).toInt() - 1)
+        set(Calendar.HOUR_OF_DAY, 12)
+        set(Calendar.MINUTE, 0)
+        set(Calendar.SECOND, 0)
+    }
+
+    return preferences.getBoolean(NEED_CLEAR, false)
+            && preferences.getString(NUMBER_OF_PILLS, "28")?.toInt() == 21
+            && today.time != newPill.time
+}
+
+fun setTriggeredTimeToNextPill(hour: String, nextPillDate: String): Long {
     Timber.i("SetTriggeredTimeNextPill")
-    val now = Calendar.getInstance()
     val selectedHour = Calendar.getInstance()
     if (!hour.isBlank()) {
         selectedHour.apply {
-            set(Calendar.DAY_OF_MONTH, nextPillDate.substring(0,2).toInt())
+            set(Calendar.DAY_OF_MONTH, nextPillDate.substring(0, 2).toInt())
             set(Calendar.MONTH, nextPillDate.substring(3, 5).toInt() - 1)
             set(Calendar.HOUR_OF_DAY, hour.substring(0, 2).toInt())
             set(Calendar.MINUTE, hour.substring(3).toInt())
             set(Calendar.SECOND, 0)
         }
     }
-    return if (now.after(selectedHour)) {
-        selectedHour.add(Calendar.DAY_OF_YEAR, 1)
-        Timber.i("now after = ${System.currentTimeMillis()} et selectedHour = ${selectedHour.timeInMillis}, différence = ${(selectedHour.timeInMillis - System.currentTimeMillis()) / 1000}sec")
-        selectedHour.timeInMillis
-    } else {
-        Timber.i("now = ${System.currentTimeMillis()} et selectedHour = ${selectedHour.timeInMillis}, différence = ${(selectedHour.timeInMillis - System.currentTimeMillis()) / 1000}sec")
-        selectedHour.timeInMillis
-    }
+    Timber.i("now = ${System.currentTimeMillis()} et selectedHour = ${selectedHour.timeInMillis}, différence = ${(selectedHour.timeInMillis - System.currentTimeMillis()) / 1000}sec")
+    return selectedHour.timeInMillis
 }
 
 /**

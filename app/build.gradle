@@ -84,7 +84,8 @@ dependencies {
     testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0"
 
 //    Mockk
-    def mockk_version = '1.9.2'
+//    def mockk_version = '1.9.2'
+    def mockk_version = '1.10.0'
     androidTestImplementation "io.mockk:mockk-android:$mockk_version"
     testImplementation "io.mockk:mockk:$mockk_version"
 
@@ -112,7 +113,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-crashlytics:17.2.1'
     implementation 'com.google.firebase:firebase-auth:19.3.2'
     implementation 'com.google.firebase:firebase-firestore-ktx:21.6.0'
-    implementation "com.firebaseui:firebase-ui-auth:6.1.0"
+    implementation "com.firebaseui:firebase-ui-auth:6.3.0"
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.1.1'
 
 //    Facebook SDK
