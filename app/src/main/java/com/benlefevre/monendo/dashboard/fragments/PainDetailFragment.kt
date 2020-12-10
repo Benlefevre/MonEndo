@@ -29,13 +29,57 @@ class PainDetailFragment : Fragment(R.layout.fragment_pain_detail) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.pains.observe(viewLifecycleOwner,configuresObserver())
+        setupCharts()
+        viewModel.pains.observe(viewLifecycleOwner, configuresObserver())
         setupChipListener()
+    }
+
+    private fun setupCharts() {
+        pain_details_chart.apply {
+            setNoDataText(getString(R.string.no_data_period))
+            setNoDataTextColor(getColor(context, R.color.colorSecondary))
+            legend.apply {
+                textColor = getColor(context, R.color.colorPrimary)
+                isWordWrapEnabled = true
+            }
+            description = null
+            setDrawBorders(false)
+            xAxis.textColor = getColor(context, R.color.colorPrimary)
+            axisLeft.apply {
+                granularity = 1f
+                setDrawZeroLine(true)
+                axisMinimum = 0f
+                axisMaximum = 11f
+                textColor = getColor(context, R.color.colorPrimary)
+            }
+            axisRight.isEnabled = false
+            setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
+                override fun onNothingSelected() {
+                }
+
+                override fun onValueSelected(e: Entry?, h: Highlight?) {
+                    if (e != null)
+                        displaySelectedPain(e.x.toInt())
+                }
+            })
+        }
     }
 
     private fun configuresObserver(): Observer<List<PainWithRelations>> {
         return Observer {
-            setupPainChart(it)
+            clearCharts()
+            if (it.isNotEmpty()) {
+                displayAllPainsIntoChart(it)
+            }
+        }
+    }
+
+    /**
+     * Clears the highlight and data values for each chart
+     */
+    private fun clearCharts() {
+        pain_details_chart.apply {
+            data = null
         }
     }
 
@@ -70,7 +114,7 @@ class PainDetailFragment : Fragment(R.layout.fragment_pain_detail) {
     /**
      * Sets the line chart with the user pain and defines the user's value click behavior
      */
-    private fun setupPainChart(pains: List<PainWithRelations>) {
+    private fun displayAllPainsIntoChart(pains: List<PainWithRelations>) {
         val painChart = pain_details_chart
         painRelations.clear()
         painRelations.addAll(pains)
@@ -94,34 +138,8 @@ class PainDetailFragment : Fragment(R.layout.fragment_pain_detail) {
         }
 
         painChart.apply {
-            legend.apply {
-                textColor = getColor(context,R.color.colorPrimary)
-                isWordWrapEnabled = true
-            }
-            description = null
-            setDrawBorders(false)
-            xAxis.apply {
-                valueFormatter = IndexAxisValueFormatter(dates)
-                textColor = getColor(context,R.color.colorPrimary)
-            }
-            axisLeft.apply {
-                granularity = 1f
-                setDrawZeroLine(true)
-                axisMinimum = 0f
-                axisMaximum = 11f
-                textColor = getColor(context,R.color.colorPrimary)
-            }
-            axisRight.isEnabled = false
+            xAxis.valueFormatter = IndexAxisValueFormatter(dates)
             data = LineData(dataSet)
-            setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
-                override fun onNothingSelected() {
-                }
-
-                override fun onValueSelected(e: Entry?, h: Highlight?) {
-                    if (e != null)
-                        displaySelectedPain(e.x.toInt())
-                }
-            })
             fitScreen()
             setVisibleXRangeMaximum(29.0f)
             moveViewToAnimated(data.xMax, 5F, YAxis.AxisDependency.RIGHT, 2000)
@@ -148,14 +166,19 @@ class PainDetailFragment : Fragment(R.layout.fragment_pain_detail) {
                 getString(R.string.stress) ->
                     getString(R.string.stress_detail_activity, it.name, it.intensity) + "\n"
                 else ->
-                    getString(R.string.other_detail_activity, it.name, it.duration, it.intensity) + "\n"
+                    getString(
+                        R.string.other_detail_activity,
+                        it.name,
+                        it.duration,
+                        it.intensity
+                    ) + "\n"
             }
         }
 
         pain_details_date_txt.text = formatDateWithoutYear(pain.pain.date)
         pain_details_value_txt.text = pain.pain.intensity.toString()
         pain_details_location_txt.text =
-            if(!pain.pain.location.isBlank()) pain.pain.location else getString(R.string.not_registered)
+            if (!pain.pain.location.isBlank()) pain.pain.location else getString(R.string.not_registered)
         pain_details_mood_txt.text =
             if (!pain.moods.isNullOrEmpty()) pain.moods[0].value else getString(R.string.not_registered)
         pain_details_symptom_txt.text = symptomText

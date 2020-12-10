@@ -12,7 +12,6 @@ import android.view.View
 import android.widget.Toast
 import androidx.core.view.get
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -75,7 +74,7 @@ class DoctorDetailFragment : Fragment(R.layout.fragment_doctor_detail), OnMapRea
 
     private fun initViewModel() {
         viewModel.getCommentaryWithId(doctor.id)
-        viewModel.commentaries.observe(viewLifecycleOwner, Observer {
+        viewModel.commentaries.observe(viewLifecycleOwner, {
             commentaries.clear()
             commentaries.addAll(it)
             adapter.notifyDataSetChanged()
@@ -127,7 +126,14 @@ class DoctorDetailFragment : Fragment(R.layout.fragment_doctor_detail), OnMapRea
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
         val marker = map.addMarker(markerOptions)
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(marker.position.latitude, marker.position.longitude), 16f))
+        map.moveCamera(
+            CameraUpdateFactory.newLatLngZoom(
+                LatLng(
+                    marker.position.latitude,
+                    marker.position.longitude
+                ), 16f
+            )
+        )
         map.setOnMapClickListener {
 //            marker.showInfoWindow()
         }
@@ -181,7 +187,15 @@ class DoctorDetailFragment : Fragment(R.layout.fragment_doctor_detail), OnMapRea
 
     private fun createCommentary(rating: Float, text: String) {
         val commentary =
-            Commentary(doctor.id, doctor.name, rating.toDouble(), text, user.name, user.photoUrl, Date())
+            Commentary(
+                doctor.id,
+                doctor.name,
+                rating.toDouble(),
+                text,
+                user.name,
+                user.photoUrl,
+                Date()
+            )
         viewModel.createCommentaryInFirestore(commentary, user)
     }
 
@@ -194,7 +208,11 @@ class DoctorDetailFragment : Fragment(R.layout.fragment_doctor_detail), OnMapRea
             commentIdList.addAll(it)
         }
         return if (commentIdList.contains("${doctor.name}-${user.id}")) {
-            Toast.makeText(requireContext(), getString(R.string.already_comment), Toast.LENGTH_SHORT)
+            Toast.makeText(
+                requireContext(),
+                getString(R.string.already_comment),
+                Toast.LENGTH_SHORT
+            )
                 .show()
             true
         } else {
@@ -232,7 +250,11 @@ class DoctorDetailFragment : Fragment(R.layout.fragment_doctor_detail), OnMapRea
                     .show()
             } else {
                 val snackbar =
-                    Snackbar.make(fragment_doctor_detail_bottom_bar, "You have to sign in to leave a commentary", Snackbar.LENGTH_LONG)
+                    Snackbar.make(
+                        fragment_doctor_detail_bottom_bar,
+                        "You have to sign in to leave a commentary",
+                        Snackbar.LENGTH_LONG
+                    )
                 snackbar.setAction("Log out and sign in") {
                     findNavController().navigate(R.id.logOut)
                 }

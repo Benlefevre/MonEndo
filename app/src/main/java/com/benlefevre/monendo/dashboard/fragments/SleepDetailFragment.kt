@@ -29,8 +29,34 @@ class SleepDetailFragment : Fragment(R.layout.fragment_sleep_detail) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupCharts()
         viewModel.pains.observe(viewLifecycleOwner, configuresObserver())
         setupChipListener()
+    }
+
+    private fun setupCharts() {
+        sleep_details_chart.apply {
+            setNoDataText(getString(R.string.no_data_period))
+            setNoDataTextColor(getColor(context, R.color.colorSecondary))
+            legend.apply {
+                textColor = getColor(context,R.color.colorPrimary)
+            }
+            isScaleYEnabled = false
+            isHighlightPerTapEnabled = false
+            description = null
+            xAxis.apply {
+                granularity = 1f
+                textColor = getColor(context, R.color.colorPrimary)
+            }
+            axisLeft.apply {
+                granularity = 1f
+                setDrawZeroLine(true)
+                axisMinimum = 0f
+                axisMaximum = 11f
+                textColor = getColor(context, R.color.colorPrimary)
+            }
+            axisRight.isEnabled = false
+        }
     }
 
     /**
@@ -66,9 +92,10 @@ class SleepDetailFragment : Fragment(R.layout.fragment_sleep_detail) {
      */
     private fun configuresObserver(): Observer<List<PainWithRelations>> {
         return Observer<List<PainWithRelations>> {
+            clearChart()
             if (it.isNotEmpty()) {
                 setupList(it)
-                setupSleepChart()
+                displaySleepIntoChart()
             }
         }
     }
@@ -86,10 +113,16 @@ class SleepDetailFragment : Fragment(R.layout.fragment_sleep_detail) {
         dates.clear()
     }
 
+    private fun clearChart(){
+        sleep_details_chart.apply {
+            data = null
+        }
+    }
+
     /**
      * Configures a CombinedChart to see the sleep quality vs pain evolution in time
      */
-    private fun setupSleepChart(){
+    private fun displaySleepIntoChart(){
         val painEntries = mutableListOf<Entry>()
         val sleepEntries = mutableListOf<Entry>()
         var index = 0f
@@ -126,25 +159,7 @@ class SleepDetailFragment : Fragment(R.layout.fragment_sleep_detail) {
         listEntries.add(sleepDataSet)
 
         sleep_details_chart.apply {
-            legend.apply {
-                textColor = getColor(context,R.color.colorPrimary)
-            }
-            isScaleYEnabled = false
-            isHighlightPerTapEnabled = false
-            description = null
-            xAxis.apply {
-                granularity = 1f
-                valueFormatter = IndexAxisValueFormatter(dates)
-                textColor = getColor(context, R.color.colorPrimary)
-            }
-            axisLeft.apply {
-                granularity = 1f
-                setDrawZeroLine(true)
-                axisMinimum = 0f
-                axisMaximum = 11f
-                textColor = getColor(context, R.color.colorPrimary)
-            }
-            axisRight.isEnabled = false
+            xAxis.valueFormatter = IndexAxisValueFormatter(dates)
             data = LineData(listEntries)
             fitScreen()
             setVisibleXRangeMaximum(29.0f)

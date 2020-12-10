@@ -1,11 +1,12 @@
 package com.benlefevre.monendo.doctor.viewmodel
 
 import androidx.lifecycle.*
-import com.benlefevre.monendo.doctor.api.DoctorRepository
 import com.benlefevre.monendo.doctor.createDoctorsFromCpamApi
 import com.benlefevre.monendo.doctor.models.Commentary
 import com.benlefevre.monendo.doctor.models.Doctor
+import com.benlefevre.monendo.doctor.repository.AdresseRepository
 import com.benlefevre.monendo.doctor.repository.CommentaryRepository
+import com.benlefevre.monendo.doctor.repository.DoctorRepository
 import com.benlefevre.monendo.login.User
 import com.google.firebase.firestore.ktx.toObject
 import kotlinx.coroutines.Dispatchers
@@ -22,11 +23,16 @@ sealed class DoctorUiState {
 class DoctorViewModel(
     private val handle: SavedStateHandle,
     private val doctorRepository: DoctorRepository,
-    private val commentaryRepository: CommentaryRepository
+    private val commentaryRepository: CommentaryRepository,
+    private val adresseRepository: AdresseRepository
 ) : ViewModel() {
 
     private val _doctor = MutableLiveData<DoctorUiState>()
     private val _commentaries = MutableLiveData<List<Commentary>>()
+    private val _cities = MutableLiveData<List<String>>()
+
+    val cities: LiveData<List<String>>
+        get() = _cities
 
     val commentaries: LiveData<List<Commentary>>
         get() = _commentaries
@@ -90,14 +96,26 @@ class DoctorViewModel(
         return commentaries
     }
 
-    fun createCommentaryInFirestore(commentary: Commentary,user: User) {
-        commentaryRepository.createDoctorCommentary(commentary,user)
+    fun createCommentaryInFirestore(commentary: Commentary, user: User) {
+        commentaryRepository.createDoctorCommentary(commentary, user)
     }
 
     fun getCommentaryWithId(doctorId: String) = viewModelScope.launch {
         val commentaries = getCommentaries(doctorId)
         commentaries.sortByDescending { it.date }
         _commentaries.value = commentaries
+    }
+
+    fun getAdresse(map: Map<String, String>) = viewModelScope.launch {
+        val adresses = adresseRepository.getAdresses(map)
+        val citiesName = mutableListOf<String>()
+        if (adresses.features.isNotEmpty()) {
+            for (feature in adresses.features) {
+                citiesName.add(feature.properties.name)
+            }
+            _cities.value = citiesName
+        }
+
     }
 }
 

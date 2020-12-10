@@ -11,9 +11,11 @@ import com.benlefevre.monendo.dashboard.repository.SymptomRepo
 import com.benlefevre.monendo.dashboard.repository.UserActivitiesRepo
 import com.benlefevre.monendo.dashboard.viewmodels.DashboardViewModel
 import com.benlefevre.monendo.database.EndoDatabase
+import com.benlefevre.monendo.doctor.api.AdresseService
 import com.benlefevre.monendo.doctor.api.CpamService
-import com.benlefevre.monendo.doctor.api.DoctorRepository
+import com.benlefevre.monendo.doctor.repository.AdresseRepository
 import com.benlefevre.monendo.doctor.repository.CommentaryRepository
+import com.benlefevre.monendo.doctor.repository.DoctorRepository
 import com.benlefevre.monendo.doctor.viewmodel.DoctorViewModel
 import com.benlefevre.monendo.fertility.FertilityViewModel
 import com.benlefevre.monendo.fertility.temperature.TemperatureRepo
@@ -22,7 +24,8 @@ import com.benlefevre.monendo.login.UserRepo
 import com.benlefevre.monendo.pain.PainFragmentViewModel
 import com.benlefevre.monendo.pain.PainRepo
 import com.benlefevre.monendo.settings.SettingViewModel
-import com.benlefevre.monendo.utils.API_URL
+import com.benlefevre.monendo.utils.API_URL_ADRESSE
+import com.benlefevre.monendo.utils.API_URL_CPAM
 import com.benlefevre.monendo.utils.PREFERENCES
 import com.facebook.stetho.okhttp3.StethoInterceptor
 import com.google.firebase.firestore.ktx.firestore
@@ -75,19 +78,24 @@ val appModule = module {
 val networkModule = module {
 
     factory { provideHttpClient() }
-    factory { provideCpamApi(get()) }
-    single { provideRetrofit(get()) }
+    factory { provideAdresseApi(provideRetrofit(get(), API_URL_ADRESSE)) }
+    factory { provideCpamApi(provideRetrofit(get(), API_URL_CPAM)) }
+    single { AdresseRepository(get()) }
     single { CommentaryRepository(get()) }
     factory { DoctorRepository(get()) }
-    viewModel { (handle: SavedStateHandle) -> DoctorViewModel(handle, get(), get()) }
+    viewModel { (handle: SavedStateHandle) -> DoctorViewModel(handle, get(), get(),get()) }
 }
 
 fun provideCpamApi(retrofit: Retrofit): CpamService = retrofit.create(
     CpamService::class.java
 )
 
-fun provideRetrofit(client: OkHttpClient): Retrofit {
-    return Retrofit.Builder().baseUrl(API_URL)
+fun provideAdresseApi(retrofit: Retrofit) : AdresseService = retrofit.create(
+    AdresseService::class.java
+)
+
+fun provideRetrofit(client: OkHttpClient, url: String): Retrofit {
+    return Retrofit.Builder().baseUrl(url)
         .client(client)
         .addConverterFactory(GsonConverterFactory.create())
         .build()

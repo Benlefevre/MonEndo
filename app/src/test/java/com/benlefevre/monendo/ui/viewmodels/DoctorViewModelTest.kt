@@ -6,7 +6,9 @@ import androidx.lifecycle.SavedStateHandle
 import com.benlefevre.monendo.doctor.api.*
 import com.benlefevre.monendo.doctor.createDoctorsFromCpamApi
 import com.benlefevre.monendo.doctor.models.Doctor
+import com.benlefevre.monendo.doctor.repository.AdresseRepository
 import com.benlefevre.monendo.doctor.repository.CommentaryRepository
+import com.benlefevre.monendo.doctor.repository.DoctorRepository
 import com.benlefevre.monendo.doctor.viewmodel.DoctorUiState
 import com.benlefevre.monendo.doctor.viewmodel.DoctorViewModel
 import com.nhaarman.mockitokotlin2.any
@@ -47,10 +49,13 @@ class DoctorViewModelTest {
     lateinit var commentaryRepository: CommentaryRepository
 
     @Mock
+    lateinit var adresseRepository: AdresseRepository
+
+    @Mock
     lateinit var doctorObserver: Observer<DoctorUiState>
 
     private val handle = SavedStateHandle()
-    lateinit var doctors : List<Doctor>
+    lateinit var doctors: List<Doctor>
 
     @Before
     fun setUp() {
@@ -58,9 +63,26 @@ class DoctorViewModelTest {
         SUT = DoctorViewModel(
             handle,
             doctorRepository,
-            commentaryRepository
+            commentaryRepository,
+            adresseRepository
         )
-        doctors = listOf(Doctor("1", "test", "mr", "testAddress", "doctor", null, "000", null, null, listOf(0.0, 0.0),600.0 ,2, 3.0))
+        doctors = listOf(
+            Doctor(
+                "1",
+                "test",
+                "mr",
+                "testAddress",
+                "doctor",
+                null,
+                "000",
+                null,
+                null,
+                listOf(0.0, 0.0),
+                600.0,
+                2,
+                3.0
+            )
+        )
         handle.set("doctor", doctors)
         handle.set("mapQ", "doctor")
         handle.set("location", "here")
@@ -77,14 +99,14 @@ class DoctorViewModelTest {
     fun isReady_success_correctDataReturned() {
         val map = mapOf("q" to "doctor", "geofilter.distance" to "here")
         val result = SUT.isReady(map)
-        assertEquals(DoctorUiState.DoctorReady(doctors),result)
+        assertEquals(DoctorUiState.DoctorReady(doctors), result)
     }
 
     @Test
-    fun isReady_failure_correctDatareturned(){
+    fun isReady_failure_correctDatareturned() {
         val map = mapOf("q" to "gynéco", "geofilter.distance" to "there")
         val result = SUT.isReady(map)
-        assertEquals(DoctorUiState.Loading,result)
+        assertEquals(DoctorUiState.Loading, result)
     }
 
     @Test
@@ -107,7 +129,7 @@ class DoctorViewModelTest {
                         "", 92370, "", "", "",
                         "", "Mr", "", "061789956230", "92",
                         "", 0, "", "Chaville",
-                        "", 0, listOf(22.0, 23.0), "",600.0
+                        "", 0, listOf(22.0, 23.0), "", 600.0
                     ),
                     Geometry(
                         "",
