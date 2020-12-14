@@ -33,7 +33,7 @@ data class Properties (
 	@SerializedName("id") val id : String,
 	@SerializedName("type") val type : String,
 	@SerializedName("name") val name : String,
-	@SerializedName("postcode") val postcode : Int,
+	@SerializedName("postcode") val postcode : String,
 	@SerializedName("citycode") val citycode : String,
 	@SerializedName("x") val x : Double,
 	@SerializedName("y") val y : Double,

@@ -1,4 +1,4 @@
-package com.benlefevre.monendo.doctor
+package com.benlefevre.monendo.doctor.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -8,6 +8,7 @@ import com.benlefevre.monendo.doctor.models.Doctor
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.Marker
 import kotlinx.android.synthetic.main.info_window_endo.view.*
+import java.util.*
 
 class EndoWindowAdapter(context: Context) : GoogleMap.InfoWindowAdapter {
 
@@ -18,7 +19,7 @@ class EndoWindowAdapter(context: Context) : GoogleMap.InfoWindowAdapter {
 
         with(contents){
             info_doctor_name.text = doctor.name
-            info_doctor_spec.text = doctor.spec.toUpperCase()
+            info_doctor_spec.text = doctor.spec.toUpperCase(Locale.getDefault())
             info_doctor_address.text = doctor.address
         }
         return contents

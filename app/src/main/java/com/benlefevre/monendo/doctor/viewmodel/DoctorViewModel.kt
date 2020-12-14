@@ -1,5 +1,6 @@
 package com.benlefevre.monendo.doctor.viewmodel
 
+import android.location.Location
 import androidx.lifecycle.*
 import com.benlefevre.monendo.doctor.createDoctorsFromCpamApi
 import com.benlefevre.monendo.doctor.models.Commentary
@@ -8,11 +9,15 @@ import com.benlefevre.monendo.doctor.repository.AdresseRepository
 import com.benlefevre.monendo.doctor.repository.CommentaryRepository
 import com.benlefevre.monendo.doctor.repository.DoctorRepository
 import com.benlefevre.monendo.login.User
+import com.benlefevre.monendo.utils.DOC
+import com.benlefevre.monendo.utils.GYNE
 import com.google.firebase.firestore.ktx.toObject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
+import timber.log.Timber
+import java.util.*
 
 sealed class DoctorUiState {
     object Loading : DoctorUiState()
@@ -29,9 +34,10 @@ class DoctorViewModel(
 
     private val _doctor = MutableLiveData<DoctorUiState>()
     private val _commentaries = MutableLiveData<List<Commentary>>()
-    private val _cities = MutableLiveData<List<String>>()
+    private val _cities = MutableLiveData<List<Pair<String, String>>>()
+    private val queryMap = mutableMapOf<String, String>()
 
-    val cities: LiveData<List<String>>
+    val cities: LiveData<List<Pair<String, String>>>
         get() = _cities
 
     val commentaries: LiveData<List<Commentary>>
@@ -40,25 +46,39 @@ class DoctorViewModel(
     val doctor: LiveData<DoctorUiState>
         get() = _doctor
 
-    fun isReady(map: Map<String, String>): DoctorUiState {
+    init {
+        queryMap["dataset"] = "annuaire-des-professionnels-de-sante"
+        queryMap["q"] =
+            "Gynécologue obstétricien OR Gynécologue médical OR Gynécologue médical et obstétricien"
+        handle.set("mapQ", queryMap["q"])
+        queryMap["rows"] = "50"
+    }
+
+    fun isReady(map: Map<String, String>): Boolean {
+        Timber.i("${handle.get<String>("mapQ")} && ${handle.get<String>("location")} ")
         val mapQ = handle.get<String>("mapQ") ?: ""
         val location = handle.get<String>("location") ?: ""
-        return if (handle.contains("doctor") && mapQ == map["q"] && (map.containsKey("geofilter.distance") || location == map["refine.nom_com"])) {
-            DoctorUiState.DoctorReady(handle.get<List<Doctor>>("doctor")!!)
-        } else {
-            DoctorUiState.Loading
-        }
+        val geolocation = handle.get<String>("geolocation") ?: ""
+        return (handle.contains("doctor") && mapQ == map["q"]
+                && ((map.containsKey("geofilter.distance") && geolocation == map["geofilter.distance"])
+                || (map.containsKey("refine.code_postal") && location == map["refine.code_postal"])))
     }
 
     fun getDoctors(map: Map<String, String>) = viewModelScope.launch {
-        _doctor.value = isReady(map)
-        val result = doctorRepository.getDoctors(map)
-        if (result.records.isEmpty()) {
-            _doctor.value =
-                DoctorUiState.Error("There no doctor for this search. Please modify it")
-            return@launch
+        val doctors = mutableListOf<Doctor>()
+        if (isReady(map)) {
+            doctors.addAll(handle.get<List<Doctor>>("doctor")!!)
+            _doctor.value = DoctorUiState.DoctorReady(doctors)
+        } else {
+            _doctor.value = DoctorUiState.Loading
+            val result = doctorRepository.getDoctors(map)
+            if (result.records.isEmpty()) {
+                _doctor.value =
+                    DoctorUiState.Error("There no doctor for this search. Please modify it")
+                return@launch
+            }
+            doctors.addAll(createDoctorsFromCpamApi(result))
         }
-        val doctors = createDoctorsFromCpamApi(result)
         var isComment = false
 
         doctors.forEach { doctor ->
@@ -78,7 +98,8 @@ class DoctorViewModel(
 
         handle.set("doctor", sortedList)
         handle.set("mapQ", map["q"])
-        handle.set("location", map["refine.nom_com"])
+        handle.set("location", map["refine.code_postal"])
+        handle.set("geolocation", map["geofilter.distance"])
         _doctor.value =
             DoctorUiState.DoctorReady(sortedList)
     }
@@ -106,16 +127,43 @@ class DoctorViewModel(
         _commentaries.value = commentaries
     }
 
-    fun getAdresse(map: Map<String, String>) = viewModelScope.launch {
+    fun getAdresse(input: String) = viewModelScope.launch {
+        val map = mutableMapOf<String, String>()
+        map["type"] = "municipality"
+        map["limit"] = "15"
+        map["q"] = input
         val adresses = adresseRepository.getAdresses(map)
-        val citiesName = mutableListOf<String>()
+        val citiesName = mutableListOf<Pair<String, String>>()
         if (adresses.features.isNotEmpty()) {
             for (feature in adresses.features) {
-                citiesName.add(feature.properties.name)
+                citiesName.add(Pair(feature.properties.name, feature.properties.postcode))
             }
             _cities.value = citiesName
         }
+    }
 
+    fun getDoctorsWithUserInput() {
+        getDoctors(queryMap)
+    }
+
+    fun setSpecialitySearchCriteria(specName: String) {
+        when (specName) {
+            GYNE -> queryMap["q"] =
+                "Gynécologue obstétricien OR Gynécologue médical OR Gynécologue médical et obstétricien"
+            DOC -> queryMap["q"] = "Médecin généraliste"
+        }
+    }
+
+    fun setPostalCodeQuery(postalCode: String) {
+        queryMap.remove("geofilter.distance")
+        queryMap["facet"] = "code_postal"
+        queryMap["refine.code_postal"] = postalCode
+    }
+
+    fun setGeoLocationQuery(location: Location) {
+        queryMap.remove("facet")
+        queryMap.remove("refine.code_postal")
+        queryMap["geofilter.distance"] = "${location.latitude},${location.longitude},5000"
     }
 }
 

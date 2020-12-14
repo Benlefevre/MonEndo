@@ -269,5 +269,6 @@
     <string name="enter_treatment_duration">Merci d\'entrer la durée du traitement</string>
     <string name="enter_treatment_dosage">Merci d\'entrer le dosage du traitement</string>
     <string name="enter_treatment_format">Merci d\'entrer le format du traitement</string>
+    <string name="search_doctors">Search doctors</string>
 
 </resources>

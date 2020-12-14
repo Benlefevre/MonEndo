@@ -1,4 +1,4 @@
-package com.benlefevre.monendo.doctor
+package com.benlefevre.monendo.doctor.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -9,6 +9,7 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.benlefevre.monendo.R
+import com.benlefevre.monendo.doctor.defineNbStars
 import com.benlefevre.monendo.doctor.models.Commentary
 import com.benlefevre.monendo.utils.NO_PHOTO_URL
 import com.benlefevre.monendo.utils.formatDateWithYear

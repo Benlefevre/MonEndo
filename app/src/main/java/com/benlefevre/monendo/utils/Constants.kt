@@ -50,3 +50,6 @@ const val PILL_REPEAT_ID = 2
 
 const val PILL_CHANNEL = "Contraceptive Pill notification"
 const val TREATMENT_CHANNEL = "Treatment notification"
+
+const val GYNE = "Gyne"
+const val DOC = "Doc"

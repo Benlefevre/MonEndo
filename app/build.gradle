@@ -35,6 +35,9 @@ android {
             }
         }
     }
+    buildFeatures{
+        viewBinding true
+    }
     buildTypes {
         debug {
             buildConfigField("String", "google_maps_key", GOOGLE_MAP_API_KEY)

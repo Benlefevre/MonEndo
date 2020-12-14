@@ -10,11 +10,15 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.IBinder
 import android.provider.Settings
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
@@ -22,13 +26,16 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.benlefevre.monendo.MainActivity
 import com.benlefevre.monendo.R
-import com.benlefevre.monendo.doctor.DoctorAdapter
-import com.benlefevre.monendo.doctor.EndoWindowAdapter
+import com.benlefevre.monendo.databinding.FragmentDoctorBinding
+import com.benlefevre.monendo.doctor.adapter.DoctorAdapter
+import com.benlefevre.monendo.doctor.adapter.EndoWindowAdapter
 import com.benlefevre.monendo.doctor.models.Doctor
 import com.benlefevre.monendo.doctor.viewmodel.DoctorUiState
 import com.benlefevre.monendo.doctor.viewmodel.DoctorViewModel
 import com.benlefevre.monendo.location.LocationData
 import com.benlefevre.monendo.location.LocationLiveData
+import com.benlefevre.monendo.utils.DOC
+import com.benlefevre.monendo.utils.GYNE
 import com.benlefevre.monendo.utils.LOCATION_PERMISSIONS
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
@@ -36,18 +43,19 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.android.synthetic.main.fragment_doctor.*
 import org.koin.androidx.viewmodel.ext.android.stateViewModel
 import pub.devrel.easypermissions.EasyPermissions
-import timber.log.Timber
 
 class DoctorFragment : Fragment(R.layout.fragment_doctor), OnMapReadyCallback,
     DoctorAdapter.DoctorListAdapterListener {
 
+    private var _binding: FragmentDoctorBinding? = null
+    private val binding get() = _binding!!
+    private var isSearchVisible = false
+    private lateinit var menuItem: MenuItem
     private lateinit var navController: NavController
     private lateinit var map: GoogleMap
     private val viewModel: DoctorViewModel by stateViewModel()
-    private val queryMap = mutableMapOf<String, String>()
     private val doctors = mutableListOf<Doctor>()
     private lateinit var locationLiveData: LocationLiveData
     private lateinit var lastLocation: Location
@@ -57,34 +65,83 @@ class DoctorFragment : Fragment(R.layout.fragment_doctor), OnMapReadyCallback,
     private var searchLocation: String = ""
     private val markers = mutableListOf<Marker>()
     private val cities = mutableListOf<String>()
-    private lateinit var adapter: ArrayAdapter<String>
+    private val postCodes = mutableListOf<String>()
+    private var isFirstLocation = true
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        _binding = FragmentDoctorBinding.bind(view)
+        setHasOptionsMenu(true)
         navController = findNavController()
-        adapter =
-            ArrayAdapter(requireContext(), R.layout.support_simple_spinner_dropdown_item, cities)
         setOnClickListeners()
         initMap()
+        configureViewModelObservers()
+        configureRecyclerView()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.doctor_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        menuItem = item
+        return when (item.itemId) {
+            R.id.doctor_search -> {
+                if (!isSearchVisible) {
+                    openSearch()
+                } else {
+                    closeSearch()
+                }
+                true
+            }
+            else -> {
+                super.onOptionsItemSelected(item)
+            }
+        }
+    }
+
+    private fun configureViewModelObservers() {
         locationLiveData = LocationLiveData(requireContext())
         locationLiveData.observe(viewLifecycleOwner, {
             handleLocationData(it)
         })
         viewModel.cities.observe(viewLifecycleOwner, {
-            Timber.i("$it")
-            adapter.clear()
-            adapter.addAll(it)
-            adapter.notifyDataSetChanged()
-            fragment_doctor_search_txt.setAdapter(adapter)
+            handleCitiesData(it)
         })
-        configureRecyclerView()
+        viewModel.doctor.observe(viewLifecycleOwner, {
+            updateUiState(it)
+        })
+    }
+
+    private fun handleCitiesData(it: List<Pair<String, String>>) {
+        cities.clear()
+        postCodes.clear()
+        it.forEachIndexed { index, pair ->
+            cities.add(index, "${pair.first}   ${pair.second}")
+            postCodes.add(index, pair.second)
+        }
+        val citiesAdapter =
+            ArrayAdapter(
+                requireContext(),
+                R.layout.support_simple_spinner_dropdown_item,
+                cities
+            )
+
+        with(binding.searchTxt) {
+            setAdapter(citiesAdapter)
+            if (searchLocation == postCodes[0]) {
+                dismissDropDown()
+            } else {
+                showDropDown()
+            }
+        }
     }
 
     private fun configureRecyclerView() {
         doctorAdapter =
             DoctorAdapter(doctors, this)
-        fragment_doctor_recycler_view.apply {
+        binding.docRecyclerView.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = doctorAdapter
         }
@@ -97,24 +154,26 @@ class DoctorFragment : Fragment(R.layout.fragment_doctor), OnMapReadyCallback,
     @SuppressLint("MissingPermission")
     private fun handleLocationData(locationData: LocationData) {
         if (handleLocationException(locationData.exception)) {
-            Timber.i("No location")
             return
         }
         locationData.location?.let {
-            Timber.i("Location : $it")
             lastLocation = it
             if (::map.isInitialized) {
                 map.isMyLocationEnabled = true
-                map.animateCamera(
-                    CameraUpdateFactory.newLatLngZoom(
-                        LatLng(
-                            it.latitude,
-                            it.longitude
-                        ), 12f
+                if (isFirstLocation) {
+                    map.animateCamera(
+                        CameraUpdateFactory.newLatLngZoom(
+                            LatLng(
+                                it.latitude,
+                                it.longitude
+                            ), 12f
+                        )
                     )
-                )
+                    viewModel.setGeoLocationQuery(lastLocation)
+                    isFirstLocation = false
+                }
+                getDoctor()
             }
-            getDoctor()
         }
     }
 
@@ -123,7 +182,6 @@ class DoctorFragment : Fragment(R.layout.fragment_doctor), OnMapReadyCallback,
      */
     private fun handleLocationException(exception: Exception?): Boolean {
         exception ?: return false
-        Timber.e(exception)
         when (exception) {
             is SecurityException -> checkLocationPermissions()
         }
@@ -143,7 +201,7 @@ class DoctorFragment : Fragment(R.layout.fragment_doctor), OnMapReadyCallback,
         val mapFragment = SupportMapFragment.newInstance(mapOptions)
         mapFragment.getMapAsync(this)
         childFragmentManager.beginTransaction()
-            .replace(R.id.fragment_doctor_mapview, mapFragment)
+            .replace(R.id.mapview, mapFragment)
             .commit()
     }
 
@@ -153,10 +211,7 @@ class DoctorFragment : Fragment(R.layout.fragment_doctor), OnMapReadyCallback,
      */
     private fun getDoctor() {
         if (MainActivity.isConnected && ::lastLocation.isInitialized) {
-            configureQueryMap()
-            viewModel.doctor.observe(viewLifecycleOwner, {
-                updateUiState(it)
-            })
+            viewModel.getDoctorsWithUserInput()
         } else {
             Toast.makeText(
                 requireContext(),
@@ -171,13 +226,15 @@ class DoctorFragment : Fragment(R.layout.fragment_doctor), OnMapReadyCallback,
      */
     private fun updateUiState(state: DoctorUiState) {
         when (state) {
-            DoctorUiState.Loading -> {
-                fragment_doctor_progress_bar.show()
+            is DoctorUiState.Loading -> {
+                binding.progressBar.show()
                 doctors.clear()
                 doctorAdapter.notifyDataSetChanged()
+                setChipUnClickableWhenLoading()
             }
             is DoctorUiState.DoctorReady -> {
-                fragment_doctor_progress_bar.hide()
+                binding.progressBar.hide()
+                setChipClickableWhenReady()
                 doctors.clear()
                 doctors.addAll(state.doctors)
                 doctorAdapter.notifyDataSetChanged()
@@ -187,25 +244,22 @@ class DoctorFragment : Fragment(R.layout.fragment_doctor), OnMapReadyCallback,
                     val marker = addMarkersOnMap(it)
                     markers.add(marker)
                 }
-                if (searchLocation.isNotBlank()) {
-                    map.animateCamera(
-                        CameraUpdateFactory.newLatLngZoom(
-                            LatLng(
-                                doctors[0].coordonnees[0],
-                                doctors[0].coordonnees[1]
-                            ), 12f
-                        )
+                map.animateCamera(
+                    CameraUpdateFactory.newLatLngZoom(
+                        LatLng(
+                            doctors[0].coordonnees[0],
+                            doctors[0].coordonnees[1]
+                        ), 12f
                     )
-                }
+                )
             }
             is DoctorUiState.Error -> {
-                Timber.e(state.errorMessage)
                 Snackbar.make(
-                    fragment_doctor_recycler_view,
+                    binding.docRecyclerView,
                     state.errorMessage,
                     Snackbar.LENGTH_SHORT
                 ).show()
-                fragment_doctor_progress_bar.hide()
+                binding.progressBar.hide()
             }
         }
     }
@@ -223,33 +277,6 @@ class DoctorFragment : Fragment(R.layout.fragment_doctor), OnMapReadyCallback,
         marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET))
         marker.tag = doctor
         return marker
-    }
-
-    /**
-     * Configures the needed query to request the CPAM api with the correct fields.
-     */
-    private fun configureQueryMap() {
-        queryMap.clear()
-        queryMap["dataset"] = "annuaire-des-professionnels-de-sante"
-        queryMap["rows"] = "50"
-        if (fragment_doctor_gyne_chip.isChecked) {
-            queryMap["q"] =
-                "Gynécologue obstétricien OR Gynécologue médical OR Gynécologue médical et obstétricien"
-        }
-        if (fragment_doctor_doc_chip.isChecked) {
-            queryMap["q"] = "Médecin généraliste"
-        }
-        if (searchLocation.isEmpty()) {
-            queryMap["geofilter.distance"] =
-                "${lastLocation.latitude},${lastLocation.longitude},5000"
-        } else {
-//            queryMap["facet"] = "nom_com"
-            queryMap["facet"] = "code_postal"
-            queryMap["refine.code_postal"] = searchLocation
-//            queryMap["refine.nom_com"] = searchLocation.capitalize(Locale.getDefault())
-        }
-        Timber.i("${queryMap["q"]}")
-        viewModel.getDoctors(queryMap)
     }
 
     /**
@@ -279,13 +306,14 @@ class DoctorFragment : Fragment(R.layout.fragment_doctor), OnMapReadyCallback,
                 )
             )
             it.showInfoWindow()
-            fragment_doctor_recycler_view.scrollToPosition(doctors.indexOf(it.tag))
+            binding.docRecyclerView.scrollToPosition(doctors.indexOf(it.tag))
             doctorAdapter.index = doctors.indexOf(it.tag)
             doctorAdapter.notifyDataSetChanged()
             true
         }
 
         map.setOnMyLocationButtonClickListener {
+            viewModel.setGeoLocationQuery(lastLocation)
             map.animateCamera(
                 CameraUpdateFactory.newLatLngZoom(
                     LatLng(
@@ -294,7 +322,6 @@ class DoctorFragment : Fragment(R.layout.fragment_doctor), OnMapReadyCallback,
                     ), 12f
                 )
             )
-            fragment_doctor_search_txt.text?.clear()
             getDoctor()
             true
         }
@@ -324,19 +351,7 @@ class DoctorFragment : Fragment(R.layout.fragment_doctor), OnMapReadyCallback,
                     Manifest.permission.ACCESS_FINE_LOCATION
                 )
             ) {
-                AlertDialog.Builder(requireContext())
-                    .setTitle(getString(R.string.location_permission))
-                    .setMessage(getString(R.string.want_find_doctor))
-                    .setPositiveButton(getString(R.string.go_settings)) { dialog, _ ->
-                        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-                        intent.data = Uri.parse("package:com.benlefevre.monendo")
-                        startActivity(intent)
-                        dialog.cancel()
-                    }
-                    .setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
-                        dialog.cancel()
-                    }
-                    .show()
+                showDialogToSettings()
                 return
             } else {
                 EasyPermissions.requestPermissions(
@@ -351,38 +366,89 @@ class DoctorFragment : Fragment(R.layout.fragment_doctor), OnMapReadyCallback,
         }
     }
 
-    private fun setOnClickListeners() {
-        fragment_doctor_search_txt.setAdapter(adapter)
-        val map = mutableMapOf<String, String>()
-        map["type"] = "municipality"
-        map["limit"] = "15"
-        fragment_doctor_search_txt.addTextChangedListener {input ->
-            Timber.i("click")
-            if (input.toString().length >= 2) {
-                map["q"] = input.toString()
-                viewModel.getAdresse(map)
-                fragment_doctor_search_txt.showDropDown()
-                with(fragment_doctor_search_btn) {
-                    visibility = View.VISIBLE
-                    text = getString(R.string.search_btn)
-                }
-            } else {
-                adapter.clear()
-                fragment_doctor_search_txt.dismissDropDown()
-                with(fragment_doctor_search_btn) {
-                    visibility = View.GONE
-                    text = getString(R.string.around_me)
-                }
+    private fun showDialogToSettings() {
+        AlertDialog.Builder(requireContext())
+            .setTitle(getString(R.string.location_permission))
+            .setMessage(getString(R.string.want_find_doctor))
+            .setPositiveButton(getString(R.string.go_settings)) { dialog, _ ->
+                val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                intent.data = Uri.parse("package:com.benlefevre.monendo")
+                startActivity(intent)
+                dialog.cancel()
             }
-            searchLocation = input.toString()
+            .setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
+                dialog.cancel()
+            }
+            .show()
+    }
+
+    private fun setOnClickListeners() {
+        var selectedCity = ""
+        binding.searchTxt.setOnItemClickListener { _, _, position, _ ->
+            selectedCity = cities[position]
+            binding.searchTxt.setText(cities[position])
+            searchLocation = postCodes[position]
+            viewModel.setPostalCodeQuery(searchLocation)
         }
-        fragment_doctor_search_btn.setOnClickListener {
+
+        binding.searchTxt.addTextChangedListener { input ->
+            if (input.toString() == selectedCity) {
+                binding.searchTxt.dismissDropDown()
+            } else if (input.toString().length >= 2) {
+                viewModel.getAdresse(input.toString())
+                searchLocation = ""
+            }
+        }
+
+        binding.searchBtn.setOnClickListener {
+            closeSearch()
             getDoctor()
             closeKeyboard()
         }
-        fragment_doctor_chip_group.setOnCheckedChangeListener { _, _ ->
-            getDoctor()
+
+        binding.chipGroup.setOnCheckedChangeListener { _, checkedId ->
+            when (checkedId) {
+                binding.gyneChip.id -> {
+                    binding.gyneChip2.isChecked = true
+                    viewModel.setSpecialitySearchCriteria(GYNE)
+                }
+                binding.docChip.id -> {
+                    binding.docChip2.isChecked = true
+                    viewModel.setSpecialitySearchCriteria(DOC)
+                }
+            }
+            if (!isSearchVisible) {
+                getDoctor()
+            }
         }
+
+        binding.docChip2.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                binding.docChip.isChecked = true
+                viewModel.setSpecialitySearchCriteria(DOC)
+            }
+        }
+
+        binding.gyneChip2.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                binding.gyneChip.isChecked = true
+                viewModel.setSpecialitySearchCriteria(GYNE)
+            }
+        }
+    }
+
+    private fun setChipUnClickableWhenLoading() {
+        binding.docChip.isCheckable = false
+        binding.docChip2.isCheckable = false
+        binding.gyneChip.isCheckable = false
+        binding.gyneChip2.isCheckable = false
+    }
+
+    private fun setChipClickableWhenReady() {
+        binding.docChip.isCheckable = true
+        binding.docChip2.isCheckable = true
+        binding.gyneChip.isCheckable = true
+        binding.gyneChip2.isCheckable = true
     }
 
     private fun closeKeyboard() {
@@ -390,6 +456,22 @@ class DoctorFragment : Fragment(R.layout.fragment_doctor), OnMapReadyCallback,
             requireActivity().getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
         val view: IBinder? = requireView().rootView.windowToken
         imm.hideSoftInputFromWindow(view, 0)
+    }
+
+    private fun openSearch() {
+        isSearchVisible = true
+        val view = view?.findViewById<MotionLayout>(R.id.doctor_motion_layout)
+        view?.transitionToEnd()
+        menuItem.setIcon(R.drawable.search_off)
+    }
+
+    private fun closeSearch() {
+        isSearchVisible = false
+        val view = view?.findViewById<MotionLayout>(R.id.doctor_motion_layout)
+        view?.transitionToStart()
+        menuItem.setIcon(R.drawable.search)
+        binding.searchTxt.setText("")
+        closeKeyboard()
     }
 
     /**
@@ -412,5 +494,11 @@ class DoctorFragment : Fragment(R.layout.fragment_doctor), OnMapReadyCallback,
                 DoctorFragmentDirections.actionDoctorFragmentToDoctorDetailFragment(doctor)
             navController.navigate(doctorDest)
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding.docRecyclerView.adapter = null
+        _binding = null
     }
 }

@@ -11,7 +11,7 @@ import androidx.preference.PreferenceFragmentCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.benlefevre.monendo.MainActivity
 import com.benlefevre.monendo.R
-import com.benlefevre.monendo.doctor.CommentaryAdapter
+import com.benlefevre.monendo.doctor.adapter.CommentaryAdapter
 import com.benlefevre.monendo.doctor.models.Commentary
 import com.benlefevre.monendo.notification.cancelPillAlarm
 import com.benlefevre.monendo.notification.cancelTreatmentAlarm

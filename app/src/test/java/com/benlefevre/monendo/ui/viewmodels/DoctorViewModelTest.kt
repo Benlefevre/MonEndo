@@ -22,7 +22,7 @@ import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
-import org.junit.Assert.assertEquals
+import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -85,7 +85,7 @@ class DoctorViewModelTest {
         )
         handle.set("doctor", doctors)
         handle.set("mapQ", "doctor")
-        handle.set("location", "here")
+        handle.set("geolocation", "here")
         SUT.doctor.observeForever(doctorObserver)
     }
 
@@ -99,14 +99,14 @@ class DoctorViewModelTest {
     fun isReady_success_correctDataReturned() {
         val map = mapOf("q" to "doctor", "geofilter.distance" to "here")
         val result = SUT.isReady(map)
-        assertEquals(DoctorUiState.DoctorReady(doctors), result)
+        assertTrue(result)
     }
 
     @Test
     fun isReady_failure_correctDatareturned() {
         val map = mapOf("q" to "gynéco", "geofilter.distance" to "there")
         val result = SUT.isReady(map)
-        assertEquals(DoctorUiState.Loading, result)
+        assertFalse(result)
     }
 
     @Test

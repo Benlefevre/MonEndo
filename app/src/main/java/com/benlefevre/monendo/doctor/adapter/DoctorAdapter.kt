@@ -1,4 +1,4 @@
-package com.benlefevre.monendo.doctor
+package com.benlefevre.monendo.doctor.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -8,6 +8,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat.getColor
 import androidx.recyclerview.widget.RecyclerView
 import com.benlefevre.monendo.R
+import com.benlefevre.monendo.doctor.defineNbStars
 import com.benlefevre.monendo.doctor.models.Doctor
 import com.google.android.material.textview.MaterialTextView
 import kotlinx.android.synthetic.main.doctor_list_item.view.*

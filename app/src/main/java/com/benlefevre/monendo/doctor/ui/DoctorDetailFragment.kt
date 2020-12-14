@@ -17,7 +17,7 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.benlefevre.monendo.MainActivity
 import com.benlefevre.monendo.R
-import com.benlefevre.monendo.doctor.CommentaryAdapter
+import com.benlefevre.monendo.doctor.adapter.CommentaryAdapter
 import com.benlefevre.monendo.doctor.models.Commentary
 import com.benlefevre.monendo.doctor.models.Doctor
 import com.benlefevre.monendo.doctor.viewmodel.DoctorViewModel
