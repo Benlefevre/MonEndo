@@ -149,7 +149,7 @@ class AlarmReceiver : BroadcastReceiver() {
      * Checks if it's necessary to reset the notifications after a device's reboot
      */
     private fun resetAllNotifications() {
-        if (!hourPill.isBlank()) {
+        if (hourPill.isNotBlank()) {
             resetPillNotification()
             resetPillRepeatNotification()
         }

@@ -34,12 +34,18 @@ fun createAlarmAtTheUserTime(context: Context, intent: Intent, hour: String, tag
             pendingIntent
         )
     } else {
-        alarmManager.setExact(AlarmManager.RTC_WAKEUP, triggeredTime, pendingIntent)
+        alarmManager.setExact(
+            AlarmManager.RTC_WAKEUP,
+            triggeredTime,
+            pendingIntent)
     }
 }
 
 private fun isNeededStop7Days(preferences: SharedPreferences): Boolean {
     val nextPillDate = preferences.getString(NEXT_PILL_DATE, "")!!
+    if (nextPillDate.isBlank()){
+        return false
+    }
     val today = Calendar.getInstance().apply {
         set(Calendar.HOUR_OF_DAY, 12)
         set(Calendar.MINUTE, 0)
@@ -61,7 +67,7 @@ private fun isNeededStop7Days(preferences: SharedPreferences): Boolean {
 fun setTriggeredTimeToNextPill(hour: String, nextPillDate: String): Long {
     Timber.i("SetTriggeredTimeNextPill")
     val selectedHour = Calendar.getInstance()
-    if (!hour.isBlank()) {
+    if (hour.isNotBlank()) {
         selectedHour.apply {
             set(Calendar.DAY_OF_MONTH, nextPillDate.substring(0, 2).toInt())
             set(Calendar.MONTH, nextPillDate.substring(3, 5).toInt() - 1)
