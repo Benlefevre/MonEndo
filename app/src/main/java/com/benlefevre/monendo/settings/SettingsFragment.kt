@@ -31,7 +31,6 @@ class SettingsFragment : PreferenceFragmentCompat(), CommentaryAdapter.Commentar
     private lateinit var dataStore: PreferenceDataStore
     private lateinit var adapter : CommentaryAdapter
     private val comments = mutableListOf<Commentary>()
-    private val commentIdList = mutableListOf<String>()
     private val selectedCommentList = mutableListOf<Commentary>()
 
     private val preferences : SharedPreferences by inject()
@@ -57,6 +56,11 @@ class SettingsFragment : PreferenceFragmentCompat(), CommentaryAdapter.Commentar
         getCommentaries()
         initPreferences()
         configurePreferencesBehaviors()
+        viewModel.commentLiveData.observe(viewLifecycleOwner,{
+            comments.clear()
+            comments.addAll(it)
+            adapter.notifyDataSetChanged()
+        })
     }
 
     private fun initPreferences() {
@@ -108,21 +112,8 @@ class SettingsFragment : PreferenceFragmentCompat(), CommentaryAdapter.Commentar
         }
     }
 
-    private fun getCommentaries() {
-        comments.clear()
-        commentIdList.clear()
-        gson.fromJson<List<String>>(
-            preferences.getString(COMMENT_ID, ""),
-            object : TypeToken<List<String>>() {}.type
-        )?.let {
-            commentIdList.addAll(it)
-        }
-        viewModel.getUserCommentaries(commentIdList)
-        viewModel.commentLiveData.observe(viewLifecycleOwner, {
-            comments.clear()
-            comments.addAll(it)
-            adapter.notifyDataSetChanged()
-        })
+    private fun getCommentaries(){
+        viewModel.getUserCommentaries(MainActivity.user.id)
     }
 
     private fun removeMenstruationData() {
@@ -203,12 +194,9 @@ class SettingsFragment : PreferenceFragmentCompat(), CommentaryAdapter.Commentar
         val userId = MainActivity.user.id
         selectedCommentList.forEach {
             val id = "${it.doctorName}-$userId"
-            commentIdList.remove(id)
             viewModel.deleteCommentary(id)
             comments.remove(it)
         }
-        val idList = gson.toJson(commentIdList)
-        preferences.edit().putString(COMMENT_ID,idList).apply()
     }
 
     override fun onCommentarySelected(commentary: Commentary) {

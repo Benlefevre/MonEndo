@@ -3,7 +3,6 @@ package com.benlefevre.monendo.doctor.ui
 import android.content.Intent
 import android.content.Intent.ACTION_DIAL
 import android.content.Intent.ACTION_VIEW
-import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
 import android.text.method.ScrollingMovementMethod
@@ -17,12 +16,12 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.benlefevre.monendo.MainActivity
 import com.benlefevre.monendo.R
+import com.benlefevre.monendo.databinding.FragmentDoctorDetailBinding
 import com.benlefevre.monendo.doctor.adapter.CommentaryAdapter
 import com.benlefevre.monendo.doctor.models.Commentary
 import com.benlefevre.monendo.doctor.models.Doctor
 import com.benlefevre.monendo.doctor.viewmodel.DoctorViewModel
 import com.benlefevre.monendo.login.User
-import com.benlefevre.monendo.utils.COMMENT_ID
 import com.benlefevre.monendo.utils.NO_NAME
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
@@ -30,30 +29,28 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.custom_dialog_comment.view.*
 import kotlinx.android.synthetic.main.fragment_doctor_detail.*
-import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.stateViewModel
 import java.util.*
 
 class DoctorDetailFragment : Fragment(R.layout.fragment_doctor_detail), OnMapReadyCallback {
 
+    private var _binding : FragmentDoctorDetailBinding? = null
+    private val binding get() = _binding!!
     private lateinit var doctor: Doctor
     private lateinit var map: GoogleMap
     private lateinit var markerOptions: MarkerOptions
     private lateinit var user: User
     private lateinit var adapter: CommentaryAdapter
-    private val sharedPreferences: SharedPreferences by inject()
-    private lateinit var commentIdList: MutableList<String>
-    private val gson = Gson()
+
     private val commentaries = mutableListOf<Commentary>()
 
     private val viewModel: DoctorViewModel by stateViewModel()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        _binding = FragmentDoctorDetailBinding.bind(view)
         user = MainActivity.user
         initMap()
         configureRecyclerView()
@@ -66,7 +63,7 @@ class DoctorDetailFragment : Fragment(R.layout.fragment_doctor_detail), OnMapRea
 
     private fun configureRecyclerView() {
         adapter = CommentaryAdapter(commentaries)
-        fragment_doctor_detail_recyclerview.apply {
+        binding.recyclerview.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = this@DoctorDetailFragment.adapter
         }
@@ -82,19 +79,19 @@ class DoctorDetailFragment : Fragment(R.layout.fragment_doctor_detail), OnMapRea
     }
 
     private fun updateUi(doctor: Doctor) {
-        fragment_doctor_detail_name.text = doctor.name
-        fragment_doctor_detail_spec.text = doctor.spec
-        fragment_doctor_detail_address.text = doctor.address
-        fragment_doctor_detail_phone.text =
+        binding.detailName.text = doctor.name
+        binding.detailSpec.text = doctor.spec
+        binding.detailAddress.text = doctor.address
+        binding.detailPhone.text =
             if (!doctor.phone.isNullOrBlank()) {
                 "${doctor.phone}"
             } else {
-                fragment_doctor_detail_bottom_bar.menu[0].isVisible = false
+                binding.detailBottomBar.menu[0].isVisible = false
                 getString(R.string.no_phone)
             }
         doctor.typesActes?.let {
-            fragment_doctor_detail_types.apply {
-                fragment_doctor_detail_types_legend.visibility = View.VISIBLE
+            binding.detailTypes.apply {
+                binding.detailTypesLegend.visibility = View.VISIBLE
                 text = doctor.typesActes.replace(",", "\n")
                 visibility = View.VISIBLE
                 movementMethod = ScrollingMovementMethod()
@@ -119,7 +116,7 @@ class DoctorDetailFragment : Fragment(R.layout.fragment_doctor_detail), OnMapRea
         val mapFragment = SupportMapFragment.newInstance(mapOptions)
         mapFragment.getMapAsync(this)
         childFragmentManager.beginTransaction()
-            .replace(R.id.fragment_doctor_detail_map, mapFragment)
+            .replace(R.id.detail_map, mapFragment)
             .commit()
     }
 
@@ -135,9 +132,8 @@ class DoctorDetailFragment : Fragment(R.layout.fragment_doctor_detail), OnMapRea
             )
         )
         map.setOnMapClickListener {
-//            marker.showInfoWindow()
         }
-//        marker.showInfoWindow()
+
         map.setOnMarkerClickListener {
             false
         }
@@ -146,7 +142,7 @@ class DoctorDetailFragment : Fragment(R.layout.fragment_doctor_detail), OnMapRea
     }
 
     private fun configureBottomNav() {
-        fragment_doctor_detail_bottom_bar.setOnNavigationItemSelectedListener {
+        binding.detailBottomBar.setOnNavigationItemSelectedListener {
             when (it.itemId) {
                 R.id.doctor_menu_call -> {
                     startCall()
@@ -193,6 +189,7 @@ class DoctorDetailFragment : Fragment(R.layout.fragment_doctor_detail), OnMapRea
                 rating.toDouble(),
                 text,
                 user.name,
+                user.id,
                 user.photoUrl,
                 Date()
             )
@@ -200,14 +197,13 @@ class DoctorDetailFragment : Fragment(R.layout.fragment_doctor_detail), OnMapRea
     }
 
     private fun alreadyComment(): Boolean {
-        commentIdList = mutableListOf()
-        gson.fromJson<List<String>>(
-            sharedPreferences.getString(COMMENT_ID, ""),
-            object : TypeToken<List<String>>() {}.type
-        )?.let {
-            commentIdList.addAll(it)
+        var alreadyComment = false
+        commentaries.forEach {
+            if (it.authorId == user.id) {
+                alreadyComment = true
+            }
         }
-        return if (commentIdList.contains("${doctor.name}-${user.id}")) {
+        return if (alreadyComment) {
             Toast.makeText(
                 requireContext(),
                 getString(R.string.already_comment),
@@ -240,10 +236,6 @@ class DoctorDetailFragment : Fragment(R.layout.fragment_doctor_detail), OnMapRea
                         if (!userInput.text.isNullOrBlank()) {
                             createCommentary(slider.value, userInput.text.toString())
                             viewModel.getCommentaryWithId(doctor.id)
-                            commentIdList.add("${doctor.name}-${user.id}")
-                            sharedPreferences.edit()
-                                .putString(COMMENT_ID, gson.toJson(commentIdList))
-                                .apply()
                         }
                         dialog.cancel()
                     }
@@ -251,7 +243,7 @@ class DoctorDetailFragment : Fragment(R.layout.fragment_doctor_detail), OnMapRea
             } else {
                 val snackbar =
                     Snackbar.make(
-                        fragment_doctor_detail_bottom_bar,
+                        detail_bottom_bar,
                         "You have to sign in to leave a commentary",
                         Snackbar.LENGTH_LONG
                     )
@@ -261,5 +253,10 @@ class DoctorDetailFragment : Fragment(R.layout.fragment_doctor_detail), OnMapRea
                 snackbar.show()
             }
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

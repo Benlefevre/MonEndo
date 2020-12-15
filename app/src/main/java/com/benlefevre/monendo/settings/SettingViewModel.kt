@@ -26,19 +26,10 @@ class SettingViewModel(
         tempRepo.deleteAllTemperatures()
     }
 
-    fun getUserCommentaries(listId: List<String>) = viewModelScope.launch {
+    fun getUserCommentaries(userId : String) = viewModelScope.launch {
         val commentaries = mutableListOf<Commentary>()
-        listId.forEach {
-            val commentary = getCommentaryById(it)
-            commentaries.add(commentary)
-        }
+        commentaries.addAll(commentRepo.getCommentariesByUser(userId).await().toObjects(Commentary::class.java))
         commentLiveData.value = commentaries
-    }
-
-    private suspend fun getCommentaryById(commentId: String): Commentary {
-        return commentRepo.getCommentariesByUser(commentId)
-            .await()
-            .toObject(Commentary::class.java)!!
     }
 
     fun deleteCommentary(commentaryId : String) = commentRepo.deleteCommentary(commentaryId)

@@ -233,7 +233,6 @@ class DoctorFragment : Fragment(R.layout.fragment_doctor), OnMapReadyCallback,
                 setChipUnClickableWhenLoading()
             }
             is DoctorUiState.DoctorReady -> {
-                binding.progressBar.hide()
                 setChipClickableWhenReady()
                 doctors.clear()
                 doctors.addAll(state.doctors)
@@ -252,6 +251,7 @@ class DoctorFragment : Fragment(R.layout.fragment_doctor), OnMapReadyCallback,
                         ), 12f
                     )
                 )
+                binding.progressBar.hide()
             }
             is DoctorUiState.Error -> {
                 Snackbar.make(

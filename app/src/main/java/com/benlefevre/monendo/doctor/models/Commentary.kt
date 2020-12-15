@@ -9,6 +9,7 @@ data class Commentary(
     val rating: Double = -1.0,
     val userInput: String = "",
     val authorName: String = "",
+    val authorId : String = "",
     val authorPhotoUrl: String = NO_PHOTO_URL,
     val date: Date = Date()
 )

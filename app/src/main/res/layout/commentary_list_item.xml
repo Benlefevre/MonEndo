@@ -14,7 +14,7 @@
         android:layout_marginTop="4dp"
         android:layout_marginBottom="4dp"
         android:scaleType="centerCrop"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/commentary_item_user_name"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:srcCompat="@drawable/sport" />
@@ -24,12 +24,28 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp"
+        android:textAlignment="center"
+        android:textColor="@color/colorPrimary"
+        app:layout_constraintBottom_toTopOf="@+id/commentary_item_divider"
+        app:layout_constraintEnd_toStartOf="@id/commentary_item_content"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/commentary_item_user_photo"
+        tools:text="Benoit Lefevre" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/commentary_item_doctor_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
         android:layout_marginTop="4dp"
         android:layout_marginEnd="4dp"
         app:layout_constraintEnd_toStartOf="@+id/commentary_item_rating"
         app:layout_constraintStart_toEndOf="@id/commentary_item_user_photo"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="Commentary published by Benoit" />
+        android:textColor="@color/colorSecondary"
+        tools:text="Doctor name" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/commentary_item_date"
@@ -38,7 +54,7 @@
         android:layout_marginStart="4dp"
         android:layout_marginTop="4dp"
         app:layout_constraintStart_toEndOf="@id/commentary_item_user_photo"
-        app:layout_constraintTop_toBottomOf="@id/commentary_item_user_name"
+        app:layout_constraintTop_toBottomOf="@+id/commentary_item_doctor_name"
         tools:text="20/05/2020" />
 
     <com.google.android.material.textview.MaterialTextView
@@ -60,9 +76,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
-        app:layout_constraintBottom_toBottomOf="@+id/commentary_item_user_name"
+        app:layout_constraintBottom_toBottomOf="@+id/commentary_item_doctor_name"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/commentary_item_user_name" />
+        app:layout_constraintTop_toTopOf="@+id/commentary_item_doctor_name" />
 
     <androidx.appcompat.widget.AppCompatCheckBox
         android:id="@+id/commentary_item_check"
@@ -85,7 +101,6 @@
         android:background="@color/colorPrimary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/commentary_item_content" />
+        app:layout_constraintStart_toStartOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
