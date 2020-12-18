@@ -14,7 +14,7 @@ import com.benlefevre.monendo.databinding.ActivityMainBinding
 import com.benlefevre.monendo.login.LoginActivity
 import com.benlefevre.monendo.login.User
 import com.benlefevre.monendo.login.convertFirebaseUserIntoUser
-import com.benlefevre.monendo.utils.ConnectivityLivedata
+import com.benlefevre.monendo.utils.ConnectivityLiveData
 import com.benlefevre.monendo.utils.NO_MAIL
 import com.benlefevre.monendo.utils.NO_NAME
 import com.benlefevre.monendo.utils.NO_PHOTO_URL
@@ -33,7 +33,7 @@ class MainActivity : AppCompatActivity() {
     private var _binding : ActivityMainBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var connectivityLiveData: ConnectivityLivedata
+    private lateinit var connectivityLiveData: ConnectivityLiveData
 
     companion object {
         var isConnected = false
@@ -62,7 +62,7 @@ class MainActivity : AppCompatActivity() {
      * Observes the device's connectivity and store it into a boolean
      */
     private fun verifyConnectivity() {
-        connectivityLiveData = ConnectivityLivedata(this)
+        connectivityLiveData = ConnectivityLiveData(this)
         connectivityLiveData.observe(this, {
             isConnected = it
         })
