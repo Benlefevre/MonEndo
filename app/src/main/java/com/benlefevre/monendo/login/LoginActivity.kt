@@ -3,9 +3,11 @@ package com.benlefevre.monendo.login
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
 import androidx.appcompat.app.AppCompatActivity
 import com.benlefevre.monendo.MainActivity
 import com.benlefevre.monendo.R
+import com.benlefevre.monendo.databinding.ActivityLoginBinding
 import com.benlefevre.monendo.utils.RC_SIGN_IN
 import com.firebase.ui.auth.AuthMethodPickerLayout
 import com.firebase.ui.auth.AuthUI
@@ -13,15 +15,17 @@ import com.firebase.ui.auth.ErrorCodes
 import com.firebase.ui.auth.IdpResponse
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
-import kotlinx.android.synthetic.main.activity_login.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class LoginActivity : AppCompatActivity() {
 
     private val loginViewModel : LoginActivityViewModel by viewModel()
+    private var _binding : ActivityLoginBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        _binding = ActivityLoginBinding.inflate(LayoutInflater.from(this),null,false)
         if (FirebaseAuth.getInstance().currentUser != null)
             AuthUI.getInstance().signOut(this)
         createSignInIntent()
@@ -90,26 +94,54 @@ class LoginActivity : AppCompatActivity() {
             } else {
                 if (idpResponse == null)
                     Snackbar.make(
-                        login_root,
+                        binding.loginRoot,
                         getString(R.string.cancel_login),
                         Snackbar.LENGTH_SHORT
                     ).show()
                 else {
                     when (idpResponse.error?.errorCode) {
                         ErrorCodes.NO_NETWORK -> Snackbar.make(
-                            login_root,
+                            binding.loginRoot,
                             getString(R.string.network_to_login),
                             Snackbar.LENGTH_SHORT
                         ).show()
                         ErrorCodes.UNKNOWN_ERROR -> Snackbar.make(
-                            login_root,
+                            binding.loginRoot,
                             getString(R.string.unknown_error_login),
                             Snackbar.LENGTH_SHORT
                         ).show()
+                        ErrorCodes.ANONYMOUS_UPGRADE_MERGE_CONFLICT -> {
+                        }
+                        ErrorCodes.DEVELOPER_ERROR -> {
+                        }
+                        ErrorCodes.EMAIL_LINK_CROSS_DEVICE_LINKING_ERROR -> {
+                        }
+                        ErrorCodes.EMAIL_LINK_DIFFERENT_ANONYMOUS_USER_ERROR -> {
+                        }
+                        ErrorCodes.EMAIL_LINK_PROMPT_FOR_EMAIL_ERROR -> {
+                        }
+                        ErrorCodes.EMAIL_LINK_WRONG_DEVICE_ERROR -> {
+                        }
+                        ErrorCodes.EMAIL_MISMATCH_ERROR -> {
+                        }
+                        ErrorCodes.ERROR_GENERIC_IDP_RECOVERABLE_ERROR -> {
+                        }
+                        ErrorCodes.ERROR_USER_DISABLED -> {
+                        }
+                        ErrorCodes.INVALID_EMAIL_LINK_ERROR -> {
+                        }
+                        ErrorCodes.PLAY_SERVICES_UPDATE_CANCELLED -> {
+                        }
+                        ErrorCodes.PROVIDER_ERROR -> {
+                        }
                     }
                 }
             }
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
+    }
 }

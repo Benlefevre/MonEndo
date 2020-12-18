@@ -27,7 +27,6 @@ import com.benlefevre.monendo.utils.*
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import kotlinx.android.synthetic.main.fragment_treatment.*
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 import java.util.*
@@ -36,7 +35,8 @@ class TreatmentFragment : Fragment(R.layout.fragment_treatment) {
 
     private var _binding: FragmentTreatmentBinding? = null
     private val binding get() = _binding!!
-    private lateinit var dialogBinding: CustomDialogTreatmentBinding
+    private var _dialogBinding : CustomDialogTreatmentBinding? = null
+    private val dialogBinding get() = _dialogBinding!!
     private lateinit var dialog: androidx.appcompat.app.AlertDialog
     private lateinit var treatment: Treatment
 
@@ -93,7 +93,7 @@ class TreatmentFragment : Fragment(R.layout.fragment_treatment) {
                 R.layout.support_simple_spinner_dropdown_item,
                 resources.getStringArray(R.array.pill_format)
             )
-        pillsBinding.customDialogPillFormat.apply {
+        pillsBinding.pillFormat.apply {
             setText(if (numberPills == "29") "21 + 7" else numberPills)
             setAdapter(adapter)
 
@@ -260,7 +260,7 @@ class TreatmentFragment : Fragment(R.layout.fragment_treatment) {
      * value into SharedPreferences.
      */
     private fun updateMenstruationDate() {
-        mens_txt_label.isErrorEnabled = false
+        binding.mensTxtLabel.isErrorEnabled = false
         binding.mensTxt.setText(formatDateWithYear(calendar.time))
         if (!binding.mensTxt.text.isNullOrBlank()) {
             sharedPreferences.edit()
@@ -395,14 +395,14 @@ class TreatmentFragment : Fragment(R.layout.fragment_treatment) {
      * Configures all the dialog's fields behaviors
      */
     private fun setupTreatmentDialog() {
-        dialogBinding =
+        _dialogBinding =
             CustomDialogTreatmentBinding.inflate(
                 LayoutInflater.from(requireContext()),
                 null,
                 false
             )
         with(dialogBinding) {
-            customTreatmentDuration.apply {
+            treatmentDuration.apply {
                 setAdapter(
                     ArrayAdapter(
                         context,
@@ -411,7 +411,7 @@ class TreatmentFragment : Fragment(R.layout.fragment_treatment) {
                     )
                 )
             }
-            customTreatmentFormat.apply {
+            treatmentFormat.apply {
                 setAdapter(
                     ArrayAdapter(
                         context,
@@ -420,7 +420,7 @@ class TreatmentFragment : Fragment(R.layout.fragment_treatment) {
                     )
                 )
             }
-            customTreatmentMorningChip.apply {
+            morningChip.apply {
                 setOnCheckedChangeListener { view, isChecked ->
                     if (isChecked) {
                         openTreatmentTimePicker(MORNING)
@@ -430,7 +430,7 @@ class TreatmentFragment : Fragment(R.layout.fragment_treatment) {
                     }
                 }
             }
-            customTreatmentNoonChip.apply {
+            noonChip.apply {
                 setOnCheckedChangeListener { view, isChecked ->
                     if (isChecked) {
                         openTreatmentTimePicker(NOON)
@@ -440,7 +440,7 @@ class TreatmentFragment : Fragment(R.layout.fragment_treatment) {
                     }
                 }
             }
-            customTreatmentAfternoonChip.apply {
+            afternoonChip.apply {
                 setOnCheckedChangeListener { view, isChecked ->
                     if (isChecked) {
                         openTreatmentTimePicker(AFTERNOON)
@@ -450,7 +450,7 @@ class TreatmentFragment : Fragment(R.layout.fragment_treatment) {
                     }
                 }
             }
-            customTreatmentEveningChip.apply {
+            eveningChip.apply {
                 setOnCheckedChangeListener { view, isChecked ->
                     if (isChecked) {
                         openTreatmentTimePicker(EVENING)
@@ -460,10 +460,10 @@ class TreatmentFragment : Fragment(R.layout.fragment_treatment) {
                     }
                 }
             }
-            customTreatmentCancelBtn.setOnClickListener {
+            cancelBtn.setOnClickListener {
                 dialog.cancel()
             }
-            customTreatmentSaveBtn.setOnClickListener {
+            saveBtn.setOnClickListener {
                 if (verifyTreatmentInput()) {
                     setupTreatment()
                     setTreatmentNotification()
@@ -477,11 +477,11 @@ class TreatmentFragment : Fragment(R.layout.fragment_treatment) {
      * Defines a treatment with the user's input and adds it into the list
      */
     private fun setupTreatment() {
-        treatment.format = dialogBinding.customTreatmentFormat.text.toString()
-        treatment.dosage = dialogBinding.customTreatmentDosage.text.toString()
+        treatment.format = dialogBinding.treatmentFormat.text.toString()
+        treatment.dosage = dialogBinding.treatmentDosage.text.toString()
         treatment.duration =
-            calculateTreatmentDuration(dialogBinding.customTreatmentDuration.text.toString())
-        treatment.name = dialogBinding.customTreatmentName.text.toString().capitalize(Locale.ROOT)
+            calculateTreatmentDuration(dialogBinding.treatmentDuration.text.toString())
+        treatment.name = dialogBinding.treatmentName.text.toString().capitalize(Locale.ROOT)
         treatmentList.add(treatment)
         treatmentAdapter.notifyDataSetChanged()
     }
@@ -512,7 +512,7 @@ class TreatmentFragment : Fragment(R.layout.fragment_treatment) {
             putExtra(TREATMENT_FORMAT, treatment.format)
         }
 
-        if (dialogBinding.customTreatmentMorningChip.isChecked) {
+        if (dialogBinding.morningChip.isChecked) {
             context?.let {
                 createAlarmAtTheUserTime(
                     it,
@@ -522,7 +522,7 @@ class TreatmentFragment : Fragment(R.layout.fragment_treatment) {
                 )
             }
         }
-        if (dialogBinding.customTreatmentNoonChip.isChecked) {
+        if (dialogBinding.noonChip.isChecked) {
             context?.let {
                 createAlarmAtTheUserTime(
                     it,
@@ -532,7 +532,7 @@ class TreatmentFragment : Fragment(R.layout.fragment_treatment) {
                 )
             }
         }
-        if (dialogBinding.customTreatmentAfternoonChip.isChecked) {
+        if (dialogBinding.afternoonChip.isChecked) {
             context?.let {
                 createAlarmAtTheUserTime(
                     it,
@@ -542,7 +542,7 @@ class TreatmentFragment : Fragment(R.layout.fragment_treatment) {
                 )
             }
         }
-        if (dialogBinding.customTreatmentEveningChip.isChecked)
+        if (dialogBinding.eveningChip.isChecked)
             context?.let {
                 createAlarmAtTheUserTime(
                     it,
@@ -568,12 +568,12 @@ class TreatmentFragment : Fragment(R.layout.fragment_treatment) {
      * Verifies if the format field is correctly filled and configures the field's error label
      */
     private fun verifyTreatmentFormat(): Boolean {
-        return if (dialogBinding.customTreatmentFormat.text.isNullOrBlank()) {
-            dialogBinding.customTreatmentFormatLabel.error =
+        return if (dialogBinding.treatmentFormat.text.isNullOrBlank()) {
+            dialogBinding.treatmentFormatLabel.error =
                 getString(R.string.enter_treatment_format)
             false
         } else {
-            dialogBinding.customTreatmentFormatLabel.isErrorEnabled = false
+            dialogBinding.treatmentFormatLabel.isErrorEnabled = false
             true
         }
     }
@@ -582,12 +582,12 @@ class TreatmentFragment : Fragment(R.layout.fragment_treatment) {
      * Verifies if the dosage field is correctly filled and configures the field's error label
      */
     private fun verifyTreatmentDosage(): Boolean {
-        return if (dialogBinding.customTreatmentDosage.text.isNullOrBlank()) {
-            dialogBinding.customTreatmentDosageLabel.error =
+        return if (dialogBinding.treatmentDosage.text.isNullOrBlank()) {
+            dialogBinding.treatmentDosageLabel.error =
                 getString(R.string.enter_treatment_dosage)
             false
         } else {
-            dialogBinding.customTreatmentDosageLabel.isErrorEnabled = false
+            dialogBinding.treatmentDosageLabel.isErrorEnabled = false
             true
         }
     }
@@ -596,12 +596,12 @@ class TreatmentFragment : Fragment(R.layout.fragment_treatment) {
      * Verifies if the duration field is correctly filled and configures the field's error label
      */
     private fun verifyTreatmentDuration(): Boolean {
-        return if (dialogBinding.customTreatmentDuration.text.isNullOrBlank()) {
-            dialogBinding.customTreatmentDurationLabel.error =
+        return if (dialogBinding.treatmentDuration.text.isNullOrBlank()) {
+            dialogBinding.treatmentDurationLabel.error =
                 getString(R.string.enter_treatment_duration)
             false
         } else {
-            dialogBinding.customTreatmentDurationLabel.isErrorEnabled = false
+            dialogBinding.treatmentDurationLabel.isErrorEnabled = false
             true
         }
     }
@@ -610,12 +610,12 @@ class TreatmentFragment : Fragment(R.layout.fragment_treatment) {
      * Verifies if the name field is correctly filled and configures the field's error label
      */
     private fun verifyTreatmentName(): Boolean {
-        return if (dialogBinding.customTreatmentName.text.isNullOrBlank()) {
-            dialogBinding.customTreatmentNameLabel.error =
+        return if (dialogBinding.treatmentName.text.isNullOrBlank()) {
+            dialogBinding.treatmentNameLabel.error =
                 getString(R.string.enter_treatment_name)
             false
         } else {
-            dialogBinding.customTreatmentNameLabel.isErrorEnabled = false
+            dialogBinding.treatmentNameLabel.isErrorEnabled = false
             true
         }
     }
@@ -641,10 +641,10 @@ class TreatmentFragment : Fragment(R.layout.fragment_treatment) {
                     getString(R.string.cancel)
                 ) { dialog, _ ->
                     when (hour) {
-                        MORNING -> dialogBinding.customTreatmentMorningChip.isChecked = false
-                        NOON -> dialogBinding.customTreatmentNoonChip.isChecked = false
-                        AFTERNOON -> dialogBinding.customTreatmentAfternoonChip.isChecked = false
-                        EVENING -> dialogBinding.customTreatmentEveningChip.isChecked = false
+                        MORNING -> dialogBinding.morningChip.isChecked = false
+                        NOON -> dialogBinding.noonChip.isChecked = false
+                        AFTERNOON -> dialogBinding.afternoonChip.isChecked = false
+                        EVENING -> dialogBinding.eveningChip.isChecked = false
                     }
                     dialog.cancel()
                 }
@@ -660,19 +660,19 @@ class TreatmentFragment : Fragment(R.layout.fragment_treatment) {
         when (hour) {
             MORNING -> {
                 treatment.morning = formatTime(calendar.time)
-                dialogBinding.customTreatmentMorningChip.text = treatment.morning
+                dialogBinding.morningChip.text = treatment.morning
             }
             NOON -> {
                 treatment.noon = formatTime(calendar.time)
-                dialogBinding.customTreatmentNoonChip.text = treatment.noon
+                dialogBinding.noonChip.text = treatment.noon
             }
             AFTERNOON -> {
                 treatment.afternoon = formatTime(calendar.time)
-                dialogBinding.customTreatmentAfternoonChip.text = treatment.afternoon
+                dialogBinding.afternoonChip.text = treatment.afternoon
             }
             EVENING -> {
                 treatment.evening = formatTime(calendar.time)
-                dialogBinding.customTreatmentEveningChip.text = treatment.evening
+                dialogBinding.eveningChip.text = treatment.evening
             }
         }
     }
@@ -692,12 +692,12 @@ class TreatmentFragment : Fragment(R.layout.fragment_treatment) {
     }
 
     private fun isStartDateEntered(): Boolean {
-        return if (mens_txt.text.isNullOrBlank()) {
-            mens_txt_label.error =
+        return if (binding.mensTxt.text.isNullOrBlank()) {
+            binding.mensTxtLabel.error =
                 getString(R.string.start_date_pill)
             false
         } else {
-            mens_txt_label.isErrorEnabled = false
+            binding.mensTxtLabel.isErrorEnabled = false
             true
         }
     }
@@ -721,5 +721,6 @@ class TreatmentFragment : Fragment(R.layout.fragment_treatment) {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        _dialogBinding = null
     }
 }

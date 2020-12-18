@@ -9,6 +9,7 @@ import com.benlefevre.monendo.R
 import com.benlefevre.monendo.dashboard.models.Mood
 import com.benlefevre.monendo.dashboard.models.PainWithRelations
 import com.benlefevre.monendo.dashboard.viewmodels.DashboardViewModel
+import com.benlefevre.monendo.databinding.FragmentMoodDetailBinding
 import com.benlefevre.monendo.utils.formatDateWithoutYear
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.components.YAxis
@@ -18,14 +19,14 @@ import com.github.mikephil.charting.formatter.PercentFormatter
 import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
-import kotlinx.android.synthetic.main.chipgroup_duration.*
-import kotlinx.android.synthetic.main.fragment_mood_detail.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MoodDetailFragment : Fragment(R.layout.fragment_mood_detail) {
 
     private val viewModel: DashboardViewModel by viewModel()
 
+    private var _binding : FragmentMoodDetailBinding? = null
+    private val binding get() = _binding!!
     private val painRelations = mutableListOf<PainWithRelations>()
     private val moods = mutableListOf<Mood>()
     private val dates = mutableListOf<String>()
@@ -33,6 +34,7 @@ class MoodDetailFragment : Fragment(R.layout.fragment_mood_detail) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        _binding = FragmentMoodDetailBinding.bind(view)
         colorsChart = resources.getIntArray(R.array.chartColors)
         viewModel.pains.observe(viewLifecycleOwner, configuresObserver())
         setupChipListener()
@@ -43,7 +45,7 @@ class MoodDetailFragment : Fragment(R.layout.fragment_mood_detail) {
      * Configures charts and the ClickListener's behavior
      */
     private fun setupCharts() {
-        mood_details_evo_chart.apply {
+        binding.moodDetailsEvoChart.apply {
             setNoDataText(getString(R.string.click_on_a_pie_chart_s_value_to_see_the_mood_s_evolution_in_time))
             setNoDataTextColor(getColor(context, R.color.colorSecondary))
             setVisibleXRange(7f, 15f)
@@ -76,7 +78,7 @@ class MoodDetailFragment : Fragment(R.layout.fragment_mood_detail) {
             }
         }
 
-        mood_details_rep_chart.apply {
+        binding.moodDetailsRepChart.apply {
             setNoDataText(getString(R.string.no_data_period))
             setNoDataTextColor(getColor(context, R.color.colorSecondary))
             setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
@@ -106,31 +108,31 @@ class MoodDetailFragment : Fragment(R.layout.fragment_mood_detail) {
      * to fetch user's input in locale DB.
      */
     private fun setupChipListener() {
-        chip_week.setOnCheckedChangeListener { _, isChecked ->
+        binding.chipGroup.chipWeek.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 viewModel.getPainsRelations7days()
 
             }
         }
-        chip_month.setOnCheckedChangeListener { _, isChecked ->
+        binding.chipGroup.chipMonth.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 viewModel.getPainsRelations30days()
 
             }
         }
-        chip_6months.setOnCheckedChangeListener { _, isChecked ->
+        binding.chipGroup.chip6months.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 viewModel.getPainsRelations180days()
 
             }
         }
-        chip_year.setOnCheckedChangeListener { _, isChecked ->
+        binding.chipGroup.chipYear.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 viewModel.getPainsRelations360days()
 
             }
         }
-        chip_week.isChecked = true
+        binding.chipGroup.chipWeek.isChecked = true
     }
 
     /**
@@ -151,8 +153,8 @@ class MoodDetailFragment : Fragment(R.layout.fragment_mood_detail) {
      * Clears the highlight and data values for each chart
      */
     private fun clearCharts() {
-        mood_details_rep_chart.highlightValue(null)
-        mood_details_evo_chart.apply {
+        binding.moodDetailsRepChart.highlightValue(null)
+        binding.moodDetailsEvoChart.apply {
             data = null
         }
     }
@@ -200,7 +202,7 @@ class MoodDetailFragment : Fragment(R.layout.fragment_mood_detail) {
             colors = pieColors
         }
 
-        mood_details_rep_chart.apply {
+        binding.moodDetailsRepChart.apply {
             data = PieData(pieDataSet)
             animateX(500, Easing.EaseOutCirc)
         }
@@ -243,7 +245,7 @@ class MoodDetailFragment : Fragment(R.layout.fragment_mood_detail) {
             color = setEntriesColors(moodName)
         }
 
-        mood_details_evo_chart.apply {
+        binding.moodDetailsEvoChart.apply {
             xAxis.valueFormatter = IndexAxisValueFormatter(dates)
             data = CombinedData().apply {
                 setData(LineData(painDataSet)).apply {
@@ -314,7 +316,7 @@ class MoodDetailFragment : Fragment(R.layout.fragment_mood_detail) {
             dataSetList.add(dataSet)
         }
 
-        mood_details_evo_chart.apply {
+        binding.moodDetailsEvoChart.apply {
             data = CombinedData().apply {
                 xAxis.valueFormatter = IndexAxisValueFormatter(dates)
                 setData(LineData(painDataSet)).apply {
@@ -362,4 +364,8 @@ class MoodDetailFragment : Fragment(R.layout.fragment_mood_detail) {
         return arrayOf(sad, sick, irritated, happy, veryHappy)
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 }

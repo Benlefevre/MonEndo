@@ -8,17 +8,17 @@
     tools:context=".dashboard.fragments.DashboardFragment">
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/dashboard_fab"
+        android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
         android:src="@drawable/ic_add_24dp"
-        app:layout_anchor="@id/dashboard_scrollview"
+        app:layout_anchor="@id/scrollview"
         app:layout_anchorGravity="bottom|end" />
 
     <androidx.core.widget.NestedScrollView
-        android:id="@+id/dashboard_scrollview"
+        android:id="@+id/scrollview"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -29,7 +29,7 @@
 
             <!--________________________________Begin pain chart_________________________________-->
             <androidx.cardview.widget.CardView
-                android:id="@+id/dashboard_card_pain"
+                android:id="@+id/card_pain"
                 style="@style/CardViewTheme"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -40,13 +40,13 @@
                     android:orientation="vertical">
 
                     <com.github.mikephil.charting.charts.LineChart
-                        android:id="@+id/dashboard_chart_pain"
+                        android:id="@+id/chart_pain"
                         android:layout_width="match_parent"
                         android:layout_height="200dp"
                         android:layout_margin="8dp" />
 
                     <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/dashboard_chart_pain_legend"
+                        android:id="@+id/chart_pain_legend"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
@@ -61,7 +61,7 @@
 
             <!--________________________________Begin symptoms chart_____________________________-->
             <androidx.cardview.widget.CardView
-                android:id="@+id/dashboard_card_symptom"
+                android:id="@+id/card_symptom"
                 style="@style/CardViewTheme"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -72,13 +72,13 @@
                     android:orientation="vertical">
 
                     <com.github.mikephil.charting.charts.BarChart
-                        android:id="@+id/dashboard_chart_symptom"
+                        android:id="@+id/chart_symptom"
                         android:layout_width="match_parent"
                         android:layout_height="200dp"
                         android:layout_margin="8dp" />
 
                     <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/dashboard_chart_symptom_legend"
+                        android:id="@+id/chart_symptom_legend"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
@@ -93,7 +93,7 @@
 
             <!--________________________________Begin activities chart___________________________-->
             <androidx.cardview.widget.CardView
-                android:id="@+id/dashboard_card_activities"
+                android:id="@+id/card_activities"
                 style="@style/CardViewTheme"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -104,13 +104,13 @@
                     android:orientation="vertical">
 
                     <com.github.mikephil.charting.charts.BarChart
-                        android:id="@+id/dashboard_chart_activities"
+                        android:id="@+id/chart_activities"
                         android:layout_width="match_parent"
                         android:layout_height="200dp"
                         android:layout_margin="8dp" />
 
                     <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/dashboard_chart_activities_legend"
+                        android:id="@+id/chart_activities_legend"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
@@ -125,7 +125,7 @@
 
             <!--________________________________Begin sleep chart________________________________-->
             <androidx.cardview.widget.CardView
-                android:id="@+id/dashboard_card_sleep"
+                android:id="@+id/card_sleep"
                 style="@style/CardViewTheme"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -136,13 +136,13 @@
                     android:orientation="vertical">
 
                     <com.github.mikephil.charting.charts.LineChart
-                        android:id="@+id/dashboard_chart_sleep"
+                        android:id="@+id/chart_sleep"
                         android:layout_width="match_parent"
                         android:layout_height="200dp"
                         android:layout_margin="8dp" />
 
                     <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/dashboard_chart_sleep_legend"
+                        android:id="@+id/chart_sleep_legend"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
@@ -157,7 +157,7 @@
 
             <!--________________________________Begin mood chart_________________________________-->
             <androidx.cardview.widget.CardView
-                android:id="@+id/dashboard_card_mood"
+                android:id="@+id/card_mood"
                 style="@style/CardViewTheme"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -169,13 +169,13 @@
                     android:orientation="vertical">
 
                     <com.github.mikephil.charting.charts.PieChart
-                        android:id="@+id/dashboard_chart_mood"
+                        android:id="@+id/chart_mood"
                         android:layout_width="match_parent"
                         android:layout_height="200dp"
                         android:layout_margin="8dp" />
 
                     <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/dashboard_chart_mood_legend"
+                        android:id="@+id/chart_mood_legend"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"

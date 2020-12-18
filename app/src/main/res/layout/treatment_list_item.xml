@@ -6,7 +6,7 @@
     android:layout_height="wrap_content">
 
     <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/treatment_item_name"
+        android:id="@+id/item_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
@@ -18,7 +18,7 @@
         tools:text="Treatment Name" />
 
     <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/treatment_item_duration_legend"
+        android:id="@+id/item_duration_legend"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
@@ -26,20 +26,20 @@
         android:textColor="@color/colorPrimary"
         app:layout_constraintEnd_toStartOf="@id/guideline2"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/treatment_item_name" />
+        app:layout_constraintTop_toBottomOf="@id/item_name" />
 
     <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/treatment_duration_time"
+        android:id="@+id/duration_time"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
-        app:layout_constraintBottom_toBottomOf="@+id/treatment_item_duration_legend"
-        app:layout_constraintEnd_toStartOf="@+id/treatment_item_delete_btn"
+        app:layout_constraintBottom_toBottomOf="@+id/item_duration_legend"
+        app:layout_constraintEnd_toStartOf="@+id/item_delete_btn"
         app:layout_constraintStart_toEndOf="@id/guideline2"
-        app:layout_constraintTop_toTopOf="@+id/treatment_item_duration_legend" />
+        app:layout_constraintTop_toTopOf="@+id/item_duration_legend" />
 
     <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/treatment_item_hour_legend"
+        android:id="@+id/item_hour_legend"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
@@ -47,20 +47,20 @@
         android:textColor="@color/colorPrimary"
         app:layout_constraintEnd_toStartOf="@id/guideline2"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/treatment_item_duration_legend" />
+        app:layout_constraintTop_toBottomOf="@id/item_duration_legend" />
 
     <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/treatment_item_hour_value"
+        android:id="@+id/item_hour_value"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
-        app:layout_constraintBottom_toBottomOf="@+id/treatment_item_hour_legend"
+        app:layout_constraintBottom_toBottomOf="@+id/item_hour_legend"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/guideline2"
-        app:layout_constraintTop_toTopOf="@+id/treatment_item_hour_legend" />
+        app:layout_constraintTop_toTopOf="@+id/item_hour_legend" />
 
     <ImageButton
-        android:id="@+id/treatment_item_delete_btn"
+        android:id="@+id/item_delete_btn"
         android:layout_width="25dp"
         android:layout_height="25dp"
         android:layout_marginEnd="16dp"
@@ -85,6 +85,6 @@
         android:layout_height="1dp"
         android:layout_marginTop="8dp"
         android:background="?android:attr/listDivider"
-        app:layout_constraintTop_toBottomOf="@id/treatment_item_hour_legend"
+        app:layout_constraintTop_toBottomOf="@id/item_hour_legend"
         app:layout_constraintBottom_toBottomOf="parent"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

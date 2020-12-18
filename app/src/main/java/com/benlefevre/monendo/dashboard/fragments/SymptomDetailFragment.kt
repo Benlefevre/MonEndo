@@ -9,6 +9,7 @@ import com.benlefevre.monendo.R
 import com.benlefevre.monendo.dashboard.models.PainWithRelations
 import com.benlefevre.monendo.dashboard.models.Symptom
 import com.benlefevre.monendo.dashboard.viewmodels.DashboardViewModel
+import com.benlefevre.monendo.databinding.FragmentSymptomDetailBinding
 import com.benlefevre.monendo.utils.formatDateWithoutYear
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.components.YAxis
@@ -18,8 +19,6 @@ import com.github.mikephil.charting.formatter.PercentFormatter
 import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.interfaces.datasets.IScatterDataSet
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
-import kotlinx.android.synthetic.main.chipgroup_duration.*
-import kotlinx.android.synthetic.main.fragment_symptom_detail.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
@@ -27,6 +26,8 @@ class SymptomDetailFragment : Fragment(R.layout.fragment_symptom_detail) {
 
     private val viewModel: DashboardViewModel by viewModel()
 
+    private var _binding : FragmentSymptomDetailBinding? = null
+    private val binding get() = _binding!!
     private lateinit var colorsChart: IntArray
     private val painRelations = mutableListOf<PainWithRelations>()
     private val symptoms = mutableListOf<Symptom>()
@@ -34,6 +35,7 @@ class SymptomDetailFragment : Fragment(R.layout.fragment_symptom_detail) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        _binding = FragmentSymptomDetailBinding.bind(view)
         colorsChart = resources.getIntArray(R.array.chartColors)
         viewModel.pains.observe(viewLifecycleOwner, configuresObserver())
         setupEmptyChartsMessages()
@@ -42,16 +44,16 @@ class SymptomDetailFragment : Fragment(R.layout.fragment_symptom_detail) {
     }
 
     private fun setupEmptyChartsMessages() {
-        symptom_details_evo_chart.apply {
+        binding.symptomDetailsEvoChart.apply {
             setNoDataText(getString(R.string.no_data_period))
             setNoDataTextColor(getColor(context, R.color.colorSecondary))
         }
-        symptom_details_rep_chart.apply {
+        binding.symptomDetailsRepChart.apply {
             data = null
             setNoDataText(context.getString(R.string.no_data_period))
             setNoDataTextColor(getColor(context, R.color.colorSecondary))
         }
-        symptom_filter_legend.visibility = View.GONE
+        binding.symptomFilterLegend.visibility = View.GONE
     }
 
     /**
@@ -59,7 +61,7 @@ class SymptomDetailFragment : Fragment(R.layout.fragment_symptom_detail) {
      * behavior.
      */
     private fun setupCharts() {
-        symptom_details_rep_chart.apply {
+        binding.symptomDetailsRepChart.apply {
             legend.apply {
                 textColor = getColor(context, R.color.colorPrimary)
                 isWordWrapEnabled = true
@@ -83,7 +85,7 @@ class SymptomDetailFragment : Fragment(R.layout.fragment_symptom_detail) {
             legend.isWordWrapEnabled = true
         }
 
-        symptom_details_evo_chart.apply {
+        binding.symptomDetailsEvoChart.apply {
             legend.apply {
                 textColor = getColor(context, R.color.colorPrimary)
                 isWordWrapEnabled = true
@@ -112,27 +114,27 @@ class SymptomDetailFragment : Fragment(R.layout.fragment_symptom_detail) {
      * to fetch user's input in locale DB.
      */
     private fun setupChipListener() {
-        chip_week.setOnCheckedChangeListener { _, isChecked ->
+        binding.chipGroup.chipWeek.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 viewModel.getPainsRelations7days()
             }
         }
-        chip_month.setOnCheckedChangeListener { _, isChecked ->
+        binding.chipGroup.chipMonth.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 viewModel.getPainsRelations30days()
             }
         }
-        chip_6months.setOnCheckedChangeListener { _, isChecked ->
+        binding.chipGroup.chip6months.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 viewModel.getPainsRelations180days()
             }
         }
-        chip_year.setOnCheckedChangeListener { _, isChecked ->
+        binding.chipGroup.chipYear.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 viewModel.getPainsRelations360days()
             }
         }
-        chip_week.isChecked = true
+        binding.chipGroup.chipWeek.isChecked = true
     }
 
     private fun configuresObserver(): Observer<List<PainWithRelations>> {
@@ -142,7 +144,7 @@ class SymptomDetailFragment : Fragment(R.layout.fragment_symptom_detail) {
                 setupList(it)
                 setupRepartitionChart()
                 displayAllSymptomsDetails()
-                symptom_filter_legend.visibility = View.VISIBLE
+                binding.symptomFilterLegend.visibility = View.VISIBLE
             } else {
                 setupEmptyChartsMessages()
             }
@@ -171,10 +173,10 @@ class SymptomDetailFragment : Fragment(R.layout.fragment_symptom_detail) {
      * Clears the highlight and data values for each chart
      */
     private fun clearDetailChart() {
-        symptom_details_evo_chart.apply {
+        binding.symptomDetailsEvoChart.apply {
             data = null
         }
-        symptom_details_rep_chart.apply {
+        binding.symptomDetailsRepChart.apply {
             highlightValues(null)
         }
     }
@@ -203,7 +205,7 @@ class SymptomDetailFragment : Fragment(R.layout.fragment_symptom_detail) {
             valueTextSize = 10f
         }
 
-        symptom_details_rep_chart.apply {
+        binding.symptomDetailsRepChart.apply {
             data = PieData(pieDataSet)
             animateX(500, Easing.EaseOutCirc)
         }
@@ -367,7 +369,7 @@ class SymptomDetailFragment : Fragment(R.layout.fragment_symptom_detail) {
             dataSetList.add(dataSet)
         }
 
-        symptom_details_evo_chart.apply {
+        binding.symptomDetailsEvoChart.apply {
             xAxis.valueFormatter = IndexAxisValueFormatter(dates)
             data = CombinedData().apply {
                 setData(ScatterData(dataSetList))
@@ -415,7 +417,7 @@ class SymptomDetailFragment : Fragment(R.layout.fragment_symptom_detail) {
             color = setChartEntriesColors(name)
         }
 
-        symptom_details_evo_chart.apply {
+        binding.symptomDetailsEvoChart.apply {
             data = CombinedData().apply {
                 setData(LineData(painDataSet)).apply {
                     isHighlightEnabled = false
@@ -447,5 +449,10 @@ class SymptomDetailFragment : Fragment(R.layout.fragment_symptom_detail) {
             getString(R.string.tired) -> colorsChart[10]
             else -> getColor(requireContext(), R.color.colorSecondary)
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

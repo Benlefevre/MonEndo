@@ -7,8 +7,8 @@ import android.view.View
 import androidx.core.content.ContextCompat.getColor
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import com.benlefevre.monendo.R
+import com.benlefevre.monendo.databinding.FragmentFertilityBinding
 import com.benlefevre.monendo.fertility.FertilityViewModel
 import com.benlefevre.monendo.fertility.models.Temperature
 import com.benlefevre.monendo.utils.*
@@ -19,7 +19,6 @@ import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputEditText
-import kotlinx.android.synthetic.main.fragment_fertility.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
@@ -28,12 +27,14 @@ import java.util.*
 class FertilityFragment : Fragment(R.layout.fragment_fertility) {
 
     private val sharedPreferences: SharedPreferences by inject()
+    private var _binding : FragmentFertilityBinding? = null
+    private val binding get() = _binding!!
     private lateinit var mensDay: TextInputEditText
     private lateinit var durationMens: TextInputEditText
-    private val mensDates: MutableList<String> by lazy { mutableListOf<String>() }
-    private val ovulDays: MutableList<String> by lazy { mutableListOf<String>() }
-    private val fertiPeriods: MutableList<String> by lazy { mutableListOf<String>() }
-    private val temperatures: MutableList<Temperature> by lazy { mutableListOf<Temperature>() }
+    private val mensDates: MutableList<String> by lazy { mutableListOf() }
+    private val ovulDays: MutableList<String> by lazy { mutableListOf() }
+    private val fertiPeriods: MutableList<String> by lazy { mutableListOf() }
+    private val temperatures: MutableList<Temperature> by lazy { mutableListOf() }
     var calendar: Calendar = Calendar.getInstance()
     private var monthLabel: Int = -1
 
@@ -41,6 +42,7 @@ class FertilityFragment : Fragment(R.layout.fragment_fertility) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        _binding = FragmentFertilityBinding.bind(view)
         initViews()
         getUserInput()
         getUserTemperature()
@@ -49,8 +51,8 @@ class FertilityFragment : Fragment(R.layout.fragment_fertility) {
     }
 
     private fun initViews() {
-        mensDay = fertility_day_mens_txt
-        durationMens = fertility_duration_mens_txt
+        mensDay = binding.fertilityDayMensTxt
+        durationMens = binding.fertilityDurationMensTxt
     }
 
     /**
@@ -65,7 +67,7 @@ class FertilityFragment : Fragment(R.layout.fragment_fertility) {
             durationMens.isFocusableInTouchMode = true
         }
         if (inputs[1].isNotBlank()){
-            durationMens.setText(inputs[1])
+            binding.fertilityDurationMensTxt.setText(inputs[1])
         }
     }
 
@@ -82,7 +84,7 @@ class FertilityFragment : Fragment(R.layout.fragment_fertility) {
                 }
                 firstDay = (firstDay + duration) - calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
             }
-            fertility_calendar.drawCycleInCalendar(firstDay, duration)
+            binding.fertilityCalendar.drawCycleInCalendar(firstDay, duration)
             calculateAndSaveNextMens()
         }
     }
@@ -166,7 +168,7 @@ class FertilityFragment : Fragment(R.layout.fragment_fertility) {
                 .putString(CURRENT_MENS, mensDay.text.toString())
                 .apply()
             durationMens.isFocusableInTouchMode = true
-            fertility_day_mens_label.isErrorEnabled = false
+            binding.fertilityDayMensLabel.isErrorEnabled = false
         }
     }
 
@@ -210,7 +212,7 @@ class FertilityFragment : Fragment(R.layout.fragment_fertility) {
      * Fetches all the temperatures saved in Database to display them into a chart.
      */
     private fun getUserTemperature() {
-        viewModel.getAllTemperatures().observe(viewLifecycleOwner, Observer {
+        viewModel.getAllTemperatures().observe(viewLifecycleOwner, {
             temperatures.clear()
             temperatures.addAll(it)
             initTempChart()
@@ -239,7 +241,7 @@ class FertilityFragment : Fragment(R.layout.fragment_fertility) {
             setDrawValues(false)
         }
 
-        fertility_temp_chart.apply {
+        binding.fertilityTempChart.apply {
             description = null
             setDrawBorders(false)
             xAxis.granularity = 1f
@@ -263,15 +265,15 @@ class FertilityFragment : Fragment(R.layout.fragment_fertility) {
             setOnClickListener {
                 if (mensDay.text.isNullOrBlank()) {
                     it.clearFocus()
-                    fertility_day_mens_label.error =
+                    binding.fertilityDayMensLabel.error =
                         "Please enter the first day of your last menstruation"
                 } else {
-                    fertility_day_mens_label.isErrorEnabled = false
+                    binding.fertilityDayMensLabel.isErrorEnabled = false
                 }
             }
             addTextChangedListener {
                 if (it.isNullOrBlank()) {
-                    fertility_calendar.clearAllCalendarDays()
+                    binding.fertilityCalendar.clearAllCalendarDays()
                 } else {
                     if (it.toString().toInt() >= 10) {
                         sharedPreferences.edit()
@@ -283,29 +285,34 @@ class FertilityFragment : Fragment(R.layout.fragment_fertility) {
             }
         }
 
-        fertility_chip_mens.setOnClickListener {
+        binding.fertilityChipMens.setOnClickListener {
             if (!mensDates.isNullOrEmpty())
                 openCycleDialog(mensDates, MENS)
         }
 
-        fertility_chip_ovul.setOnClickListener {
+        binding.fertilityChipOvul.setOnClickListener {
             if (!ovulDays.isNullOrEmpty())
                 openCycleDialog(ovulDays, OVUL)
         }
 
-        fertility_chip_ferti.setOnClickListener {
+        binding.fertilityChipFerti.setOnClickListener {
             if (!fertiPeriods.isNullOrEmpty())
                 openCycleDialog(fertiPeriods, FERTI)
         }
 
-        fertility_temp_save_btn.setOnClickListener {
+        binding.fertilityTempSaveBtn.setOnClickListener {
             viewModel.createTemp(
                 Temperature(
-                    fertility_temp_slider.value,
+                    binding.fertilityTempSlider.value,
                     Date()
                 )
             )
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
 }

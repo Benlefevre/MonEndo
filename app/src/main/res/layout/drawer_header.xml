@@ -6,31 +6,31 @@
     android:background="@color/colorPrimary">
 
     <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/drawer_user_photo"
+        android:id="@+id/user_photo"
         android:layout_width="75dp"
         android:layout_height="75dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         android:scaleType="centerInside"
-        app:layout_constraintBottom_toTopOf="@+id/drawer_user_name"
+        app:layout_constraintBottom_toTopOf="@+id/user_name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/drawer_user_name"
+        android:id="@+id/user_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:textColor="@android:color/white"
-        app:layout_constraintBottom_toTopOf="@+id/drawer_user_mail"
+        app:layout_constraintBottom_toTopOf="@+id/user_mail"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/drawer_user_mail"
+        android:id="@+id/user_mail"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"

@@ -16,6 +16,7 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.benlefevre.monendo.MainActivity
 import com.benlefevre.monendo.R
+import com.benlefevre.monendo.databinding.CustomDialogCommentBinding
 import com.benlefevre.monendo.databinding.FragmentDoctorDetailBinding
 import com.benlefevre.monendo.doctor.adapter.CommentaryAdapter
 import com.benlefevre.monendo.doctor.models.Commentary
@@ -29,8 +30,6 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.android.synthetic.main.custom_dialog_comment.view.*
-import kotlinx.android.synthetic.main.fragment_doctor_detail.*
 import org.koin.androidx.viewmodel.ext.android.stateViewModel
 import java.util.*
 
@@ -221,14 +220,12 @@ class DoctorDetailFragment : Fragment(R.layout.fragment_doctor_detail), OnMapRea
             return
         } else {
             if (user.name != NO_NAME) {
-                val customDialog =
-                    LayoutInflater.from(requireContext())
-                        .inflate(R.layout.custom_dialog_comment, null)
-                val slider = customDialog.custom_dialog_comment_slider
-                val userInput = customDialog.custom_dialog_comment_text
+                val dialogBinding = CustomDialogCommentBinding.inflate(LayoutInflater.from(context),null,false)
+                val slider = dialogBinding.commentSlider
+                val userInput = dialogBinding.commentText
 
                 MaterialAlertDialogBuilder(requireContext())
-                    .setView(customDialog)
+                    .setView(dialogBinding.root)
                     .setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
                         dialog.cancel()
                     }
@@ -243,7 +240,7 @@ class DoctorDetailFragment : Fragment(R.layout.fragment_doctor_detail), OnMapRea
             } else {
                 val snackbar =
                     Snackbar.make(
-                        detail_bottom_bar,
+                        binding.detailBottomBar,
                         "You have to sign in to leave a commentary",
                         Snackbar.LENGTH_LONG
                     )

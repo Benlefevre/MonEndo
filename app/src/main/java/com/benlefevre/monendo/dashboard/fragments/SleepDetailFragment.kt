@@ -8,6 +8,7 @@ import androidx.lifecycle.Observer
 import com.benlefevre.monendo.R
 import com.benlefevre.monendo.dashboard.models.PainWithRelations
 import com.benlefevre.monendo.dashboard.viewmodels.DashboardViewModel
+import com.benlefevre.monendo.databinding.FragmentSleepDetailBinding
 import com.benlefevre.monendo.utils.formatDateWithoutYear
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.components.YAxis
@@ -16,26 +17,27 @@ import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
-import kotlinx.android.synthetic.main.chipgroup_duration.*
-import kotlinx.android.synthetic.main.fragment_sleep_detail.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SleepDetailFragment : Fragment(R.layout.fragment_sleep_detail) {
 
     private val viewModel : DashboardViewModel by viewModel()
 
+    private var _binding : FragmentSleepDetailBinding? = null
+    private val binding get() = _binding!!
     private val painRelations = mutableListOf<PainWithRelations>()
     private val dates = mutableListOf<String>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        _binding = FragmentSleepDetailBinding.bind(view)
         setupCharts()
         viewModel.pains.observe(viewLifecycleOwner, configuresObserver())
         setupChipListener()
     }
 
     private fun setupCharts() {
-        sleep_details_chart.apply {
+        binding.sleepDetailsChart.apply {
             setNoDataText(getString(R.string.no_data_period))
             setNoDataTextColor(getColor(context, R.color.colorSecondary))
             legend.apply {
@@ -64,27 +66,27 @@ class SleepDetailFragment : Fragment(R.layout.fragment_sleep_detail) {
      * to fetch user's input in locale DB.
      */
     private fun setupChipListener() {
-        chip_week.setOnCheckedChangeListener { _, isChecked ->
+        binding.chipGroup.chipWeek.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 viewModel.getPainsRelations7days()
             }
         }
-        chip_month.setOnCheckedChangeListener { _, isChecked ->
+        binding.chipGroup.chipMonth.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 viewModel.getPainsRelations30days()
             }
         }
-        chip_6months.setOnCheckedChangeListener { _, isChecked ->
+        binding.chipGroup.chip6months.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 viewModel.getPainsRelations180days()
             }
         }
-        chip_year.setOnCheckedChangeListener { _, isChecked ->
+        binding.chipGroup.chipYear.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 viewModel.getPainsRelations360days()
             }
         }
-        chip_week.isChecked = true
+        binding.chipGroup.chipWeek.isChecked = true
     }
 
     /**
@@ -114,7 +116,7 @@ class SleepDetailFragment : Fragment(R.layout.fragment_sleep_detail) {
     }
 
     private fun clearChart(){
-        sleep_details_chart.apply {
+        binding.sleepDetailsChart.apply {
             data = null
         }
     }
@@ -158,7 +160,7 @@ class SleepDetailFragment : Fragment(R.layout.fragment_sleep_detail) {
         listEntries.add(painDataSet)
         listEntries.add(sleepDataSet)
 
-        sleep_details_chart.apply {
+        binding.sleepDetailsChart.apply {
             xAxis.valueFormatter = IndexAxisValueFormatter(dates)
             data = LineData(listEntries)
             fitScreen()
@@ -166,5 +168,10 @@ class SleepDetailFragment : Fragment(R.layout.fragment_sleep_detail) {
             moveViewToAnimated(data.xMax, 5F, YAxis.AxisDependency.RIGHT, 2000)
             animateX(1000, Easing.EaseOutBack)
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

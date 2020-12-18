@@ -1,12 +1,8 @@
 package com.benlefevre.monendo.pain
 
-
 import android.app.DatePickerDialog
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.view.View
+import android.view.*
 import android.widget.ArrayAdapter
 import androidx.core.content.ContextCompat.getColor
 import androidx.fragment.app.Fragment
@@ -17,6 +13,8 @@ import com.benlefevre.monendo.dashboard.models.Mood
 import com.benlefevre.monendo.dashboard.models.Pain
 import com.benlefevre.monendo.dashboard.models.Symptom
 import com.benlefevre.monendo.dashboard.models.UserActivities
+import com.benlefevre.monendo.databinding.CustomDialogUserActivitiesBinding
+import com.benlefevre.monendo.databinding.FragmentPainBinding
 import com.benlefevre.monendo.utils.formatDateWithYear
 import com.benlefevre.monendo.utils.parseStringInDate
 import com.google.android.material.chip.Chip
@@ -24,14 +22,15 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.slider.Slider
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
-import kotlinx.android.synthetic.main.custom_dialog_user_activities.view.*
-import kotlinx.android.synthetic.main.fragment_pain.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.*
 
 class PainFragment : Fragment(R.layout.fragment_pain) {
 
-    private lateinit var customView: View
+    private var _binding: FragmentPainBinding? = null
+    private val binding get() = _binding!!
+    private var _dialogBinding: CustomDialogUserActivitiesBinding? = null
+    private val dialogBinding get() = _dialogBinding!!
     private lateinit var intensitySlider: Slider
     private lateinit var durationSlider: Slider
     private lateinit var otherTextInput: TextInputEditText
@@ -47,16 +46,17 @@ class PainFragment : Fragment(R.layout.fragment_pain) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        _binding = FragmentPainBinding.bind(view)
         setHasOptionsMenu(true)
-        pain_card_date.setText(formatDateWithYear(Date()))
+        binding.cardDate.setText(formatDateWithYear(Date()))
         setupOnClickListener()
         createChipWhenUserActivityAdded()
-        viewModel.insertDone.observe(viewLifecycleOwner,configureObserver())
+        viewModel.insertDone.observe(viewLifecycleOwner, configureObserver())
     }
 
-    private fun configureObserver() : Observer<Boolean> {
+    private fun configureObserver(): Observer<Boolean> {
         return Observer {
-            when(it){
+            when (it) {
                 true -> navController.popBackStack()
                 false -> return@Observer
             }
@@ -71,7 +71,6 @@ class PainFragment : Fragment(R.layout.fragment_pain) {
         when (item.itemId) {
             R.id.pain_fragment_save -> {
                 saveUserInputInDb()
-//                navController.popBackStack()
             }
         }
         return super.onOptionsItemSelected(item)
@@ -79,101 +78,101 @@ class PainFragment : Fragment(R.layout.fragment_pain) {
 
     private fun createPain() {
         val location = when {
-            pain_chip_abdo.isChecked -> getString(R.string.lower_abdomen)
-            pain_chip_bladder.isChecked -> getString(R.string.bladder)
-            pain_chip_back.isChecked -> getString(R.string.back)
-            pain_chip_breast.isChecked -> getString(R.string.breast)
-            pain_chip_head.isChecked -> getString(R.string.head)
-            pain_chip_intestine.isChecked -> getString(R.string.intestine)
-            pain_chip_vagina.isChecked -> getString(R.string.vagina)
+            binding.chipAbdo.isChecked -> getString(R.string.lower_abdomen)
+            binding.chipBladder.isChecked -> getString(R.string.bladder)
+            binding.chipBack.isChecked -> getString(R.string.back)
+            binding.chipBreast.isChecked -> getString(R.string.breast)
+            binding.chipHead.isChecked -> getString(R.string.head)
+            binding.chipIntestine.isChecked -> getString(R.string.intestine)
+            binding.chipVagina.isChecked -> getString(R.string.vagina)
             else -> ""
         }
-        val date = parseStringInDate(pain_card_date.text.toString())
+        val date = parseStringInDate(binding.cardDate.text.toString())
         pain = Pain(
             if (date != Date(-1L)) date else Date(),
-            pain_slider.value.toInt(),
+            binding.painSlider.value.toInt(),
             location
         )
     }
 
     private fun createMood() {
         when {
-            pain_chip_sad.isChecked -> mood =
+            binding.chipSad.isChecked -> mood =
                 Mood(value = getString(R.string.sad))
-            pain_chip_sick.isChecked -> mood =
+            binding.chipSick.isChecked -> mood =
                 Mood(value = getString(R.string.sick))
-            pain_chip_irritated.isChecked -> mood =
+            binding.chipIrritated.isChecked -> mood =
                 Mood(value = getString(R.string.irritated))
-            pain_chip_happy.isChecked -> mood =
+            binding.chipHappy.isChecked -> mood =
                 Mood(value = getString(R.string.happy))
-            pain_chip_veryhappy.isChecked -> mood =
+            binding.chipVeryhappy.isChecked -> mood =
                 Mood(value = getString(R.string.very_happy))
         }
     }
 
     private fun createSymptomsList() {
         symptoms = mutableListOf()
-        if (pain_chip_burns.isChecked) symptoms.add(
+        if (binding.chipBurns.isChecked) symptoms.add(
             Symptom(
                 name = getString(R.string.burns),
                 date = date
             )
         )
-        if (pain_chip_cramps.isChecked) symptoms.add(
+        if (binding.chipCramps.isChecked) symptoms.add(
             Symptom(
                 name = getString(R.string.cramps),
                 date = date
             )
         )
-        if (pain_chip_bleeding.isChecked) symptoms.add(
+        if (binding.chipBleeding.isChecked) symptoms.add(
             Symptom(
                 name = getString(R.string.bleeding),
                 date = date
             )
         )
-        if (pain_chip_fever.isChecked) symptoms.add(
+        if (binding.chipFever.isChecked) symptoms.add(
             Symptom(
                 name = getString(R.string.fever),
                 date = date
             )
         )
-        if (pain_chip_bloating.isChecked) symptoms.add(
+        if (binding.chipBloating.isChecked) symptoms.add(
             Symptom(
                 name = getString(R.string.bloating),
                 date = date
             )
         )
-        if (pain_chip_chills.isChecked) symptoms.add(
+        if (binding.chipChills.isChecked) symptoms.add(
             Symptom(
                 name = getString(R.string.chills),
                 date = date
             )
         )
-        if (pain_chip_constipation.isChecked) symptoms.add(
+        if (binding.chipConstipation.isChecked) symptoms.add(
             Symptom(
                 name = getString(R.string.constipation),
                 date = date
             )
         )
-        if (pain_chip_diarrhea.isChecked) symptoms.add(
+        if (binding.chipDiarrhea.isChecked) symptoms.add(
             Symptom(
                 name = getString(R.string.diarrhea),
                 date = date
             )
         )
-        if (pain_chip_hot_flush.isChecked) symptoms.add(
+        if (binding.chipHotFlush.isChecked) symptoms.add(
             Symptom(
                 name = getString(R.string.hot_flush),
                 date = date
             )
         )
-        if (pain_chip_nausea.isChecked) symptoms.add(
+        if (binding.chipNausea.isChecked) symptoms.add(
             Symptom(
                 name = getString(R.string.nausea),
                 date = date
             )
         )
-        if (pain_chip_tired.isChecked) symptoms.add(
+        if (binding.chipTired.isChecked) symptoms.add(
             Symptom(
                 name = getString(R.string.tired),
                 date = date
@@ -189,43 +188,48 @@ class PainFragment : Fragment(R.layout.fragment_pain) {
     }
 
     private fun configureCustomDialogAccordingToSelectedView(view: View) {
-        customView = layoutInflater.inflate(R.layout.custom_dialog_user_activities, null)
-        intensitySlider = customView.dialog_intensity_slider
-        durationSlider = customView.dialog_duration_slider
-        otherTextInput = customView.dialog_other_choice_text
+        _dialogBinding =
+            CustomDialogUserActivitiesBinding.inflate(LayoutInflater.from(context), null, false)
+        intensitySlider = dialogBinding.intensitySlider
+        durationSlider = dialogBinding.durationSlider
+        otherTextInput = dialogBinding.otherChoiceText
 
-        customView.apply {
+        dialogBinding.root.apply {
             when (view.id) {
-                R.id.pain_card_sport -> {
+                R.id.card_sport -> {
                     val sportAdapter = ArrayAdapter<CharSequence>(
                         context,
                         R.layout.support_simple_spinner_dropdown_item,
                         resources.getStringArray(R.array.sport)
                     )
-                    dialog_sport_choice_text.setAdapter(sportAdapter)
-                    dialog_sport_choice_text.setOnItemClickListener { parent, _, position, _ ->
-                        activityChoice = getString(
-                            R.string.sport_activities,
-                            parent.getItemAtPosition(position).toString().capitalize(Locale.ROOT)
-                        )
+                    dialogBinding.sportChoiceText.apply {
+                        setAdapter(sportAdapter)
+                        setOnItemClickListener { parent, _, position, _ ->
+                            activityChoice = getString(
+                                R.string.sport_activities,
+                                parent.getItemAtPosition(position).toString()
+                                    .capitalize(Locale.ROOT)
+                            )
+                        }
                     }
                 }
-                R.id.pain_card_sleep -> {
-                    dialog_sport_legend.visibility = View.GONE
-                    dialog_duration_slider.visibility = View.GONE
-                    dialog_duration_legend.visibility = View.GONE
-                    dialog_intensity_legend.text = getString(R.string.rate_sleep_quality)
+                R.id.card_sleep -> {
+                    dialogBinding.sportLegend.visibility = View.GONE
+                    dialogBinding.durationSlider.visibility = View.GONE
+                    dialogBinding.durationLegend.visibility = View.GONE
+                    dialogBinding.intensityLegend.text =
+                        getString(R.string.rate_sleep_quality)
                 }
-                R.id.pain_card_stress -> {
-                    dialog_sport_legend.visibility = View.GONE
-                    dialog_duration_slider.visibility = View.GONE
-                    dialog_duration_legend.visibility = View.GONE
+                R.id.card_stress -> {
+                    dialogBinding.sportLegend.visibility = View.GONE
+                    dialogBinding.durationSlider.visibility = View.GONE
+                    dialogBinding.durationLegend.visibility = View.GONE
                 }
-                R.id.pain_card_relaxation -> dialog_sport_legend.visibility = View.GONE
-                R.id.pain_card_sex -> dialog_sport_legend.visibility = View.GONE
-                R.id.pain_card_other -> {
-                    dialog_other_legend.visibility = View.VISIBLE
-                    dialog_sport_legend.visibility = View.GONE
+                R.id.card_relaxation -> dialogBinding.sportLegend.visibility = View.GONE
+                R.id.card_sex -> dialogBinding.sportLegend.visibility = View.GONE
+                R.id.card_other -> {
+                    dialogBinding.otherLegend.visibility = View.VISIBLE
+                    dialogBinding.sportLegend.visibility = View.GONE
                 }
             }
         }
@@ -235,7 +239,7 @@ class PainFragment : Fragment(R.layout.fragment_pain) {
         configureCustomDialogAccordingToSelectedView(view)
         MaterialAlertDialogBuilder(requireContext()).apply {
             setCancelable(false)
-            setView(customView)
+            setView(dialogBinding.root)
             setPositiveButton(getString(R.string.save)) { _, _ ->
                 if (view.tag == getString(R.string.other)) activityChoice = getString(
                     R.string.other_activities,
@@ -244,7 +248,7 @@ class PainFragment : Fragment(R.layout.fragment_pain) {
                 val activity =
                     UserActivities(
                         0, activityChoice, durationSlider.value.toInt(),
-                        intensitySlider.value.toInt(), pain_slider.value.toInt(), date
+                        intensitySlider.value.toInt(), binding.painSlider.value.toInt(), date
                     )
                 viewModel.addActivities(activity)
             }
@@ -255,7 +259,7 @@ class PainFragment : Fragment(R.layout.fragment_pain) {
 
     private fun createChipWhenUserActivityAdded() {
         viewModel.activitiesLiveData.observe(viewLifecycleOwner, {
-            pain_activity_chipgroup.removeAllViews()
+            binding.activityChipgroup.removeAllViews()
             it.forEach { activity ->
                 val chip = Chip(context).apply {
                     text = activity.name
@@ -263,7 +267,7 @@ class PainFragment : Fragment(R.layout.fragment_pain) {
                     setChipBackgroundColorResource(R.color.colorSecondary)
                     setOnClickListener {
                         Snackbar.make(
-                            pain_root,
+                            binding.painRoot,
                             getString(
                                 R.string.detail_of_selected_activity,
                                 activity.name,
@@ -278,7 +282,7 @@ class PainFragment : Fragment(R.layout.fragment_pain) {
                             .show()
                     }
                 }
-                pain_activity_chipgroup.addView(chip)
+                binding.activityChipgroup.addView(chip)
             }
         })
     }
@@ -291,7 +295,7 @@ class PainFragment : Fragment(R.layout.fragment_pain) {
                 set(Calendar.MONTH, month)
                 set(Calendar.DAY_OF_MONTH, dayOfMonth)
             }
-            pain_card_date.setText(formatDateWithYear(calendar.time))
+            binding.cardDate.setText(formatDateWithYear(calendar.time))
         }
         context?.let {
             DatePickerDialog(
@@ -302,36 +306,41 @@ class PainFragment : Fragment(R.layout.fragment_pain) {
     }
 
     private fun setupOnClickListener() {
-        pain_save_btn.setOnClickListener {
+        binding.saveBtn.setOnClickListener {
             saveUserInputInDb()
-//            navController.popBackStack()
         }
-        pain_card_sport.setOnClickListener {
+        binding.cardSport.setOnClickListener {
             openCustomDialog(it)
             it.tag = getString(R.string.sport)
         }
-        pain_card_sleep.setOnClickListener {
+        binding.cardSleep.setOnClickListener {
             openCustomDialog(it)
             activityChoice = getString(R.string.sleep)
         }
-        pain_card_stress.setOnClickListener {
+        binding.cardStress.setOnClickListener {
             openCustomDialog(it)
             activityChoice = getString(R.string.stress)
         }
-        pain_card_sex.setOnClickListener {
+        binding.cardSex.setOnClickListener {
             openCustomDialog(it)
             activityChoice = getString(R.string.sex)
         }
-        pain_card_relaxation.setOnClickListener {
+        binding.cardRelaxation.setOnClickListener {
             openCustomDialog(it)
             activityChoice = getString(R.string.relaxation)
         }
-        pain_card_other.setOnClickListener {
+        binding.cardOther.setOnClickListener {
             openCustomDialog(it)
             it.tag = getString(R.string.other)
         }
-        pain_card_date.setOnClickListener {
+        binding.cardDate.setOnClickListener {
             openDatePicker()
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+        _dialogBinding = null
     }
 }

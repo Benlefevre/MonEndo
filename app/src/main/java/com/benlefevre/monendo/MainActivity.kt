@@ -2,6 +2,7 @@ package com.benlefevre.monendo
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import androidx.appcompat.app.AppCompatActivity
@@ -9,6 +10,7 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.view.GravityCompat
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
+import com.benlefevre.monendo.databinding.ActivityMainBinding
 import com.benlefevre.monendo.login.LoginActivity
 import com.benlefevre.monendo.login.User
 import com.benlefevre.monendo.login.convertFirebaseUserIntoUser
@@ -20,7 +22,6 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.textview.MaterialTextView
 import com.google.firebase.auth.FirebaseAuth
-import kotlinx.android.synthetic.main.activity_main.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -28,6 +29,9 @@ class MainActivity : AppCompatActivity() {
     private val navController by lazy {
         findNavController(R.id.nav_host_fragment)
     }
+
+    private var _binding : ActivityMainBinding? = null
+    private val binding get() = _binding!!
 
     private lateinit var connectivityLiveData: ConnectivityLivedata
 
@@ -38,11 +42,12 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        _binding = ActivityMainBinding.inflate(LayoutInflater.from(this),null,false)
         if (FirebaseAuth.getInstance().currentUser == null) {
             startActivity(Intent(this, LoginActivity::class.java))
             finish()
         } else {
-            setContentView(R.layout.activity_main)
+            setContentView(binding.root)
             verifyConnectivity()
             FirebaseAuth.getInstance().currentUser?.let {
                 user =
@@ -67,10 +72,10 @@ class MainActivity : AppCompatActivity() {
      * Binds user information into the nav header views
      */
     private fun updateDrawerHeader(user: User) {
-        val header = main_nav_view.getHeaderView(0)
-        val headerName = header.findViewById<MaterialTextView>(R.id.drawer_user_name)
-        val headerMail = header.findViewById<MaterialTextView>(R.id.drawer_user_mail)
-        val headerPhoto = header.findViewById<AppCompatImageView>(R.id.drawer_user_photo)
+        val header = binding.mainNavView.getHeaderView(0)
+        val headerName = header.findViewById<MaterialTextView>(R.id.user_name)
+        val headerMail = header.findViewById<MaterialTextView>(R.id.user_mail)
+        val headerPhoto = header.findViewById<AppCompatImageView>(R.id.user_photo)
         if (user.name.isNotEmpty() && user.name != NO_NAME)
             headerName.text = user.name
         else headerName.text = getString(
@@ -91,14 +96,14 @@ class MainActivity : AppCompatActivity() {
      *  that navigate to destinations defined into the nav_graph.xml
      */
     private fun setupNavigation() {
-        val toolbar = main_toolbar
-        val bottomNav = main_bottom_bar
+        val toolbar = binding.mainToolbar
+        val bottomNav = binding.mainBottomBar
         setSupportActionBar(toolbar)
 
-        NavigationUI.setupActionBarWithNavController(this, navController, main_drawer)
+        NavigationUI.setupActionBarWithNavController(this, navController, binding.mainDrawer)
         NavigationUI.setupWithNavController(bottomNav, navController)
-        NavigationUI.setupWithNavController(main_nav_view, navController)
-        NavigationUI.setupWithNavController(toolbar, navController, main_drawer)
+        NavigationUI.setupWithNavController(binding.mainNavView, navController)
+        NavigationUI.setupWithNavController(toolbar, navController, binding.mainDrawer)
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
@@ -121,9 +126,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        if (main_drawer.isDrawerOpen(GravityCompat.START))
-            main_drawer.closeDrawer(GravityCompat.START)
+        if (binding.mainDrawer.isDrawerOpen(GravityCompat.START))
+            binding.mainDrawer.closeDrawer(GravityCompat.START)
         else
             super.onBackPressed()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 }

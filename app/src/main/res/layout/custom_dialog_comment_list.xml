@@ -9,7 +9,7 @@
         android:layout_height="match_parent">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/custom_dialog_comment_list_recycler_view"
+            android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
@@ -17,7 +17,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/custom_dialog_comment_list_pos_btn"
+            android:id="@+id/pos_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -28,19 +28,19 @@
             android:textColor="@color/colorPrimary"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/custom_dialog_comment_list_recycler_view" />
+            app:layout_constraintTop_toBottomOf="@id/recycler_view" />
 
         <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/custom_dialog_comment_list_neg_btn"
+            android:id="@+id/neg_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="24dp"
             android:text="@string/cancel"
             android:textAllCaps="true"
             android:textColor="@color/colorPrimary"
-            app:layout_constraintBottom_toBottomOf="@+id/custom_dialog_comment_list_pos_btn"
-            app:layout_constraintEnd_toStartOf="@id/custom_dialog_comment_list_pos_btn"
-            app:layout_constraintTop_toTopOf="@+id/custom_dialog_comment_list_pos_btn" />
+            app:layout_constraintBottom_toBottomOf="@+id/pos_btn"
+            app:layout_constraintEnd_toStartOf="@id/pos_btn"
+            app:layout_constraintTop_toTopOf="@+id/pos_btn" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>

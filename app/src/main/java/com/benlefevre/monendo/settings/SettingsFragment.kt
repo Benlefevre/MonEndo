@@ -11,6 +11,7 @@ import androidx.preference.PreferenceFragmentCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.benlefevre.monendo.MainActivity
 import com.benlefevre.monendo.R
+import com.benlefevre.monendo.databinding.CustomDialogCommentListBinding
 import com.benlefevre.monendo.doctor.adapter.CommentaryAdapter
 import com.benlefevre.monendo.doctor.models.Commentary
 import com.benlefevre.monendo.notification.cancelPillAlarm
@@ -20,7 +21,6 @@ import com.benlefevre.monendo.utils.*
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import kotlinx.android.synthetic.main.custom_dialog_comment_list.view.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -168,16 +168,16 @@ class SettingsFragment : PreferenceFragmentCompat(), CommentaryAdapter.Commentar
     }
 
     private fun openCommentaryDialog(){
-        val customView = LayoutInflater.from(requireContext()).inflate(R.layout.custom_dialog_comment_list,null)
-        val recyclerView = customView.custom_dialog_comment_list_recycler_view
-        val posBtn = customView.custom_dialog_comment_list_pos_btn
-        val negBtn = customView.custom_dialog_comment_list_neg_btn
+        val dialogBinding = CustomDialogCommentListBinding.inflate(LayoutInflater.from(context),null,false)
+        val recyclerView = dialogBinding.recyclerView
+        val posBtn = dialogBinding.posBtn
+        val negBtn = dialogBinding.negBtn
         recyclerView.apply {
             adapter = this@SettingsFragment.adapter
             layoutManager = LinearLayoutManager(requireContext())
         }
         val dialog = MaterialAlertDialogBuilder(requireContext())
-            .setView(customView)
+            .setView(dialogBinding.root)
             .setTitle(getString(R.string.delete_comment))
             .setMessage(getString(R.string.click_comment_to_delete))
             .show()

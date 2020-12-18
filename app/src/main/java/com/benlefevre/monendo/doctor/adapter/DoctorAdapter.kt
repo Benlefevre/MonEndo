@@ -41,11 +41,11 @@ class DoctorAdapter(
                 notifyDataSetChanged()
             }
             binding.root.tag = doctor
-            binding.doctorItemName.text = doctor.name
-            binding.doctorItemSpec.text = doctor.spec
-            binding.doctorItemAddress.text = doctor.address
-            binding.doctorItemPhone.text = doctor.phone ?: context.getString(R.string.no_phone)
-            binding.doctorItemCommentary.text =
+            binding.itemName.text = doctor.name
+            binding.itemSpec.text = doctor.spec
+            binding.itemAddress.text = doctor.address
+            binding.itemPhone.text = doctor.phone ?: context.getString(R.string.no_phone)
+            binding.itemCommentary.text =
                 if (doctor.nbComment != 0) context.getString(
                     R.string.doctor_nb_comment,
                     doctor.nbComment

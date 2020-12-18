@@ -23,7 +23,7 @@
                 android:layout_height="match_parent">
 
                 <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/pain_card_title"
+                    android:id="@+id/card_title"
                     style="@style/CardTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -33,7 +33,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/pain_card_date_legend"
+                    android:id="@+id/card_date_legend"
                     style="@style/CustomTextInputLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -43,10 +43,10 @@
                     android:layout_marginEnd="8dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/pain_card_title">
+                    app:layout_constraintTop_toBottomOf="@id/card_title">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/pain_card_date"
+                        android:id="@+id/card_date"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:drawableStart="@drawable/calendar"
@@ -59,7 +59,7 @@
                 <!--_________________________________Begin Slider________________________________-->
 
                 <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/pain_slider_legend"
+                    android:id="@+id/slider_legend"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
@@ -68,7 +68,7 @@
                     android:text="@string/on_a_scale_of_0_to_10_how_do_you_rate_the_pain_today"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/pain_card_date_legend" />
+                    app:layout_constraintTop_toBottomOf="@+id/card_date_legend" />
 
                 <com.google.android.material.slider.Slider
                     android:id="@+id/pain_slider"
@@ -83,14 +83,14 @@
                     android:valueTo="10f"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/pain_slider_legend" />
+                    app:layout_constraintTop_toBottomOf="@+id/slider_legend" />
 
                 <!--_________________________________End Slider__________________________________-->
 
                 <!--_________________________________Begin Chip Location ________________________-->
 
                 <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/pain_location_legend"
+                    android:id="@+id/location_legend"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
@@ -102,7 +102,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/pain_slider" />
 
                 <LinearLayout
-                    android:id="@+id/pain_location_linear"
+                    android:id="@+id/location_linear"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
@@ -111,10 +111,10 @@
                     android:gravity="center_horizontal"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/pain_location_legend">
+                    app:layout_constraintTop_toBottomOf="@+id/location_legend">
 
                     <com.google.android.material.chip.ChipGroup
-                        android:id="@+id/pain_location_chipgroup"
+                        android:id="@+id/location_chipgroup"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         app:chipSpacingHorizontal="4dp"
@@ -123,49 +123,49 @@
                         app:singleSelection="true">
 
                         <com.google.android.material.chip.Chip
-                            android:id="@+id/pain_chip_abdo"
+                            android:id="@+id/chip_abdo"
                             style="@style/CustomChipChoice"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/lower_abdomen" />
 
                         <com.google.android.material.chip.Chip
-                            android:id="@+id/pain_chip_bladder"
+                            android:id="@+id/chip_bladder"
                             style="@style/CustomChipChoice"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/bladder" />
 
                         <com.google.android.material.chip.Chip
-                            android:id="@+id/pain_chip_back"
+                            android:id="@+id/chip_back"
                             style="@style/CustomChipChoice"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/back" />
 
                         <com.google.android.material.chip.Chip
-                            android:id="@+id/pain_chip_head"
+                            android:id="@+id/chip_head"
                             style="@style/CustomChipChoice"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/head" />
 
                         <com.google.android.material.chip.Chip
-                            android:id="@+id/pain_chip_intestine"
+                            android:id="@+id/chip_intestine"
                             style="@style/CustomChipChoice"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/intestine" />
 
                         <com.google.android.material.chip.Chip
-                            android:id="@+id/pain_chip_breast"
+                            android:id="@+id/chip_breast"
                             style="@style/CustomChipChoice"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/breast" />
 
                         <com.google.android.material.chip.Chip
-                            android:id="@+id/pain_chip_vagina"
+                            android:id="@+id/chip_vagina"
                             style="@style/CustomChipChoice"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -180,7 +180,7 @@
                 <!--______________________________Begin chip symptom_____________________________-->
 
                 <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/pain_symptom_legend"
+                    android:id="@+id/symptom_legend"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
@@ -189,7 +189,7 @@
                     android:text="@string/what_are_the_main_symptoms"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/pain_location_linear" />
+                    app:layout_constraintTop_toBottomOf="@+id/location_linear" />
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -201,10 +201,10 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/pain_symptom_legend">
+                    app:layout_constraintTop_toBottomOf="@+id/symptom_legend">
 
                     <com.google.android.material.chip.ChipGroup
-                        android:id="@+id/pain_symptom_chipgroup"
+                        android:id="@+id/symptom_chipgroup"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         app:chipSpacingHorizontal="4dp"
@@ -212,77 +212,77 @@
                         app:singleLine="false">
 
                         <com.google.android.material.chip.Chip
-                            android:id="@+id/pain_chip_burns"
+                            android:id="@+id/chip_burns"
                             style="@style/CustomChip"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/burns" />
 
                         <com.google.android.material.chip.Chip
-                            android:id="@+id/pain_chip_cramps"
+                            android:id="@+id/chip_cramps"
                             style="@style/CustomChip"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/cramps" />
 
                         <com.google.android.material.chip.Chip
-                            android:id="@+id/pain_chip_bleeding"
+                            android:id="@+id/chip_bleeding"
                             style="@style/CustomChip"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/bleeding" />
 
                         <com.google.android.material.chip.Chip
-                            android:id="@+id/pain_chip_fever"
+                            android:id="@+id/chip_fever"
                             style="@style/CustomChip"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/fever" />
 
                         <com.google.android.material.chip.Chip
-                            android:id="@+id/pain_chip_chills"
+                            android:id="@+id/chip_chills"
                             style="@style/CustomChip"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/chills" />
 
                         <com.google.android.material.chip.Chip
-                            android:id="@+id/pain_chip_bloating"
+                            android:id="@+id/chip_bloating"
                             style="@style/CustomChip"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/bloating" />
 
                         <com.google.android.material.chip.Chip
-                            android:id="@+id/pain_chip_hot_flush"
+                            android:id="@+id/chip_hot_flush"
                             style="@style/CustomChip"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/hot_flush" />
 
                         <com.google.android.material.chip.Chip
-                            android:id="@+id/pain_chip_diarrhea"
+                            android:id="@+id/chip_diarrhea"
                             style="@style/CustomChip"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/diarrhea" />
 
                         <com.google.android.material.chip.Chip
-                            android:id="@+id/pain_chip_constipation"
+                            android:id="@+id/chip_constipation"
                             style="@style/CustomChip"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/constipation" />
 
                         <com.google.android.material.chip.Chip
-                            android:id="@+id/pain_chip_nausea"
+                            android:id="@+id/chip_nausea"
                             style="@style/CustomChip"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/nausea" />
 
                         <com.google.android.material.chip.Chip
-                            android:id="@+id/pain_chip_tired"
+                            android:id="@+id/chip_tired"
                             style="@style/CustomChip"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -332,7 +332,7 @@
 
                 <!--______________________Begin card sport_______________________________________-->
                 <LinearLayout
-                    android:id="@+id/pain_card_sport"
+                    android:id="@+id/card_sport"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
@@ -340,7 +340,7 @@
                     android:elevation="5dp"
                     android:orientation="vertical"
                     android:padding="8dp"
-                    app:layout_constraintEnd_toStartOf="@+id/pain_card_sleep"
+                    app:layout_constraintEnd_toStartOf="@+id/card_sleep"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/activities_card_legend">
@@ -364,7 +364,7 @@
                 <!--__________________________Begin card sleep___________________________________-->
 
                 <LinearLayout
-                    android:id="@+id/pain_card_sleep"
+                    android:id="@+id/card_sleep"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
@@ -372,9 +372,9 @@
                     android:elevation="5dp"
                     android:orientation="vertical"
                     android:padding="8dp"
-                    app:layout_constraintEnd_toStartOf="@+id/pain_card_stress"
+                    app:layout_constraintEnd_toStartOf="@+id/card_stress"
                     app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toEndOf="@+id/pain_card_sport"
+                    app:layout_constraintStart_toEndOf="@+id/card_sport"
                     app:layout_constraintTop_toBottomOf="@+id/activities_card_legend">
 
                     <androidx.appcompat.widget.AppCompatImageView
@@ -395,7 +395,7 @@
 
                 <!--________________________Begin card stress____________________________________-->
                 <LinearLayout
-                    android:id="@+id/pain_card_stress"
+                    android:id="@+id/card_stress"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
@@ -405,7 +405,7 @@
                     android:padding="8dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toEndOf="@+id/pain_card_sleep"
+                    app:layout_constraintStart_toEndOf="@+id/card_sleep"
                     app:layout_constraintTop_toBottomOf="@+id/activities_card_legend">
 
                     <androidx.appcompat.widget.AppCompatImageView
@@ -426,7 +426,7 @@
 
                 <!--________________________Begin card relaxation________________________________-->
                 <LinearLayout
-                    android:id="@+id/pain_card_relaxation"
+                    android:id="@+id/card_relaxation"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
@@ -434,10 +434,10 @@
                     android:elevation="5dp"
                     android:orientation="vertical"
                     android:padding="8dp"
-                    app:layout_constraintEnd_toStartOf="@+id/pain_card_sex"
+                    app:layout_constraintEnd_toStartOf="@+id/card_sex"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/pain_card_sport">
+                    app:layout_constraintTop_toBottomOf="@+id/card_sport">
 
                     <androidx.appcompat.widget.AppCompatImageView
                         style="@style/Widget.AppCompat.ActionButton"
@@ -457,7 +457,7 @@
 
                 <!--________________________Begin card sex_______________________________________-->
                 <LinearLayout
-                    android:id="@+id/pain_card_sex"
+                    android:id="@+id/card_sex"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
@@ -465,10 +465,10 @@
                     android:elevation="5dp"
                     android:orientation="vertical"
                     android:padding="8dp"
-                    app:layout_constraintEnd_toStartOf="@+id/pain_card_other"
+                    app:layout_constraintEnd_toStartOf="@+id/card_other"
                     app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toEndOf="@+id/pain_card_relaxation"
-                    app:layout_constraintTop_toBottomOf="@+id/pain_card_sport">
+                    app:layout_constraintStart_toEndOf="@+id/card_relaxation"
+                    app:layout_constraintTop_toBottomOf="@+id/card_sport">
 
                     <androidx.appcompat.widget.AppCompatImageView
                         style="@style/Widget.AppCompat.ActionButton"
@@ -488,7 +488,7 @@
 
                 <!--________________________Begin card other_____________________________________-->
                 <LinearLayout
-                    android:id="@+id/pain_card_other"
+                    android:id="@+id/card_other"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
@@ -498,8 +498,8 @@
                     android:padding="8dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toEndOf="@+id/pain_card_sex"
-                    app:layout_constraintTop_toBottomOf="@+id/pain_card_sport">
+                    app:layout_constraintStart_toEndOf="@+id/card_sex"
+                    app:layout_constraintTop_toBottomOf="@+id/card_sport">
 
                     <androidx.appcompat.widget.AppCompatImageView
                         style="@style/Widget.AppCompat.ActionButton"
@@ -518,7 +518,7 @@
                 <!--________________________End card other_______________________________________-->
 
                 <com.google.android.material.chip.ChipGroup
-                    android:id="@+id/pain_activity_chipgroup"
+                    android:id="@+id/activity_chipgroup"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
@@ -528,7 +528,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/pain_card_relaxation" />
+                    app:layout_constraintTop_toBottomOf="@id/card_relaxation" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -569,7 +569,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/mood_card_title">
 
                     <com.google.android.material.chip.ChipGroup
-                        android:id="@+id/pain_mood_chipgroup"
+                        android:id="@+id/mood_chipgroup"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         app:chipSpacing="4dp"
@@ -577,31 +577,31 @@
                         app:singleSelection="true">
 
                         <com.google.android.material.chip.Chip
-                            android:id="@+id/pain_chip_sad"
+                            android:id="@+id/chip_sad"
                             style="@style/CustomMoodChip"
                             android:text="@string/sad"
                             app:chipIcon="@drawable/sad" />
 
                         <com.google.android.material.chip.Chip
-                            android:id="@+id/pain_chip_sick"
+                            android:id="@+id/chip_sick"
                             style="@style/CustomMoodChip"
                             android:text="@string/sick"
                             app:chipIcon="@drawable/sick" />
 
                         <com.google.android.material.chip.Chip
-                            android:id="@+id/pain_chip_irritated"
+                            android:id="@+id/chip_irritated"
                             style="@style/CustomMoodChip"
                             android:text="@string/irritated"
                             app:chipIcon="@drawable/irritated" />
 
                         <com.google.android.material.chip.Chip
-                            android:id="@+id/pain_chip_happy"
+                            android:id="@+id/chip_happy"
                             style="@style/CustomMoodChip"
                             android:text="@string/happy"
                             app:chipIcon="@drawable/happy" />
 
                         <com.google.android.material.chip.Chip
-                            android:id="@+id/pain_chip_veryhappy"
+                            android:id="@+id/chip_veryhappy"
                             style="@style/CustomMoodChip"
                             android:text="@string/very_happy"
                             app:chipIcon="@drawable/very_happy" />
@@ -615,7 +615,7 @@
         <!--_____________________________End Mood card___________________________________________-->
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/pain_save_btn"
+            android:id="@+id/save_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"

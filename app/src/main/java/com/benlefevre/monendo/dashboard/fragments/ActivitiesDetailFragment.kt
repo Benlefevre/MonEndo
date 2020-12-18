@@ -9,6 +9,7 @@ import com.benlefevre.monendo.R
 import com.benlefevre.monendo.dashboard.models.PainWithRelations
 import com.benlefevre.monendo.dashboard.models.UserActivities
 import com.benlefevre.monendo.dashboard.viewmodels.DashboardViewModel
+import com.benlefevre.monendo.databinding.FragmentActivitiesDetailBinding
 import com.benlefevre.monendo.utils.formatDateWithYear
 import com.benlefevre.monendo.utils.formatDateWithoutYear
 import com.github.mikephil.charting.animation.Easing
@@ -19,8 +20,6 @@ import com.github.mikephil.charting.formatter.PercentFormatter
 import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.interfaces.datasets.IScatterDataSet
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
-import kotlinx.android.synthetic.main.chipgroup_duration.*
-import kotlinx.android.synthetic.main.fragment_activities_detail.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 import java.util.*
@@ -28,6 +27,9 @@ import java.util.*
 class ActivitiesDetailFragment : Fragment(R.layout.fragment_activities_detail) {
 
     private val viewModel: DashboardViewModel by viewModel()
+
+    private var _binding : FragmentActivitiesDetailBinding? = null
+    private val binding get() = _binding!!
     private val painRelations = mutableListOf<PainWithRelations>()
     private val activities = mutableListOf<UserActivities>()
     private val dates = mutableListOf<String>()
@@ -37,6 +39,7 @@ class ActivitiesDetailFragment : Fragment(R.layout.fragment_activities_detail) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        _binding = FragmentActivitiesDetailBinding.bind(view)
         colorsChart = resources.getIntArray(R.array.chartColors)
         colorSecondary = getColor(requireContext(), R.color.colorSecondary)
         colorPrimary = getColor(requireContext(), R.color.colorPrimary)
@@ -47,7 +50,7 @@ class ActivitiesDetailFragment : Fragment(R.layout.fragment_activities_detail) {
     }
 
     private fun setupCharts() {
-        activities_details_rep_chart.apply {
+        binding.activitiesDetailsRepChart.apply {
             setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
                 override fun onNothingSelected() {
                     clearDetailChart()
@@ -69,7 +72,7 @@ class ActivitiesDetailFragment : Fragment(R.layout.fragment_activities_detail) {
             legend.isWordWrapEnabled = true
         }
 
-        activities_detail_chart.apply {
+        binding.activitiesDetailChart.apply {
             setVisibleXRange(7f, 15f)
             legend.apply {
                 textColor = colorPrimary
@@ -95,11 +98,11 @@ class ActivitiesDetailFragment : Fragment(R.layout.fragment_activities_detail) {
     }
 
     private fun setupEmptyChartsMessages() {
-        activities_details_rep_chart.apply {
+        binding.activitiesDetailsRepChart.apply {
             setNoDataText(getString(R.string.no_data_period))
             setNoDataTextColor(getColor(context, R.color.colorSecondary))
         }
-        activities_detail_chart.apply {
+        binding.activitiesDetailChart.apply {
             data = null
             setNoDataText(getString(R.string.no_data_period))
             setNoDataTextColor(getColor(context, R.color.colorSecondary))
@@ -111,30 +114,30 @@ class ActivitiesDetailFragment : Fragment(R.layout.fragment_activities_detail) {
      * to fetch user's input in locale DB.
      */
     private fun setupChipListener() {
-        chip_week.setOnCheckedChangeListener { _, isChecked ->
+        binding.chipGroup.chipWeek.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 viewModel.getPainsRelations7days()
             }
         }
-        chip_month.setOnCheckedChangeListener { _, isChecked ->
+        binding.chipGroup.chipMonth.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 viewModel.getPainsRelations30days()
 
             }
         }
-        chip_6months.setOnCheckedChangeListener { _, isChecked ->
+        binding.chipGroup.chip6months.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 viewModel.getPainsRelations180days()
 
             }
         }
-        chip_year.setOnCheckedChangeListener { _, isChecked ->
+        binding.chipGroup.chipYear.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 viewModel.getPainsRelations360days()
 
             }
         }
-        chip_week.isChecked = true
+        binding.chipGroup.chipWeek.isChecked = true
     }
 
     /**
@@ -147,7 +150,7 @@ class ActivitiesDetailFragment : Fragment(R.layout.fragment_activities_detail) {
                 setupList(it)
                 setupRepartitionChart()
                 displayAllActivities()
-                activities_detail_chart_details_text.text =
+                binding.activitiesDetailChartDetailsText.text =
                     getString(R.string.click_on_a_value_to_see_the_detail_of_the_chosen_practiced_activity)
             }
         }
@@ -172,13 +175,13 @@ class ActivitiesDetailFragment : Fragment(R.layout.fragment_activities_detail) {
      * Clears the highlight and data values for each chart
      */
     private fun clearDetailChart() {
-        activities_detail_chart.apply {
+        binding.activitiesDetailChart.apply {
             data = null
         }
-        activities_details_rep_chart.apply {
+        binding.activitiesDetailsRepChart.apply {
             highlightValues(null)
         }
-        activities_detail_chart_details_text.text =
+        binding.activitiesDetailChartDetailsText.text =
             getString(R.string.click_on_a_value_to_see_the_detail_of_the_chosen_practiced_activity)
     }
 
@@ -207,7 +210,7 @@ class ActivitiesDetailFragment : Fragment(R.layout.fragment_activities_detail) {
             valueTextSize = 10f
         }
 
-        activities_details_rep_chart.apply {
+        binding.activitiesDetailsRepChart.apply {
             data = PieData(pieDataSet)
             animateX(500, Easing.EaseOutCirc)
         }
@@ -287,7 +290,7 @@ class ActivitiesDetailFragment : Fragment(R.layout.fragment_activities_detail) {
             dataSetList.add(dataSet)
         }
 
-        activities_detail_chart.apply {
+        binding.activitiesDetailChart.apply {
             setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
                 override fun onNothingSelected() {
                 }
@@ -344,7 +347,7 @@ class ActivitiesDetailFragment : Fragment(R.layout.fragment_activities_detail) {
             color = setScatterColor(activityName)
         }
 
-        activities_detail_chart.apply {
+        binding.activitiesDetailChart.apply {
             setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
                 override fun onNothingSelected() {
                 }
@@ -409,7 +412,7 @@ class ActivitiesDetailFragment : Fragment(R.layout.fragment_activities_detail) {
                         ) + "\n"
                 }
             }
-        activities_detail_chart_details_text.text = activitiesText
+        binding.activitiesDetailChartDetailsText.text = activitiesText
     }
 
     /**
@@ -438,6 +441,11 @@ class ActivitiesDetailFragment : Fragment(R.layout.fragment_activities_detail) {
         }.toFloat() / size, getString(R.string.other))
 
         return arrayOf(sport, stress, sex, relaxation, other)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
 

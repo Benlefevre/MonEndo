@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/custom_dialog_title"
+        android:id="@+id/dialog_title"
         style="@style/CardTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -15,18 +15,18 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/dialog_sport_legend"
+        android:id="@+id/sport_legend"
         style="@style/CustomTextInputLayoutDropDown"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         android:hint="@string/what_activities_did_you_practiced"
-        app:layout_constraintTop_toBottomOf="@id/custom_dialog_title"
+        app:layout_constraintTop_toBottomOf="@id/dialog_title"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
         <AutoCompleteTextView
-            android:id="@+id/dialog_sport_choice_text"
+            android:id="@+id/sport_choice_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:cursorVisible="false"
@@ -34,19 +34,19 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/dialog_other_legend"
+        android:id="@+id/other_legend"
         style="@style/CustomTextInputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         android:hint="@string/what_activities_did_you_practiced"
         android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/dialog_sport_legend"
+        app:layout_constraintTop_toBottomOf="@id/sport_legend"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/dialog_other_choice_text"
+            android:id="@+id/other_choice_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="text" />
@@ -54,17 +54,17 @@
 
 
     <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/dialog_duration_legend"
+        android:id="@+id/duration_legend"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         android:text="@string/how_long_in_minutes"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/dialog_other_legend"/>
+        app:layout_constraintTop_toBottomOf="@id/other_legend"/>
 
     <com.google.android.material.slider.Slider
-        android:id="@+id/dialog_duration_slider"
+        android:id="@+id/duration_slider"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
@@ -73,20 +73,20 @@
         android:valueTo="240"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/dialog_duration_legend"/>
+        app:layout_constraintTop_toBottomOf="@id/duration_legend"/>
 
     <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/dialog_intensity_legend"
+        android:id="@+id/intensity_legend"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         android:text="@string/with_what_intensity_on_a_scale_from_0_to_10"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/dialog_duration_slider"/>
+        app:layout_constraintTop_toBottomOf="@id/duration_slider"/>
 
     <com.google.android.material.slider.Slider
-        android:id="@+id/dialog_intensity_slider"
+        android:id="@+id/intensity_slider"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
@@ -95,6 +95,6 @@
         android:valueTo="10"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/dialog_intensity_legend"/>
+        app:layout_constraintTop_toBottomOf="@id/intensity_legend"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

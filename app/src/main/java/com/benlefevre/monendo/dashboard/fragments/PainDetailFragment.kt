@@ -8,6 +8,7 @@ import androidx.lifecycle.Observer
 import com.benlefevre.monendo.R
 import com.benlefevre.monendo.dashboard.models.PainWithRelations
 import com.benlefevre.monendo.dashboard.viewmodels.DashboardViewModel
+import com.benlefevre.monendo.databinding.FragmentPainDetailBinding
 import com.benlefevre.monendo.utils.formatDateWithoutYear
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.components.YAxis
@@ -17,25 +18,26 @@ import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
-import kotlinx.android.synthetic.main.chipgroup_duration.*
-import kotlinx.android.synthetic.main.fragment_pain_detail.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PainDetailFragment : Fragment(R.layout.fragment_pain_detail) {
 
     private val viewModel: DashboardViewModel by viewModel()
 
+    private var _binding : FragmentPainDetailBinding? = null
+    private val binding get() = _binding!!
     private val painRelations: MutableList<PainWithRelations> = mutableListOf()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        _binding = FragmentPainDetailBinding.bind(view)
         setupCharts()
         viewModel.pains.observe(viewLifecycleOwner, configuresObserver())
         setupChipListener()
     }
 
     private fun setupCharts() {
-        pain_details_chart.apply {
+        binding.painDetailsChart.apply {
             setNoDataText(getString(R.string.no_data_period))
             setNoDataTextColor(getColor(context, R.color.colorSecondary))
             legend.apply {
@@ -78,7 +80,7 @@ class PainDetailFragment : Fragment(R.layout.fragment_pain_detail) {
      * Clears the highlight and data values for each chart
      */
     private fun clearCharts() {
-        pain_details_chart.apply {
+        binding.painDetailsChart.apply {
             data = null
         }
     }
@@ -88,34 +90,34 @@ class PainDetailFragment : Fragment(R.layout.fragment_pain_detail) {
      * to fetch user's input in locale DB.
      */
     private fun setupChipListener() {
-        chip_week.setOnCheckedChangeListener { _, isChecked ->
+        binding.chipGroup.chipWeek.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 viewModel.getPainsRelations7days()
             }
         }
-        chip_month.setOnCheckedChangeListener { _, isChecked ->
+        binding.chipGroup.chipMonth.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 viewModel.getPainsRelations30days()
             }
         }
-        chip_6months.setOnCheckedChangeListener { _, isChecked ->
+        binding.chipGroup.chip6months.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 viewModel.getPainsRelations180days()
             }
         }
-        chip_year.setOnCheckedChangeListener { _, isChecked ->
+        binding.chipGroup.chipYear.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 viewModel.getPainsRelations360days()
             }
         }
-        chip_week.isChecked = true
+        binding.chipGroup.chipWeek.isChecked = true
     }
 
     /**
      * Sets the line chart with the user pain and defines the user's value click behavior
      */
     private fun displayAllPainsIntoChart(pains: List<PainWithRelations>) {
-        val painChart = pain_details_chart
+        val painChart = binding.painDetailsChart
         painRelations.clear()
         painRelations.addAll(pains)
         val entries: MutableList<Entry> = mutableListOf()
@@ -175,13 +177,18 @@ class PainDetailFragment : Fragment(R.layout.fragment_pain_detail) {
             }
         }
 
-        pain_details_date_txt.text = formatDateWithoutYear(pain.pain.date)
-        pain_details_value_txt.text = pain.pain.intensity.toString()
-        pain_details_location_txt.text =
+        binding.painDetailsDateTxt.text = formatDateWithoutYear(pain.pain.date)
+        binding.painDetailsValueTxt.text = pain.pain.intensity.toString()
+        binding.painDetailsLocationTxt.text =
             if (!pain.pain.location.isBlank()) pain.pain.location else getString(R.string.not_registered)
-        pain_details_mood_txt.text =
+        binding.painDetailsMoodTxt.text =
             if (!pain.moods.isNullOrEmpty()) pain.moods[0].value else getString(R.string.not_registered)
-        pain_details_symptom_txt.text = symptomText
-        pain_details_activities_txt.text = activitiesText
+        binding.painDetailsSymptomTxt.text = symptomText
+        binding.painDetailsActivitiesTxt.text = activitiesText
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

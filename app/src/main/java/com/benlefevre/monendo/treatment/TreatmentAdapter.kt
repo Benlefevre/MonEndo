@@ -4,19 +4,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.benlefevre.monendo.R
+import com.benlefevre.monendo.databinding.TreatmentListItemBinding
 import com.benlefevre.monendo.treatment.models.Treatment
-import kotlinx.android.synthetic.main.treatment_list_item.view.*
 
 class TreatmentAdapter(private val treatments : List<Treatment>) : RecyclerView.Adapter<TreatmentViewHolder>() {
 
     private lateinit var listener : View.OnClickListener
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TreatmentViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.treatment_list_item,parent,false)
+        val binding = TreatmentListItemBinding.inflate(LayoutInflater.from(parent.context),parent,false)
         val viewHolder =
-            TreatmentViewHolder(view)
-        viewHolder.itemView.treatment_item_delete_btn.setOnClickListener {
+            TreatmentViewHolder(binding)
+        viewHolder.binding.itemDeleteBtn.setOnClickListener {
             listener.onClick(it)
         }
         return viewHolder
@@ -36,15 +35,15 @@ class TreatmentAdapter(private val treatments : List<Treatment>) : RecyclerView.
     }
 }
 
-class TreatmentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+class TreatmentViewHolder(val binding: TreatmentListItemBinding) : RecyclerView.ViewHolder(binding.root) {
 
     init {
-        itemView.treatment_item_delete_btn.tag = this
+        binding.itemDeleteBtn.tag = this
     }
 
     fun updateUi(treatment: Treatment){
-        itemView.treatment_item_name.text = treatment.name
-        itemView.treatment_duration_time.text = treatment.duration
+        binding.itemName.text = treatment.name
+        binding.durationTime.text = treatment.duration
         var hours = ""
         if (treatment.morning != "")
             hours += treatment.morning
@@ -55,6 +54,6 @@ class TreatmentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         if (treatment.evening != "")
             hours += " + ${treatment.evening}"
 
-        itemView.treatment_item_hour_value.text = hours
+        binding.itemHourValue.text = hours
     }
 }

@@ -12,6 +12,7 @@ import com.benlefevre.monendo.dashboard.models.Pain
 import com.benlefevre.monendo.dashboard.models.Symptom
 import com.benlefevre.monendo.dashboard.models.UserActivities
 import com.benlefevre.monendo.dashboard.viewmodels.DashboardViewModel
+import com.benlefevre.monendo.databinding.FragmentDashboardBinding
 import com.benlefevre.monendo.utils.formatDateWithoutYear
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.components.YAxis
@@ -19,7 +20,6 @@ import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.github.mikephil.charting.formatter.PercentFormatter
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
-import kotlinx.android.synthetic.main.fragment_dashboard.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
@@ -28,6 +28,8 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
 
     private val navController by lazy { findNavController() }
 
+    private var _binding : FragmentDashboardBinding? = null
+    private val binding get() = _binding!!
     private val pains: MutableList<Pain> = mutableListOf()
     private val symptoms: MutableList<Symptom> = mutableListOf()
     private val activities: MutableList<UserActivities> = mutableListOf()
@@ -40,6 +42,7 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        _binding = FragmentDashboardBinding.bind(view)
         colorsChart = resources.getIntArray(R.array.chartColors)
         colorSecondary = getColor(requireContext(), R.color.colorSecondary)
         colorPrimary = getColor(requireContext(), R.color.colorPrimary)
@@ -52,23 +55,23 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
      * Initializes the empty data text for each chart
      */
     private fun initAllCharts() {
-        dashboard_chart_pain.apply {
+        binding.chartPain.apply {
             setNoDataText(getString(R.string.pain_history_appear))
             setNoDataTextColor(colorSecondary)
         }
-        dashboard_chart_symptom.apply {
+        binding.chartSymptom.apply {
             setNoDataText(getString(R.string.symptom_history_appear))
             setNoDataTextColor(colorSecondary)
         }
-        dashboard_chart_activities.apply {
+        binding.chartActivities.apply {
             setNoDataText(getString(R.string.activities_history_appear))
             setNoDataTextColor(colorSecondary)
         }
-        dashboard_chart_sleep.apply {
+        binding.chartSleep.apply {
             setNoDataText(getString(R.string.sleep_quality_history_appear))
             setNoDataTextColor(colorSecondary)
         }
-        dashboard_chart_mood.apply {
+        binding.chartMood.apply {
             setNoDataText(getString(R.string.mood_history_appear))
             setNoDataTextColor(colorSecondary)
         }
@@ -129,7 +132,7 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
             setDrawValues(false)
         }
 
-        dashboard_chart_pain.apply {
+        binding.chartPain.apply {
             legend.apply {
                 textColor = colorPrimary
                 isWordWrapEnabled = true
@@ -206,7 +209,7 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
             colorCounter++
         }
 
-        dashboard_chart_symptom.apply {
+        binding.chartSymptom.apply {
             legend.apply {
                 textColor = colorPrimary
                 isWordWrapEnabled = true
@@ -331,7 +334,7 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
             }
         }
 
-        dashboard_chart_activities.apply {
+        binding.chartActivities.apply {
             legend.apply {
                 textColor = colorPrimary
                 isWordWrapEnabled = true
@@ -380,7 +383,7 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
             setDrawValues(false)
         }
 
-        dashboard_chart_sleep.apply {
+        binding.chartSleep.apply {
             legend.apply {
                 textColor = colorPrimary
                 isWordWrapEnabled = true
@@ -467,7 +470,7 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
             colors = moodColor
         }
 
-        dashboard_chart_mood.apply {
+        binding.chartMood.apply {
             legend.apply {
                 textColor = colorPrimary
                 isWordWrapEnabled = true
@@ -487,23 +490,28 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
      * Configures the NavController's destination when user clicks on a card.
      */
     private fun setupOnClickListener() {
-        dashboard_fab.setOnClickListener {
+        binding.fab.setOnClickListener {
             navController.navigate(R.id.painFragment)
         }
-        dashboard_card_pain.setOnClickListener {
+        binding.cardPain.setOnClickListener {
             navController.navigate(R.id.painDetailFragment)
         }
-        dashboard_card_symptom.setOnClickListener {
+        binding.cardSymptom.setOnClickListener {
             navController.navigate(R.id.symptomDetailFragment)
         }
-        dashboard_card_activities.setOnClickListener {
+        binding.cardActivities.setOnClickListener {
             navController.navigate(R.id.activitiesDetailFragment)
         }
-        dashboard_card_sleep.setOnClickListener {
+        binding.cardSleep.setOnClickListener {
             navController.navigate(R.id.sleepDetailFragment)
         }
-        dashboard_card_mood.setOnClickListener {
+        binding.cardMood.setOnClickListener {
             navController.navigate(R.id.moodDetailFragment)
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

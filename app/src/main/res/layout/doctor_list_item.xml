@@ -8,7 +8,7 @@
     android:layout_height="wrap_content">
 
     <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/doctor_item_name"
+        android:id="@+id/item_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -21,7 +21,7 @@
         tools:text="Doctor Name" />
 
     <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/doctor_item_spec"
+        android:id="@+id/item_spec"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/colorSecondary"
@@ -30,37 +30,37 @@
         android:layout_marginEnd="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/doctor_item_name"
+        app:layout_constraintTop_toBottomOf="@+id/item_name"
         tools:text="Specialization" />
 
     <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/doctor_item_address"
+        android:id="@+id/item_address"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="4dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/doctor_item_spec"
+        app:layout_constraintTop_toBottomOf="@+id/item_spec"
         tools:text="Address" />
 
     <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/doctor_item_phone"
+        android:id="@+id/item_phone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="4dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/doctor_item_address"
+        app:layout_constraintTop_toBottomOf="@+id/item_address"
         tools:text="Phone" />
 
     <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/doctor_item_commentary"
+        android:id="@+id/item_commentary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="4dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/doctor_item_phone"
+        app:layout_constraintTop_toBottomOf="@+id/item_phone"
         tools:text="commentary" />
 
     <include
@@ -69,18 +69,18 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
-        app:layout_constraintBottom_toBottomOf="@+id/doctor_item_commentary"
+        app:layout_constraintBottom_toBottomOf="@+id/item_commentary"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/doctor_item_commentary" />
+        app:layout_constraintTop_toTopOf="@+id/item_commentary" />
 
     <View
-        android:id="@+id/divider2"
+        android:id="@+id/item_divider"
         android:layout_width="0dp"
         android:layout_height="1dp"
         android:layout_marginTop="4dp"
         android:background="@color/colorPrimary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/doctor_item_commentary" />
+        app:layout_constraintTop_toBottomOf="@id/item_commentary" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -5,7 +5,7 @@
     android:layout_height="match_parent">
 
     <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/custom_treatment_title"
+        android:id="@+id/treatment_title"
         style="@style/CardTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -15,7 +15,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/custom_treatment_name_label"
+        android:id="@+id/treatment_name_label"
         style="@style/CustomTextInputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -23,17 +23,17 @@
         android:hint="@string/treatment_s_name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/custom_treatment_title">
+        app:layout_constraintTop_toBottomOf="@id/treatment_title">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/custom_treatment_name"
+            android:id="@+id/treatment_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="text" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/custom_treatment_duration_label"
+        android:id="@+id/treatment_duration_label"
         style="@style/CustomTextInputLayoutDropDown"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -41,10 +41,10 @@
         android:hint="@string/treatment_s_duration"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/custom_treatment_name_label">
+        app:layout_constraintTop_toBottomOf="@id/treatment_name_label">
 
         <AutoCompleteTextView
-            android:id="@+id/custom_treatment_duration"
+            android:id="@+id/treatment_duration"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:cursorVisible="false"
@@ -52,36 +52,36 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/custom_treatment_dosage_label"
+        android:id="@+id/treatment_dosage_label"
         style="@style/CustomTextInputLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         android:hint="@string/dosage"
-        app:layout_constraintEnd_toStartOf="@id/custom_treatment_format_label"
+        app:layout_constraintEnd_toStartOf="@id/treatment_format_label"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/custom_treatment_duration_label">
+        app:layout_constraintTop_toBottomOf="@id/treatment_duration_label">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/custom_treatment_dosage"
+            android:id="@+id/treatment_dosage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="numberDecimal" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/custom_treatment_format_label"
+        android:id="@+id/treatment_format_label"
         style="@style/CustomTextInputLayoutDropDown"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         android:hint="@string/format"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/custom_treatment_dosage_label"
-        app:layout_constraintTop_toBottomOf="@id/custom_treatment_duration_label">
+        app:layout_constraintStart_toEndOf="@id/treatment_dosage_label"
+        app:layout_constraintTop_toBottomOf="@id/treatment_duration_label">
 
         <AutoCompleteTextView
-            android:id="@+id/custom_treatment_format"
+            android:id="@+id/treatment_format"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:cursorVisible="false"
@@ -89,14 +89,14 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <LinearLayout
-        android:id="@+id/custom_treatment_time"
+        android:id="@+id/treatment_time"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/custom_treatment_dosage_label">
+        app:layout_constraintTop_toBottomOf="@id/treatment_dosage_label">
 
         <com.google.android.material.chip.ChipGroup
             android:layout_width="wrap_content"
@@ -108,7 +108,7 @@
             android:layout_gravity="center_horizontal">
 
             <com.google.android.material.chip.Chip
-                android:id="@+id/custom_treatment_morning_chip"
+                android:id="@+id/morning_chip"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 style="@style/CustomChipChoice"
@@ -116,7 +116,7 @@
                 android:text="@string/morning"/>
 
             <com.google.android.material.chip.Chip
-                android:id="@+id/custom_treatment_noon_chip"
+                android:id="@+id/noon_chip"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 style="@style/CustomChipChoice"
@@ -124,7 +124,7 @@
                 android:text="@string/noon"/>
 
             <com.google.android.material.chip.Chip
-                android:id="@+id/custom_treatment_afternoon_chip"
+                android:id="@+id/afternoon_chip"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 style="@style/CustomChipChoice"
@@ -132,7 +132,7 @@
                 android:text="@string/afternoon"/>
 
             <com.google.android.material.chip.Chip
-                android:id="@+id/custom_treatment_evening_chip"
+                android:id="@+id/evening_chip"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 style="@style/CustomChipChoice"
@@ -152,27 +152,27 @@
     </LinearLayout>
 
     <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/custom_treatment_save_btn"
+        android:id="@+id/save_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="24dp"
         android:textColor="@color/colorPrimary"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Button"
         android:text="@string/save"
-        app:layout_constraintTop_toBottomOf="@id/custom_treatment_time"
+        app:layout_constraintTop_toBottomOf="@id/treatment_time"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
     <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/custom_treatment_cancel_btn"
+        android:id="@+id/cancel_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="24dp"
         android:textColor="@color/colorPrimary"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Button"
         android:text="@string/cancel"
-        app:layout_constraintTop_toBottomOf="@id/custom_treatment_time"
-        app:layout_constraintEnd_toStartOf="@id/custom_treatment_save_btn"
+        app:layout_constraintEnd_toStartOf="@id/save_btn"
+        app:layout_constraintTop_toBottomOf="@id/treatment_time"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

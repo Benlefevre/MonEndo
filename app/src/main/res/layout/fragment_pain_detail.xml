@@ -40,7 +40,9 @@
                     android:text="@string/click_on_a_value_to_see_all_information_you_saved_that_day"
                     android:textColor="@color/colorPrimary" />
 
-                <include layout="@layout/chipgroup_duration" />
+                <include
+                    android:id="@+id/chipGroup"
+                    layout="@layout/chipgroup_duration" />
 
             </LinearLayout>
         </androidx.cardview.widget.CardView>

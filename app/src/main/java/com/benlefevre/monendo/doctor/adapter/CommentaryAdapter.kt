@@ -43,31 +43,31 @@ class CommentaryAdapter(
         val commentary = commentaries[position]
         with(holder) {
             listener?.let {
-                binding.commentaryItemCheck.visibility = View.VISIBLE
-                binding.commentaryItemCheck.setOnClickListener {
+                binding.itemCheck.visibility = View.VISIBLE
+                binding.itemCheck.setOnClickListener {
                     listener.onCommentarySelected(it.tag as Commentary)
                 }
             }
-            binding.commentaryItemDivider.visibility =
+            binding.itemDivider.visibility =
                 if (commentaries.size < 2 || commentaries.indexOf(commentary) == commentaries.lastIndex) View.GONE else View.VISIBLE
-            binding.commentaryItemCheck.tag = commentary
+            binding.itemCheck.tag = commentary
             binding.root.tag = commentary
-            binding.commentaryItemDate.text = formatDateWithYear(commentary.date)
-            binding.commentaryItemContent.text = commentary.userInput
-            binding.commentaryItemUserName.text = commentary.authorName
-            binding.commentaryItemDoctorName.text = commentary.doctorName
+            binding.itemDate.text = formatDateWithYear(commentary.date)
+            binding.itemContent.text = commentary.userInput
+            binding.userName.text = commentary.authorName
+            binding.doctorName.text = commentary.doctorName
             if (commentary.authorPhotoUrl != NO_PHOTO_URL) {
                 Glide.with(context)
                     .load(commentary.authorPhotoUrl)
                     .apply(RequestOptions.circleCropTransform())
-                    .into(binding.commentaryItemUserPhoto)
+                    .into(binding.userPhoto)
             } else {
                 Glide.with(context)
                     .load(R.drawable.ic_girl)
                     .apply(RequestOptions.circleCropTransform())
-                    .into(binding.commentaryItemUserPhoto)
+                    .into(binding.userPhoto)
             }
-            defineNbStars(commentary.rating, binding.commentaryItemRating)
+            defineNbStars(commentary.rating, binding.itemRating)
         }
     }
 }

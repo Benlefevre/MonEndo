@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/custom_dialog_pill_title"
+        android:id="@+id/pill_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         style="@style/CardTitle"
@@ -15,7 +15,7 @@
         app:layout_constraintEnd_toEndOf="parent"/>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/custom_dialog_pill_label"
+        android:id="@+id/pill_label"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -25,10 +25,10 @@
         android:hint="@string/how_many_pills"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/custom_dialog_pill_title">
+        app:layout_constraintTop_toBottomOf="@id/pill_title">
 
         <AutoCompleteTextView
-            android:id="@+id/custom_dialog_pill_format"
+            android:id="@+id/pill_format"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:cursorVisible="false"

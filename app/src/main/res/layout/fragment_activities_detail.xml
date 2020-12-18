@@ -31,7 +31,9 @@
                     android:layout_height="250dp"
                     android:layout_margin="8dp" />
 
-                <include layout="@layout/chipgroup_duration" />
+                <include
+                    android:id="@+id/chipGroup"
+                    layout="@layout/chipgroup_duration" />
 
                 <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/symptom_filter_legend"
