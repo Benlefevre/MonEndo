@@ -467,6 +467,7 @@ class TreatmentFragment : Fragment(R.layout.fragment_treatment) {
                 if (verifyTreatmentInput()) {
                     setupTreatment()
                     setTreatmentNotification()
+                    configureResetCurrentChecked(requireContext())
                     dialog.cancel()
                 }
             }

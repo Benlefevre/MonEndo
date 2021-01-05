@@ -63,7 +63,6 @@
         <item name="chipBackgroundColor">@color/background_color_chip</item>
         <item name="chipStrokeColor">@color/stroke_color_chip</item>
         <item name="android:textColor">@color/text_color_chip</item>
-<!--        <item name="checkedIcon">@drawable/ic_check_24dp</item>-->
         <item name="checkedIconVisible">false</item>
         <item name="rippleColor">@color/colorSecondary</item>
         <item name="chipStrokeWidth">1dp</item>
@@ -75,7 +74,6 @@
         <item name="chipBackgroundColor">@color/background_color_chip</item>
         <item name="chipStrokeColor">@color/stroke_color_chip</item>
         <item name="android:textColor">@color/text_color_chip</item>
-<!--        <item name="checkedIcon">@drawable/ic_check_24dp</item>-->
         <item name="checkedIconVisible">false</item>
         <item name="rippleColor">@color/colorSecondary</item>
         <item name="chipStrokeWidth">1dp</item>
@@ -91,6 +89,18 @@
         <item name="chipIconVisible">true</item>
         <item name="android:layout_height">60dp</item>
         <item name="android:layout_width">wrap_content</item>
+    </style>
+
+    <style name="CustomTreatmentChip" parent="@style/Widget.MaterialComponents.Chip.Filter">
+        <item name="chipBackgroundColor">@color/background_color_chip</item>
+        <item name="chipStrokeColor">@color/stroke_color_chip</item>
+        <item name="android:textColor">@color/text_color_chip</item>
+        <item name="checkedIcon">@drawable/ic_check_24dp</item>
+        <item name="checkedIconVisible">true</item>
+        <item name="rippleColor">@color/colorSecondary</item>
+        <item name="chipStrokeWidth">1dp</item>
+        <item name="android:textAlignment">center</item>
+        <item name="chipMinHeight">35dp</item>
     </style>
 
     <style name="CustomTextInputLayoutDropDown" parent="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">

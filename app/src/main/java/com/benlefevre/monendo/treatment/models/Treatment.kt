@@ -8,5 +8,9 @@ data class Treatment(
     var morning: String = "",
     var noon: String = "",
     var afternoon: String = "",
-    var evening: String = ""
+    var evening: String = "",
+    var isTakenMorning : Boolean = false,
+    var isTakenNoon : Boolean = false,
+    var isTakenAfternoon : Boolean = false,
+    var isTakenEvening : Boolean = false
 )

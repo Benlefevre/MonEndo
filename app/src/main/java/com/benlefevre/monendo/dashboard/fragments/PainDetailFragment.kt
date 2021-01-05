@@ -46,7 +46,11 @@ class PainDetailFragment : Fragment(R.layout.fragment_pain_detail) {
             }
             description = null
             setDrawBorders(false)
-            xAxis.textColor = getColor(context, R.color.colorPrimary)
+             xAxis.apply {
+                granularity = 1f
+                isGranularityEnabled = true
+                textColor = getColor(context, R.color.colorPrimary)
+            }
             axisLeft.apply {
                 granularity = 1f
                 setDrawZeroLine(true)

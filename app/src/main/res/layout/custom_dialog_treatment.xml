@@ -29,7 +29,7 @@
             android:id="@+id/treatment_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="text" />
+            android:inputType="textCapWords" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -98,6 +98,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/treatment_dosage_label">
 
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="8dp"
+            android:text="@string/click_on_the_day_s_period_to_define_the_notification_s_hour_of_taking_treatment"
+            android:textColor="@color/colorPrimary" />
+
         <com.google.android.material.chip.ChipGroup
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -140,14 +148,6 @@
                 android:text="@string/evening"/>
 
         </com.google.android.material.chip.ChipGroup>
-
-        <com.google.android.material.textview.MaterialTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:layout_gravity="center_horizontal"
-            android:textColor="@color/colorPrimary"
-            android:text="@string/click_on_the_day_s_period_to_define_the_notification_s_hour_of_taking_treatment" />
 
     </LinearLayout>
 

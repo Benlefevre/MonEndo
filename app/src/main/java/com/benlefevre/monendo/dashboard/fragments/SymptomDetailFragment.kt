@@ -94,6 +94,8 @@ class SymptomDetailFragment : Fragment(R.layout.fragment_symptom_detail) {
             highlightValues(null)
             description = null
             xAxis.apply {
+                granularity = 1f
+                isGranularityEnabled = true
                 textColor = getColor(context, R.color.colorPrimary)
             }
             axisLeft.apply {
