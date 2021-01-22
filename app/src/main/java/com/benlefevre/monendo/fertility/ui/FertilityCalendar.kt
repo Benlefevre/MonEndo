@@ -259,12 +259,12 @@ class FertilityCalendar(context: Context, attrs: AttributeSet) : View(context, a
 
         clearAllCalendarDays()
 
-        drawMenstruationInCalendar(
+        drawAllMenstruationInCalendar(
             previousMens, previousLastDay, lastMens,
             lastDayLastMens, lastDayNextMens, nextMens
         )
 
-        drawFertilizationInCalendar(previousFertiBegin, previousFertiEnd, fertiBegin, fertiEnd)
+        drawAllFertilizationInCalendar(previousFertiBegin, previousFertiEnd, fertiBegin, fertiEnd)
 
         drawOvulationInCalendar(previousOvulDay, ovulDay)
 
@@ -280,65 +280,57 @@ class FertilityCalendar(context: Context, attrs: AttributeSet) : View(context, a
             drawOvulation(ovulDay)
     }
 
-    private fun drawFertilizationInCalendar(
+    private fun drawAllFertilizationInCalendar(
         previousFertiBegin: Int, previousFertiEnd: Int,
         fertiBegin: Int, fertiEnd: Int
     ) {
         //        draw previous fertilization period
-        if (previousFertiBegin < 0 && previousFertiEnd >= 0) {
-            for (index in 0..previousFertiEnd)
-                drawFertilization(index)
-        }
-        if (previousFertiBegin < calendarDays.size && previousFertiEnd >= calendarDays.size) {
-            for (index in previousFertiBegin until calendarDays.size)
-                drawFertilization(index)
-        }
-        if (previousFertiBegin >= 0 && previousFertiEnd < calendarDays.size) {
-            for (index in previousFertiBegin..previousFertiEnd)
-                drawFertilization(index)
-        }
-        //        draw fertilization period
+        drawFertilizationPeriod(previousFertiBegin, previousFertiEnd)
+        //        draw current fertilization period
+        drawFertilizationPeriod(fertiBegin, fertiEnd)
+    }
+
+    private fun drawFertilizationPeriod(
+        fertiBegin: Int,
+        fertiEnd: Int
+    ) {
         if (fertiBegin < 0 && fertiEnd >= 0) {
             for (index in 0..fertiEnd)
-                drawFertilization(index)
+                drawFertilizationDays(index)
         }
         if (fertiBegin < calendarDays.size && fertiEnd >= calendarDays.size) {
             for (index in fertiBegin until calendarDays.size)
-                drawFertilization(index)
+                drawFertilizationDays(index)
         }
         if (fertiBegin >= 0 && fertiEnd < calendarDays.size) {
             for (index in fertiBegin..fertiEnd)
-                drawFertilization(index)
+                drawFertilizationDays(index)
         }
     }
 
-    private fun drawMenstruationInCalendar(
+    private fun drawAllMenstruationInCalendar(
         previousMens: Int, previousLastDay: Int, lastMens: Int,
         lastDayLastMens: Int, lastDayNextMens: Int, nextMens: Int
     ) {
         //        draw previous month menstruation
-        if (previousMens >= 0) {
-            for (index in previousMens until previousLastDay)
-                drawMenstruation(index)
-        }else{
-            for (index in 0 until previousLastDay)
-                drawMenstruation(index)
-        }
+        drawMensPeriod(previousMens, previousLastDay)
         //        draw last menstruation
-        if (lastMens >= 0) {
-            for (index in lastMens until lastDayLastMens)
-                drawMenstruation(index)
-        } else {
-            for (index in 0 until lastDayLastMens)
-                drawMenstruation(index)
-        }
+        drawMensPeriod(lastMens,lastDayLastMens)
         //        draw next menstruation
         if (lastDayNextMens < calendarDays.size) {
-            for (index in nextMens until lastDayNextMens)
-                drawMenstruation(index)
+            drawMensPeriod(nextMens,lastDayNextMens)
         } else {
-            for (index in nextMens until calendarDays.size)
-                drawMenstruation(index)
+            drawMensPeriod(nextMens,calendarDays.size)
+        }
+    }
+
+    private fun drawMensPeriod(mens: Int, lastDay: Int) {
+        if (mens >= 0) {
+            for (index in mens until lastDay)
+                drawMenstruationDays(index)
+        } else {
+            for (index in 0 until lastDay)
+                drawMenstruationDays(index)
         }
     }
 
@@ -349,14 +341,14 @@ class FertilityCalendar(context: Context, attrs: AttributeSet) : View(context, a
         }
     }
 
-    private fun drawFertilization(dayIndex: Int) {
+    private fun drawFertilizationDays(dayIndex: Int) {
         calendarDays[dayIndex].apply {
             color = getColor(context, R.color.graph1)
             textColor = getColor(context, R.color.colorOnPrimary)
         }
     }
 
-    private fun drawMenstruation(dayIndex: Int) {
+    private fun drawMenstruationDays(dayIndex: Int) {
         calendarDays[dayIndex].apply {
             color = getColor(context, R.color.graph4)
             textColor = getColor(context, R.color.colorOnPrimary)

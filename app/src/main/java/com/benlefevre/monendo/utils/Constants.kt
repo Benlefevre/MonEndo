@@ -53,3 +53,6 @@ const val TREATMENT_CHANNEL = "Treatment notification"
 
 const val GYNE = "Gyne"
 const val DOC = "Doc"
+
+const val GEOFILTER_DIST = "geofilter.distance"
+const val REFINE_CODE = "refine.code_postal"

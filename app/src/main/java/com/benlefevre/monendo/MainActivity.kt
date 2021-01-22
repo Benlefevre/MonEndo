@@ -1,6 +1,7 @@
 package com.benlefevre.monendo
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View.GONE
@@ -13,7 +14,6 @@ import androidx.navigation.ui.NavigationUI
 import com.benlefevre.monendo.databinding.ActivityMainBinding
 import com.benlefevre.monendo.login.LoginActivity
 import com.benlefevre.monendo.login.User
-import com.benlefevre.monendo.login.convertFirebaseUserIntoUser
 import com.benlefevre.monendo.utils.ConnectivityLiveData
 import com.benlefevre.monendo.utils.NO_MAIL
 import com.benlefevre.monendo.utils.NO_NAME
@@ -21,7 +21,7 @@ import com.benlefevre.monendo.utils.NO_PHOTO_URL
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.textview.MaterialTextView
-import com.google.firebase.auth.FirebaseAuth
+import org.koin.android.ext.android.inject
 
 
 class MainActivity : AppCompatActivity() {
@@ -34,6 +34,7 @@ class MainActivity : AppCompatActivity() {
     private val binding get() = _binding!!
 
     private lateinit var connectivityLiveData: ConnectivityLiveData
+    private val sharedPreferences : SharedPreferences by inject()
 
     companion object {
         var isConnected = false
@@ -43,17 +44,25 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _binding = ActivityMainBinding.inflate(LayoutInflater.from(this),null,false)
-        if (FirebaseAuth.getInstance().currentUser == null) {
+//        if (FirebaseAuth.getInstance().currentUser == null) {
+        if (!sharedPreferences.getBoolean("isLogged",false)) {
             startActivity(Intent(this, LoginActivity::class.java))
             finish()
         } else {
             setContentView(binding.root)
             verifyConnectivity()
-            FirebaseAuth.getInstance().currentUser?.let {
-                user =
-                    convertFirebaseUserIntoUser(it)
-                updateDrawerHeader(user)
-            }
+            user = User(
+                sharedPreferences.getString("id","0")!!,
+                sharedPreferences.getString("name", NO_NAME)!!,
+                sharedPreferences.getString("mail", NO_MAIL)!!,
+                sharedPreferences.getString("url", NO_PHOTO_URL)!!
+            )
+            updateDrawerHeader(user)
+//            FirebaseAuth.getInstance().currentUser?.let {
+//                user =
+//                    convertFirebaseUserIntoUser(it)
+//                updateDrawerHeader(user)
+//            }
             setupNavigation()
         }
     }

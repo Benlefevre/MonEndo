@@ -10,7 +10,9 @@ import com.benlefevre.monendo.doctor.repository.CommentaryRepository
 import com.benlefevre.monendo.doctor.repository.DoctorRepository
 import com.benlefevre.monendo.login.User
 import com.benlefevre.monendo.utils.DOC
+import com.benlefevre.monendo.utils.GEOFILTER_DIST
 import com.benlefevre.monendo.utils.GYNE
+import com.benlefevre.monendo.utils.REFINE_CODE
 import com.google.firebase.firestore.ktx.toObject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -60,8 +62,8 @@ class DoctorViewModel(
         val location = handle.get<String>("location") ?: ""
         val geolocation = handle.get<String>("geolocation") ?: ""
         return (handle.contains("doctor") && mapQ == map["q"]
-                && ((map.containsKey("geofilter.distance") && geolocation == map["geofilter.distance"])
-                || (map.containsKey("refine.code_postal") && location == map["refine.code_postal"])))
+                && ((map.containsKey(GEOFILTER_DIST) && geolocation == map[GEOFILTER_DIST])
+                || (map.containsKey(REFINE_CODE) && location == map[REFINE_CODE])))
     }
 
     fun getDoctors(map: Map<String, String>) = viewModelScope.launch {
@@ -98,8 +100,8 @@ class DoctorViewModel(
 
         handle.set("doctor", sortedList)
         handle.set("mapQ", map["q"])
-        handle.set("location", map["refine.code_postal"])
-        handle.set("geolocation", map["geofilter.distance"])
+        handle.set("location", map[REFINE_CODE])
+        handle.set("geolocation", map[GEOFILTER_DIST])
         _doctor.value =
             DoctorUiState.DoctorReady(sortedList)
     }
@@ -155,15 +157,15 @@ class DoctorViewModel(
     }
 
     fun setPostalCodeQuery(postalCode: String) {
-        queryMap.remove("geofilter.distance")
+        queryMap.remove(GEOFILTER_DIST)
         queryMap["facet"] = "code_postal"
-        queryMap["refine.code_postal"] = postalCode
+        queryMap[REFINE_CODE] = postalCode
     }
 
     fun setGeoLocationQuery(location: Location) {
         queryMap.remove("facet")
-        queryMap.remove("refine.code_postal")
-        queryMap["geofilter.distance"] = "${location.latitude},${location.longitude},5000"
+        queryMap.remove(REFINE_CODE)
+        queryMap[GEOFILTER_DIST] = "${location.latitude},${location.longitude},5000"
     }
 }
 

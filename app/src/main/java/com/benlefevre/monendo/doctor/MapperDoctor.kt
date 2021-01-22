@@ -13,11 +13,11 @@ fun createDoctorsFromCpamApi(response : ResultApi) : List<Doctor>{
                     it.fields.nom,
                     it.fields.civilite,
                     it.fields.adresse,
-                    it.fields.libelle_profession,
+                    it.fields.libelleProfession,
                     it.fields.convention,
                     it.fields.telephone,
                     it.fields.actes,
-                    it.fields.types_actes,
+                    it.fields.typesActes,
                     it.fields.coordonnees,
                     it.fields.dist
                 )

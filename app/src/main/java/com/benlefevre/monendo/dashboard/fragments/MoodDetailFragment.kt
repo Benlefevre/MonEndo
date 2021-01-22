@@ -11,6 +11,7 @@ import com.benlefevre.monendo.dashboard.models.PainWithRelations
 import com.benlefevre.monendo.dashboard.viewmodels.DashboardViewModel
 import com.benlefevre.monendo.databinding.FragmentMoodDetailBinding
 import com.benlefevre.monendo.utils.formatDateWithoutYear
+import com.benlefevre.monendo.utils.setupChipDurationListener
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.*
@@ -108,30 +109,7 @@ class MoodDetailFragment : Fragment(R.layout.fragment_mood_detail) {
      * to fetch user's input in locale DB.
      */
     private fun setupChipListener() {
-        binding.chipGroup.chipWeek.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) {
-                viewModel.getPainsRelations7days()
-
-            }
-        }
-        binding.chipGroup.chipMonth.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) {
-                viewModel.getPainsRelations30days()
-
-            }
-        }
-        binding.chipGroup.chip6months.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) {
-                viewModel.getPainsRelations180days()
-
-            }
-        }
-        binding.chipGroup.chipYear.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) {
-                viewModel.getPainsRelations360days()
-
-            }
-        }
+        setupChipDurationListener(binding.chipGroup.durationChipgroup,viewModel)
         binding.chipGroup.chipWeek.isChecked = true
     }
 

@@ -139,7 +139,7 @@ class DoctorViewModelTest {
                 )
             ),
             listOf(
-                Facet_groups(
+                FacetGroups(
                     listOf(
                         Facets(
                             0,

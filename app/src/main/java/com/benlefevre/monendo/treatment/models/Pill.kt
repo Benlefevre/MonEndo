@@ -40,4 +40,12 @@ class Pill(width: Float, var multiWidth: Int, height: Float, var multiHeight: In
         shadowRectF =
             RectF(x - radius / 1.2f, y - radius / 1.2f, x + radius / 1.2f, y + radius / 1.2f)
     }
+
+    fun setChecked(color: Int) {
+        if (!isChecked) {
+            this.color = color
+            isChecked = true
+        } else
+            isChecked = false
+    }
 }

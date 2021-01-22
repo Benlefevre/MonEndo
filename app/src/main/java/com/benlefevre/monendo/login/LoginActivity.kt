@@ -2,6 +2,7 @@ package com.benlefevre.monendo.login
 
 import android.app.Activity
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.appcompat.app.AppCompatActivity
@@ -15,6 +16,7 @@ import com.firebase.ui.auth.ErrorCodes
 import com.firebase.ui.auth.IdpResponse
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class LoginActivity : AppCompatActivity() {
@@ -22,13 +24,36 @@ class LoginActivity : AppCompatActivity() {
     private val loginViewModel : LoginActivityViewModel by viewModel()
     private var _binding : ActivityLoginBinding? = null
     private val binding get() = _binding!!
+    private val sharedPreferences : SharedPreferences by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _binding = ActivityLoginBinding.inflate(LayoutInflater.from(this),null,false)
-        if (FirebaseAuth.getInstance().currentUser != null)
+        if (FirebaseAuth.getInstance().currentUser != null) {
             AuthUI.getInstance().signOut(this)
+            removeUserInPreferences()
+        }
         createSignInIntent()
+    }
+
+    private fun removeUserInPreferences() {
+        sharedPreferences.edit().apply {
+            remove("id")
+            remove("name")
+            remove("mail")
+            remove("url")
+            putBoolean("isLogged", false)
+        }.apply()
+    }
+
+    private fun saveUserInPreferences(user: User) {
+        sharedPreferences.edit().apply {
+            putString("id", user.id)
+            putString("name", user.name)
+            putString("mail", user.mail)
+            putString("url", user.photoUrl)
+            putBoolean("isLogged", true)
+        }.apply()
     }
 
     private fun createSignInIntent() {
@@ -68,12 +93,13 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun saveUserInFirestore() {
+        val user : User
         FirebaseAuth.getInstance().currentUser?.let {
+            user = convertFirebaseUserIntoUser(it)
             if (!it.isAnonymous) {
-                val user =
-                    convertFirebaseUserIntoUser(it)
                 loginViewModel.createUserInFirestore(user)
             }
+            saveUserInPreferences(user)
         }
     }
 
@@ -110,30 +136,11 @@ class LoginActivity : AppCompatActivity() {
                             getString(R.string.unknown_error_login),
                             Snackbar.LENGTH_SHORT
                         ).show()
-                        ErrorCodes.ANONYMOUS_UPGRADE_MERGE_CONFLICT -> {
-                        }
-                        ErrorCodes.DEVELOPER_ERROR -> {
-                        }
-                        ErrorCodes.EMAIL_LINK_CROSS_DEVICE_LINKING_ERROR -> {
-                        }
-                        ErrorCodes.EMAIL_LINK_DIFFERENT_ANONYMOUS_USER_ERROR -> {
-                        }
-                        ErrorCodes.EMAIL_LINK_PROMPT_FOR_EMAIL_ERROR -> {
-                        }
-                        ErrorCodes.EMAIL_LINK_WRONG_DEVICE_ERROR -> {
-                        }
-                        ErrorCodes.EMAIL_MISMATCH_ERROR -> {
-                        }
-                        ErrorCodes.ERROR_GENERIC_IDP_RECOVERABLE_ERROR -> {
-                        }
-                        ErrorCodes.ERROR_USER_DISABLED -> {
-                        }
-                        ErrorCodes.INVALID_EMAIL_LINK_ERROR -> {
-                        }
-                        ErrorCodes.PLAY_SERVICES_UPDATE_CANCELLED -> {
-                        }
-                        ErrorCodes.PROVIDER_ERROR -> {
-                        }
+                        else -> Snackbar.make(
+                            binding.loginRoot,
+                            getString(R.string.unknown_error_login),
+                            Snackbar.LENGTH_LONG
+                        ).show()
                     }
                 }
             }

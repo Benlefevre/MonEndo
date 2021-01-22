@@ -12,6 +12,7 @@ import com.benlefevre.monendo.dashboard.viewmodels.DashboardViewModel
 import com.benlefevre.monendo.databinding.FragmentActivitiesDetailBinding
 import com.benlefevre.monendo.utils.formatDateWithYear
 import com.benlefevre.monendo.utils.formatDateWithoutYear
+import com.benlefevre.monendo.utils.setupChipDurationListener
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.*
@@ -114,29 +115,7 @@ class ActivitiesDetailFragment : Fragment(R.layout.fragment_activities_detail) {
      * to fetch user's input in locale DB.
      */
     private fun setupChipListener() {
-        binding.chipGroup.chipWeek.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) {
-                viewModel.getPainsRelations7days()
-            }
-        }
-        binding.chipGroup.chipMonth.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) {
-                viewModel.getPainsRelations30days()
-
-            }
-        }
-        binding.chipGroup.chip6months.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) {
-                viewModel.getPainsRelations180days()
-
-            }
-        }
-        binding.chipGroup.chipYear.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) {
-                viewModel.getPainsRelations360days()
-
-            }
-        }
+        setupChipDurationListener(binding.chipGroup.durationChipgroup, viewModel)
         binding.chipGroup.chipWeek.isChecked = true
     }
 
@@ -293,6 +272,7 @@ class ActivitiesDetailFragment : Fragment(R.layout.fragment_activities_detail) {
         binding.activitiesDetailChart.apply {
             setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
                 override fun onNothingSelected() {
+//                    There is nothing to do...
                 }
 
                 override fun onValueSelected(e: Entry?, h: Highlight?) {
@@ -350,6 +330,8 @@ class ActivitiesDetailFragment : Fragment(R.layout.fragment_activities_detail) {
         binding.activitiesDetailChart.apply {
             setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
                 override fun onNothingSelected() {
+//                    There is nothing to do...
+
                 }
 
                 override fun onValueSelected(e: Entry?, h: Highlight?) {

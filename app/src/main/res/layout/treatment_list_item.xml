@@ -50,16 +50,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/chipGroup" />
 
-<!--    <com.google.android.material.textview.MaterialTextView-->
-<!--        android:id="@+id/item_hour_value"-->
-<!--        android:layout_width="0dp"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_margin="8dp"-->
-<!--        app:layout_constraintBottom_toBottomOf="@+id/item_hour_legend"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toEndOf="@id/guideline2"-->
-<!--        app:layout_constraintTop_toTopOf="@+id/item_hour_legend" />-->
-
     <com.google.android.material.chip.ChipGroup
         android:id="@+id/chipGroup"
         android:layout_width="0dp"

@@ -1,6 +1,5 @@
 package com.benlefevre.monendo.fertility.ui
 
-import android.app.DatePickerDialog
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
@@ -137,26 +136,6 @@ class FertilityFragment : Fragment(R.layout.fragment_fertility) {
     }
 
     /**
-     * Sets a OnDateSetListener with updateMenstruationDate() and shows a DatePickerDialog
-     */
-    private fun openDatePicker() {
-        val dateListener = DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
-            calendar.apply {
-                set(Calendar.YEAR, year)
-                set(Calendar.MONTH, month)
-                set(Calendar.DAY_OF_MONTH, dayOfMonth)
-            }
-            updateMenstruationDate()
-        }
-        context?.let {
-            DatePickerDialog(
-                it, dateListener, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH),
-                calendar.get(Calendar.DAY_OF_MONTH)
-            ).show()
-        }
-    }
-
-    /**
      * Fetches the date set in the DatePicker to bind it into the corresponding field and saves the
      * value into SharedPreferences.
      */
@@ -258,32 +237,10 @@ class FertilityFragment : Fragment(R.layout.fragment_fertility) {
 
     private fun setListener() {
         mensDay.setOnClickListener {
-            openDatePicker()
+            openDatePicker(requireContext(),calendar,::updateMenstruationDate)
         }
 
-        durationMens.apply {
-            setOnClickListener {
-                if (mensDay.text.isNullOrBlank()) {
-                    it.clearFocus()
-                    binding.fertilityDayMensLabel.error =
-                        "Please enter the first day of your last menstruation"
-                } else {
-                    binding.fertilityDayMensLabel.isErrorEnabled = false
-                }
-            }
-            addTextChangedListener {
-                if (it.isNullOrBlank()) {
-                    binding.fertilityCalendar.clearAllCalendarDays()
-                } else {
-                    if (it.toString().toInt() >= 10) {
-                        sharedPreferences.edit()
-                            .putString(DURATION, durationMens.text.toString())
-                            .apply()
-                        initCalendar()
-                    }
-                }
-            }
-        }
+        durationMensSetupListeners()
 
         binding.fertilityChipMens.setOnClickListener {
             if (!mensDates.isNullOrEmpty())
@@ -307,6 +264,32 @@ class FertilityFragment : Fragment(R.layout.fragment_fertility) {
                     Date()
                 )
             )
+        }
+    }
+
+    private fun durationMensSetupListeners() {
+        durationMens.apply {
+            setOnClickListener {
+                if (mensDay.text.isNullOrBlank()) {
+                    it.clearFocus()
+                    binding.fertilityDayMensLabel.error =
+                        "Please enter the first day of your last menstruation"
+                } else {
+                    binding.fertilityDayMensLabel.isErrorEnabled = false
+                }
+            }
+            addTextChangedListener {
+                if (it.isNullOrBlank()) {
+                    binding.fertilityCalendar.clearAllCalendarDays()
+                } else {
+                    if (it.toString().toInt() >= 10) {
+                        sharedPreferences.edit()
+                            .putString(DURATION, durationMens.text.toString())
+                            .apply()
+                        initCalendar()
+                    }
+                }
+            }
         }
     }
 

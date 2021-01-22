@@ -1,6 +1,5 @@
 package com.benlefevre.monendo.treatment.ui
 
-import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.DialogInterface
 import android.content.Intent
@@ -8,6 +7,7 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.*
 import android.widget.ArrayAdapter
+import androidx.core.view.forEach
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -24,6 +24,7 @@ import com.benlefevre.monendo.treatment.TreatmentViewHolder
 import com.benlefevre.monendo.treatment.models.Pill
 import com.benlefevre.monendo.treatment.models.Treatment
 import com.benlefevre.monendo.utils.*
+import com.google.android.material.chip.Chip
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -35,7 +36,7 @@ class TreatmentFragment : Fragment(R.layout.fragment_treatment) {
 
     private var _binding: FragmentTreatmentBinding? = null
     private val binding get() = _binding!!
-    private var _dialogBinding : CustomDialogTreatmentBinding? = null
+    private var _dialogBinding: CustomDialogTreatmentBinding? = null
     private val dialogBinding get() = _dialogBinding!!
     private lateinit var dialog: androidx.appcompat.app.AlertDialog
     private lateinit var treatment: Treatment
@@ -231,27 +232,12 @@ class TreatmentFragment : Fragment(R.layout.fragment_treatment) {
             var elapsedTime = System.currentTimeMillis() - today.time
             elapsedTime /= (24 * 60 * 60 * 1000)
             Timber.i("current time = ${System.currentTimeMillis()} / todayTime = ${today.time} / elapsedTime = $elapsedTime")
-            binding.pillTablet.setupTablet(elapsedTime.toInt())
-        }
-    }
-
-    /**
-     * Sets a OnDateSetListener with updateMenstruationDate() and shows a DatePickerDialog
-     */
-    private fun openDatePicker() {
-        val dateListener = DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
-            calendar.apply {
-                set(Calendar.YEAR, year)
-                set(Calendar.MONTH, month)
-                set(Calendar.DAY_OF_MONTH, dayOfMonth)
+            if (elapsedTime < 0) {
+                return
+            } else {
+                binding.pillTablet.setupTablet(elapsedTime.toInt())
             }
-            updateMenstruationDate()
-        }
-        context?.let {
-            DatePickerDialog(
-                it, dateListener, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH),
-                calendar.get(Calendar.DAY_OF_MONTH)
-            ).show()
+
         }
     }
 
@@ -401,74 +387,79 @@ class TreatmentFragment : Fragment(R.layout.fragment_treatment) {
                 null,
                 false
             )
-        with(dialogBinding) {
-            treatmentDuration.apply {
-                setAdapter(
-                    ArrayAdapter(
-                        context,
-                        R.layout.support_simple_spinner_dropdown_item,
-                        resources.getStringArray(R.array.duration)
-                    )
+        setupDialogTextFields(dialogBinding)
+        dialogBinding.periodChipGroup.forEach {
+            setupDialogChips(it as Chip)
+        }
+        setupDialogButtons(dialogBinding)
+    }
+
+    private fun setupDialogTextFields(binding: CustomDialogTreatmentBinding) {
+        binding.treatmentDuration.apply {
+            setAdapter(
+                ArrayAdapter(
+                    context,
+                    R.layout.support_simple_spinner_dropdown_item,
+                    resources.getStringArray(R.array.duration)
                 )
-            }
-            treatmentFormat.apply {
-                setAdapter(
-                    ArrayAdapter(
-                        context,
-                        R.layout.support_simple_spinner_dropdown_item,
-                        resources.getStringArray(R.array.format)
-                    )
+            )
+        }
+        binding.treatmentFormat.apply {
+            setAdapter(
+                ArrayAdapter(
+                    context,
+                    R.layout.support_simple_spinner_dropdown_item,
+                    resources.getStringArray(R.array.format)
                 )
-            }
-            morningChip.apply {
-                setOnCheckedChangeListener { view, isChecked ->
-                    if (isChecked) {
-                        openTreatmentTimePicker(MORNING)
-                    } else {
-                        view.text = getString(R.string.morning)
-                        treatment.morning = ""
-                    }
-                }
-            }
-            noonChip.apply {
-                setOnCheckedChangeListener { view, isChecked ->
-                    if (isChecked) {
-                        openTreatmentTimePicker(NOON)
-                    } else {
-                        view.text = getString(R.string.noon)
-                        treatment.noon = ""
-                    }
-                }
-            }
-            afternoonChip.apply {
-                setOnCheckedChangeListener { view, isChecked ->
-                    if (isChecked) {
-                        openTreatmentTimePicker(AFTERNOON)
-                    } else {
-                        view.text = getString(R.string.afternoon)
-                        treatment.afternoon = ""
-                    }
-                }
-            }
-            eveningChip.apply {
-                setOnCheckedChangeListener { view, isChecked ->
-                    if (isChecked) {
-                        openTreatmentTimePicker(EVENING)
-                    } else {
-                        view.text = getString(R.string.evening)
-                        treatment.evening = ""
-                    }
-                }
-            }
-            cancelBtn.setOnClickListener {
+            )
+        }
+    }
+
+    private fun setupDialogButtons(binding: CustomDialogTreatmentBinding) {
+        binding.cancelBtn.setOnClickListener {
+            dialog.cancel()
+        }
+        binding.saveBtn.setOnClickListener {
+            if (verifyTreatmentInput()) {
+                setupTreatment()
+                setTreatmentNotification()
+                configureResetCurrentChecked(requireContext())
                 dialog.cancel()
             }
-            saveBtn.setOnClickListener {
-                if (verifyTreatmentInput()) {
-                    setupTreatment()
-                    setTreatmentNotification()
-                    configureResetCurrentChecked(requireContext())
-                    dialog.cancel()
+        }
+    }
+
+    private fun setupDialogChips(chip: Chip) {
+        var tag = ""
+        var text = ""
+        when (chip.id) {
+            dialogBinding.morningChip.id -> {
+                tag = MORNING
+                text = getString(R.string.morning)
+            }
+            dialogBinding.noonChip.id -> {
+                tag = NOON
+                text = getString(R.string.noon)
+            }
+            dialogBinding.afternoonChip.id -> {
+                tag = AFTERNOON
+                text = getString(R.string.afternoon)
+            }
+            dialogBinding.eveningChip.id -> {
+                tag = EVENING
+                text = getString(R.string.evening)
+            }
+        }
+        chip.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (isChecked) {
+                openTreatmentTimePicker(tag)
+            } else {
+                buttonView.text = text
+                when (tag) {
+                    MORNING -> treatment.morning = ""
+                    NOON -> treatment.noon = ""
+                    AFTERNOON -> treatment.afternoon = ""
+                    EVENING -> treatment.evening = ""
                 }
             }
         }
@@ -680,7 +671,7 @@ class TreatmentFragment : Fragment(R.layout.fragment_treatment) {
 
     private fun setupClickListener() {
         binding.mensTxt.setOnClickListener {
-            openDatePicker()
+            openDatePicker(requireContext(),calendar,::updateMenstruationDate)
         }
         binding.mensNotifTxt.setOnClickListener {
             if (isStartDateEntered()) {

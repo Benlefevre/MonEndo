@@ -61,6 +61,7 @@ class PainDetailFragment : Fragment(R.layout.fragment_pain_detail) {
             axisRight.isEnabled = false
             setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
                 override fun onNothingSelected() {
+//                    There is nothing to do...
                 }
 
                 override fun onValueSelected(e: Entry?, h: Highlight?) {

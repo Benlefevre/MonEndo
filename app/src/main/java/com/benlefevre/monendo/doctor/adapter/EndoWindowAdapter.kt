@@ -11,7 +11,6 @@ import java.util.*
 
 class EndoWindowAdapter(context: Context) : GoogleMap.InfoWindowAdapter {
 
-//    private val contents : View = LayoutInflater.from(context).inflate(R.layout.info_window_endo,null)
     private val binding = InfoWindowEndoBinding.inflate(LayoutInflater.from(context),null,false)
 
     override fun getInfoContents(marker : Marker): View {

@@ -114,11 +114,7 @@ class ContraceptiveTablet(context: Context, attrs: AttributeSet) : View(context,
                             width = dividedWidth7Pills
                             height = dividedHeight3Lines
                         }
-                        28 -> {
-                            width = dividedWidth7Pills
-                            height = dividedHeight4Lines
-                        }
-                        29 -> {
+                        in 28..29-> {
                             width = dividedWidth7Pills
                             height = dividedHeight4Lines
                         }
@@ -138,13 +134,7 @@ class ContraceptiveTablet(context: Context, attrs: AttributeSet) : View(context,
         var rangeLine: IntRange = 0..1
         var rangePills: IntRange = 0..1
         when (nbPills) {
-            29 -> {
-                width = dividedWidth7Pills
-                height = dividedHeight4Lines
-                rangeLine = 1..4
-                rangePills = 2..8
-            }
-            28 -> {
+            in 28..29 -> {
                 width = dividedWidth7Pills
                 height = dividedHeight4Lines
                 rangeLine = 1..4
@@ -213,14 +203,7 @@ class ContraceptiveTablet(context: Context, attrs: AttributeSet) : View(context,
         val lineLength: Int
         val nbLines: Int
         when (nbPills) {
-            29 -> {
-                nbTriangles = 4
-                height = dividedHeight4Lines
-                width = dividedWidth7Pills
-                nbLines = 3
-                lineLength = 8
-            }
-            28 -> {
+            in 28..29 -> {
                 nbTriangles = 4
                 height = dividedHeight4Lines
                 width = dividedWidth7Pills
@@ -421,17 +404,11 @@ class ContraceptiveTablet(context: Context, attrs: AttributeSet) : View(context,
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
         Timber.i("onTouchEvent")
-        var isTouchPill: Boolean
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
                 pills.forEach { pill ->
-                    isTouchPill = pill.checkTouchInCircle(event.x, event.y)
-                    if (isTouchPill && pill.isClickable) {
-                        if (!pill.isChecked) {
-                            pill.color = getColor(context, R.color.colorBackground)
-                            pill.isChecked = true
-                        } else
-                            pill.isChecked = false
+                    if (verifyIfUserTouchPill(pill,event.x,event.y)) {
+                        pill.setChecked(getColor(context, R.color.colorBackground))
                         isChanged = true
                     }
                 }
@@ -449,5 +426,9 @@ class ContraceptiveTablet(context: Context, attrs: AttributeSet) : View(context,
             }
         }
         return false
+    }
+
+    private fun verifyIfUserTouchPill(pill: Pill, x:Float, y: Float): Boolean{
+        return pill.checkTouchInCircle(x,y) && pill.isClickable
     }
 }
