@@ -4,6 +4,7 @@ import android.app.DatePickerDialog
 import android.os.Bundle
 import android.view.*
 import android.widget.ArrayAdapter
+import androidx.annotation.VisibleForTesting
 import androidx.core.content.ContextCompat.getColor
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -38,9 +39,11 @@ class PainFragment : Fragment(R.layout.fragment_pain) {
     private val viewModel: PainFragmentViewModel by viewModel()
 
     private val navController by lazy { findNavController() }
-    private lateinit var pain: Pain
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    lateinit var pain: Pain
     var mood: Mood? = null
-    private lateinit var symptoms: MutableList<Symptom>
+    @VisibleForTesting
+    lateinit var symptoms: MutableList<Symptom>
     private var activityChoice: String = ""
     private val date = Date()
 
