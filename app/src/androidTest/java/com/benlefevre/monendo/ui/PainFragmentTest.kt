@@ -1,20 +1,21 @@
 package com.benlefevre.monendo.ui
 
 import android.content.Context
-import android.content.SharedPreferences
 import android.view.View
 import androidx.fragment.app.testing.FragmentScenario
 import androidx.navigation.Navigation
 import androidx.navigation.testing.TestNavHostController
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.espresso.Espresso.onIdle
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.idling.CountingIdlingResource
 import androidx.test.espresso.matcher.RootMatchers
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
@@ -23,14 +24,15 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.benlefevre.monendo.MainActivity
 import com.benlefevre.monendo.R
 import com.benlefevre.monendo.dashboard.models.Symptom
+import com.benlefevre.monendo.login.User
 import com.benlefevre.monendo.pain.PainFragment
 import com.benlefevre.monendo.utils.NO_PHOTO_URL
-import com.benlefevre.monendo.utils.PREFERENCES
 import com.benlefevre.monendo.utils.formatDateWithYear
 import com.benlefevre.monendo.utils.parseStringInDate
 import com.google.android.material.chip.Chip
 import com.google.android.material.slider.Slider
 import com.google.common.truth.Truth.assertThat
+import com.google.firebase.auth.FirebaseAuth
 import com.schibsted.spain.barista.assertion.BaristaHintAssertions.assertHint
 import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertDisplayed
 import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertNotDisplayed
@@ -46,6 +48,7 @@ import org.hamcrest.Matcher
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import timber.log.Timber
 import java.util.*
 
 @LargeTest
@@ -53,24 +56,12 @@ import java.util.*
 class PainFragmentTest {
 
     lateinit var context: Context
-    lateinit var preferences: SharedPreferences
+    private val idlingResource = CountingIdlingResource("painFragmentTest")
 
     @Before
     fun setup() {
         context = InstrumentationRegistry.getInstrumentation().targetContext
-        preferences = context.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)
-        signInWithCorrectCredentials()
     }
-
-    private fun signInWithCorrectCredentials() {
-        preferences.edit().apply {
-            putBoolean("isLogged", true)
-            putString("name", "benoit")
-            putString("mail", "benoit.fr")
-            putString("url", NO_PHOTO_URL)
-        }.apply()
-    }
-
 
     @Test
     fun painFragmentUiTest() {
@@ -313,6 +304,7 @@ class PainFragmentTest {
 
     @Test
     fun whenUserClickOnOptionMenuThenNavigateToDashboardFragment() {
+        signInWithCorrectCredentials()
         ActivityScenario.launch(MainActivity::class.java)
         clickOn(R.id.fab)
         onView(withId(R.id.main_toolbar)).check(matches(hasDescendant(withText(R.string.my_pain))))
@@ -320,6 +312,8 @@ class PainFragmentTest {
         onView(withContentDescription(R.string.save)).perform(click())
         assertDisplayed(R.id.card_pain)
         assertDisplayed(R.id.card_symptom)
+        FirebaseAuth.getInstance().signOut()
+        IdlingRegistry.getInstance().unregister(idlingResource)
     }
 
     @Test
@@ -413,7 +407,7 @@ class PainFragmentTest {
             }
 
             override fun getConstraints(): Matcher<View> {
-                return ViewMatchers.isAssignableFrom(Slider::class.java)
+                return isAssignableFrom(Slider::class.java)
             }
 
             override fun perform(uiController: UiController?, view: View) {
@@ -429,6 +423,7 @@ class PainFragmentTest {
         )
         runOnUiThread {
             navController.setGraph(R.navigation.nav_graph)
+            navController.setCurrentDestination(R.id.painFragment)
         }
         val scenario = FragmentScenario.launchInContainer(
             PainFragment::class.java,
@@ -444,5 +439,22 @@ class PainFragmentTest {
             }
         }
         return scenario
+    }
+
+    private fun signInWithCorrectCredentials() {
+        MainActivity.user =
+            User("yEIvBj0y6CbZgrIoFIjPKxH1Yob2", "Test", "test@test.fr", NO_PHOTO_URL)
+        IdlingRegistry.getInstance().register(idlingResource)
+        FirebaseAuth.getInstance().signInWithEmailAndPassword("test@test.fr", "password")
+            .addOnCompleteListener {
+                if (it.isSuccessful) {
+                    Timber.i("Auth sucess : ${it.isSuccessful} / User : ${FirebaseAuth.getInstance().currentUser?.email}")
+                    idlingResource.decrement()
+                } else {
+                    Timber.i("Auth failed")
+                }
+            }
+        idlingResource.increment()
+        onIdle()
     }
 }

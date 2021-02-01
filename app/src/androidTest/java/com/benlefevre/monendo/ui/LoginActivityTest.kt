@@ -1,42 +1,24 @@
 package com.benlefevre.monendo.ui
 
-import android.content.Context
-import android.content.SharedPreferences
 import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
-import androidx.test.platform.app.InstrumentationRegistry
 import com.benlefevre.monendo.MainActivity
 import com.benlefevre.monendo.R
 import com.benlefevre.monendo.login.LoginActivity
-import com.benlefevre.monendo.utils.NO_NAME
-import com.benlefevre.monendo.utils.NO_PHOTO_URL
-import com.benlefevre.monendo.utils.PREFERENCES
 import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertDisplayed
 import com.schibsted.spain.barista.interaction.BaristaClickInteractions.clickOn
 import com.schibsted.spain.barista.interaction.BaristaEditTextInteractions.writeTo
 import com.schibsted.spain.barista.interaction.BaristaSleepInteractions.sleep
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
-import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @LargeTest
 @RunWith(AndroidJUnit4::class)
 class LoginActivityTest {
-
-    lateinit var preferences: SharedPreferences
-    lateinit var context: Context
-
-    @Before
-    fun setup() {
-        context = InstrumentationRegistry.getInstrumentation().targetContext
-        preferences = context.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)
-    }
 
     @Test
     fun loginActivityUiTest() {
@@ -69,12 +51,4 @@ class LoginActivityTest {
         Intents.release()
     }
 
-    @Test
-    fun checkUserDataInPreferencesAfterLogIn() {
-        loginMailTest()
-        assertEquals("test@test.fr", preferences.getString("mail", ""))
-        assertEquals(NO_NAME, preferences.getString("name", ""))
-        assertEquals(NO_PHOTO_URL, preferences.getString("url", ""))
-        assertTrue(preferences.getBoolean("isLogged", false))
-    }
 }

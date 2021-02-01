@@ -5,10 +5,11 @@ import android.content.SharedPreferences
 import androidx.core.view.GravityCompat
 import androidx.lifecycle.Lifecycle
 import androidx.test.core.app.ActivityScenario
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.Espresso.pressBackUnconditionally
+import androidx.test.espresso.Espresso.*
+import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.idling.CountingIdlingResource
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
@@ -19,10 +20,10 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.benlefevre.monendo.MainActivity
 import com.benlefevre.monendo.R
 import com.benlefevre.monendo.login.LoginActivity
-import com.benlefevre.monendo.utils.NO_MAIL
-import com.benlefevre.monendo.utils.NO_NAME
+import com.benlefevre.monendo.login.User
 import com.benlefevre.monendo.utils.NO_PHOTO_URL
 import com.benlefevre.monendo.utils.PREFERENCES
+import com.google.firebase.auth.FirebaseAuth
 import com.schibsted.spain.barista.assertion.BaristaDrawerAssertions.assertDrawerIsClosed
 import com.schibsted.spain.barista.assertion.BaristaDrawerAssertions.assertDrawerIsClosedWithGravity
 import com.schibsted.spain.barista.assertion.BaristaDrawerAssertions.assertDrawerIsOpenWithGravity
@@ -40,6 +41,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import timber.log.Timber
 
 
 @LargeTest
@@ -48,63 +50,29 @@ class MainActivityTest {
 
     private lateinit var preferences: SharedPreferences
     private lateinit var context: Context
-    private val name = "Benoit Lefèvre"
-    private val mail = "benoit.lefevre@monendo.fr"
-    private val url =
-        "https://www.sciencesetavenir.fr/assets/img/2018/07/19/cover-r4x3w1000-5b51ddad5aed4-25affcfa8755b14f1216a302b4e828e35f76c65b-jpg.jpg"
+    private val idlingResource = CountingIdlingResource("mainActivityTest")
 
     @Before
     fun setup() {
         context = InstrumentationRegistry.getInstrumentation().targetContext
         preferences = context.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)
+        signInWithCorrectCredentials()
     }
 
     @After
     fun reset() {
-        removeCredentials()
-    }
-
-    private fun removeCredentials() {
-        preferences.edit().apply {
-            remove("isLogged")
-            remove("name")
-            remove("mail")
-            remove("url")
-        }.apply { }
-    }
-
-    private fun notSignIn() {
-        removeCredentials()
-        preferences.edit().putBoolean("isLogged", false).apply()
-    }
-
-    private fun signInWithCorrectCredentials() {
-        preferences.edit().apply {
-            putBoolean("isLogged", true)
-            putString("name", name)
-            putString("mail", mail)
-            putString("url", url)
-        }.apply()
-    }
-
-    private fun signInWithAnonymousCredentials() {
-        preferences.edit().apply {
-            putBoolean("isLogged", true)
-            putString("name", NO_NAME)
-            putString("mail", NO_MAIL)
-            putString("url", NO_PHOTO_URL)
-        }.apply()
+        FirebaseAuth.getInstance().signOut()
+        IdlingRegistry.getInstance().unregister(idlingResource)
     }
 
     @Test
     fun toolbarTest() {
-        signInWithAnonymousCredentials()
         ActivityScenario.launch(MainActivity::class.java)
         assertDisplayed(R.id.main_toolbar)
         onView(withId(R.id.main_toolbar)).check(matches(hasDescendant(withText(R.string.dashboard))))
         onView(withId(R.id.main_toolbar)).check(matches(hasDescendant(withContentDescription(R.string.nav_app_bar_open_drawer_description))))
-        openDrawer()
-        closeDrawer()
+        openDrawer(R.id.main_drawer)
+        closeDrawer(R.id.main_drawer)
         clickOn(R.id.treatmentFragment)
         onView(withId(R.id.main_toolbar)).check(matches(hasDescendant(withText(R.string.treatment))))
         onView(withId(R.id.main_toolbar)).check(matches(hasDescendant(withContentDescription(R.string.pills_settings))))
@@ -116,12 +84,15 @@ class MainActivityTest {
         onView(withId(R.id.main_toolbar)).check(matches(hasDescendant(withText(R.string.doctor))))
         onView(withId(R.id.main_toolbar)).check(matches(hasDescendant(withContentDescription(R.string.search_doctors))))
         onView(withId(R.id.main_toolbar)).check(matches(hasDescendant(withContentDescription(R.string.nav_app_bar_navigate_up_description))))
-
+        clickOn(R.id.dashboardFragment)
+        openDrawer(R.id.main_drawer)
+        clickOn(R.id.settingsFragment)
+        onView(withId(R.id.main_toolbar)).check(matches(hasDescendant(withText(R.string.settings))))
+        onView(withId(R.id.main_toolbar)).check(matches(hasDescendant(withContentDescription(R.string.nav_app_bar_navigate_up_description))))
     }
 
     @Test
     fun drawerTest() {
-        signInWithCorrectCredentials()
         ActivityScenario.launch(MainActivity::class.java)
         openDrawer()
         assertDrawerIsOpenWithGravity(R.id.main_drawer, GravityCompat.START)
@@ -142,11 +113,10 @@ class MainActivityTest {
 
     @Test
     fun drawerHeaderTest_goodCredentials() {
-        signInWithCorrectCredentials()
         ActivityScenario.launch(MainActivity::class.java)
         openDrawer()
-        assertDisplayed(R.id.user_name, name)
-        assertDisplayed(R.id.user_mail, mail)
+        assertDisplayed(R.id.user_name, "Test")
+        assertDisplayed(R.id.user_mail, "test@test.fr")
         assertHasAnyDrawable(R.id.user_photo)
     }
 
@@ -162,7 +132,6 @@ class MainActivityTest {
 
     @Test
     fun bottomBarTest() {
-        signInWithCorrectCredentials()
         ActivityScenario.launch(MainActivity::class.java)
         assertDisplayed(R.id.main_bottom_bar)
         assertDisplayed(R.id.dashboardFragment)
@@ -200,7 +169,6 @@ class MainActivityTest {
 
     @Test
     fun fabTest() {
-        signInWithCorrectCredentials()
         ActivityScenario.launch(MainActivity::class.java)
         assertDisplayed(R.id.fab)
         clickOn(R.id.fab)
@@ -208,7 +176,6 @@ class MainActivityTest {
 
     @Test
     fun pressBackAfterCloseDrawerCloseApp() {
-        signInWithAnonymousCredentials()
         val scenario = ActivityScenario.launch(MainActivity::class.java)
         openDrawer(R.id.main_drawer)
         clickBack()
@@ -218,10 +185,47 @@ class MainActivityTest {
 
     @Test
     fun launchLoginActivityWhenUserNotLogged() {
+        FirebaseAuth.getInstance().signOut()
         Intents.init()
-        notSignIn()
         ActivityScenario.launch(MainActivity::class.java)
         intended(hasComponent(LoginActivity::class.java.name))
         Intents.release()
     }
+
+    private fun signInWithCorrectCredentials() {
+        MainActivity.user =
+            User("yEIvBj0y6CbZgrIoFIjPKxH1Yob2", "Test", "test@test.fr", NO_PHOTO_URL)
+        IdlingRegistry.getInstance().register(idlingResource)
+        FirebaseAuth.getInstance().signInWithEmailAndPassword("test@test.fr", "password")
+            .addOnCompleteListener {
+                if (it.isSuccessful) {
+                    Timber.i("Auth sucess : ${it.isSuccessful} / User : ${FirebaseAuth.getInstance().currentUser?.email}")
+                    idlingResource.decrement()
+                } else {
+                    Timber.i("Auth failed")
+                }
+            }
+        idlingResource.increment()
+        onIdle()
+    }
+
+    private fun signInWithAnonymousCredentials() {
+    Timber.i("Auth anonymous process")
+    IdlingRegistry.getInstance().register(idlingResource)
+    if (FirebaseAuth.getInstance().currentUser != null) {
+        FirebaseAuth.getInstance().signOut()
+    }
+    FirebaseAuth.getInstance().signInAnonymously()
+        .addOnCompleteListener {
+            if (it.isSuccessful) {
+                Timber.i("Auth success anonymous: ${it.isSuccessful} / User : ${FirebaseAuth.getInstance().currentUser?.isAnonymous}")
+                idlingResource.decrement()
+            } else {
+                Timber.i("Auth failed")
+            }
+        }
+    idlingResource.increment()
+    onIdle()
+}
+
 }
