@@ -273,7 +273,7 @@ class FertilityFragment : Fragment(R.layout.fragment_fertility) {
                 if (mensDay.text.isNullOrBlank()) {
                     it.clearFocus()
                     binding.fertilityDayMensLabel.error =
-                        "Please enter the first day of your last menstruation"
+                        context.getString(R.string.error_mens_txt)
                 } else {
                     binding.fertilityDayMensLabel.isErrorEnabled = false
                 }

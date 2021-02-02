@@ -152,14 +152,14 @@ class SettingsFragmentTest {
         launchSettingsFragment()
 
         assertThat(preferences.getString(CURRENT_MENS, null)).isEqualTo(lastDate)
-        assertThat(preferences.getInt(DURATION, 0)).isEqualTo(28)
+        assertThat(preferences.getString(DURATION, "0")).isEqualTo("28")
         assertThat(preferences.getString(NEXT_MENS, null)).isEqualTo(nextDate)
 
         clickOn(R.string.delete_mens_data)
         clickOn(R.string.yes_sure)
 
         assertThat(preferences.getString(CURRENT_MENS, null)).isNull()
-        assertThat(preferences.getInt(DURATION, 0)).isEqualTo(0)
+        assertThat(preferences.getString(DURATION, "0")).isEqualTo("0")
         assertThat(preferences.getString(NEXT_MENS, null)).isNull()
     }
 

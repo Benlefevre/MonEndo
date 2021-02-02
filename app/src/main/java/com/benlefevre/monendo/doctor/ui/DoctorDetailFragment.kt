@@ -52,6 +52,7 @@ class DoctorDetailFragment : Fragment(R.layout.fragment_doctor_detail), OnMapRea
         _binding = FragmentDoctorDetailBinding.bind(view)
         user = MainActivity.user
         initMap()
+        MapsInitializer.initialize(context)
         configureRecyclerView()
         val args: DoctorDetailFragmentArgs by navArgs()
         doctor = args.selectedDoctor

@@ -58,7 +58,7 @@ class TreatmentFragmentTest {
     private lateinit var formatArray: Array<String>
     private lateinit var durationArray: Array<String>
     private lateinit var pillArray: Array<String>
-    
+
     @Before
     fun setup() {
         context = InstrumentationRegistry.getInstrumentation().targetContext
@@ -307,11 +307,42 @@ class TreatmentFragmentTest {
         )
         onView(withText(pillArray[0])).inRoot(RootMatchers.isPlatformPopup()).perform(click())
         clickDialogNegativeButton()
+
+        clickOn(R.id.pill_settings)
+        clickOn(R.id.pill_format)
+        onView(withText(pillArray[0])).inRoot(RootMatchers.isPlatformPopup()).perform(click())
+        clickDialogPositiveButton()
+        assertThat(preferences.getString(NUMBER_OF_PILLS,"28")).isEqualTo("28")
+
+        clickOn(R.id.pill_settings)
+        clickOn(R.id.pill_format)
+        onView(withText(pillArray[1])).inRoot(RootMatchers.isPlatformPopup()).perform(click())
+        clickDialogPositiveButton()
+        assertThat(preferences.getString(NUMBER_OF_PILLS,"28")).isEqualTo("29")
+
+        clickOn(R.id.pill_settings)
+        clickOn(R.id.pill_format)
+        onView(withText(pillArray[2])).inRoot(RootMatchers.isPlatformPopup()).perform(click())
+        clickDialogPositiveButton()
+        assertThat(preferences.getString(NUMBER_OF_PILLS,"28")).isEqualTo("21")
+
+        clickOn(R.id.pill_settings)
+        clickOn(R.id.pill_format)
+        onView(withText(pillArray[3])).inRoot(RootMatchers.isPlatformPopup()).perform(click())
+        clickDialogPositiveButton()
+        assertThat(preferences.getString(NUMBER_OF_PILLS,"28")).isEqualTo("14")
+
         clickOn(R.id.pill_settings)
         clickOn(R.id.pill_format)
         onView(withText(pillArray[4])).inRoot(RootMatchers.isPlatformPopup()).perform(click())
         clickDialogPositiveButton()
         assertThat(preferences.getString(NUMBER_OF_PILLS,"28")).isEqualTo("12")
+
+        clickOn(R.id.pill_settings)
+        clickOn(R.id.pill_format)
+        onView(withText(pillArray[5])).inRoot(RootMatchers.isPlatformPopup()).perform(click())
+        clickDialogPositiveButton()
+        assertThat(preferences.getString(NUMBER_OF_PILLS,"28")).isEqualTo("10")
     }
 
     @Test

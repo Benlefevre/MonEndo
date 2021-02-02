@@ -1,7 +1,14 @@
 package com.benlefevre.monendo.ui
 
 import android.content.SharedPreferences
+import android.view.View
+import androidx.test.espresso.UiController
+import androidx.test.espresso.ViewAction
+import androidx.test.espresso.matcher.ViewMatchers
 import com.benlefevre.monendo.utils.*
+import com.google.android.material.slider.Slider
+import org.hamcrest.Matcher
+import java.util.*
 
 fun insertDataInSharedPreferences(preferences: SharedPreferences) {
     preferences.edit().apply {
@@ -12,7 +19,7 @@ fun insertDataInSharedPreferences(preferences: SharedPreferences) {
         putString(NEXT_PILL_DATE, nextDate)
         putString(TREATMENT, treatments)
         putString(PILL_HOUR_NOTIF, notifHour)
-        putInt(DURATION, 28)
+        putString(DURATION, "28")
         putString(CURRENT_MENS, lastDate)
         putString(NEXT_MENS, nextDate)
         putString(NUMBER_OF_PILLS,"28")
@@ -32,6 +39,48 @@ fun removeDataInSharedPreferences(preferences: SharedPreferences) {
         remove(CURRENT_MENS)
         remove(NEXT_MENS)
     }.apply()
+}
+
+fun getLastDate(preferences: SharedPreferences) : String{
+    val calendar = Calendar.getInstance()
+    val lastDate = formatDateWithYear(calendar.apply {
+        add(Calendar.DAY_OF_YEAR,2)
+    }.time)
+    preferences.edit().putString(CURRENT_MENS,lastDate).apply()
+    return lastDate
+}
+
+fun getVeryLastDate(preferences: SharedPreferences) : String{
+    val calendar =  Calendar.getInstance()
+    val lastDate = formatDateWithYear(calendar.apply {
+        add(Calendar.DAY_OF_YEAR,-30)
+    }.time)
+    val nextDate = formatDateWithYear(calendar.apply {
+        add(Calendar.DAY_OF_YEAR,28)
+    }.time)
+    preferences.edit().apply {
+        putString(CURRENT_MENS,lastDate)
+        putString(NEXT_MENS,nextDate)
+        putString(DURATION,"28")
+    }.apply()
+    return nextDate
+}
+
+fun setValue(value: Float): ViewAction {
+    return object : ViewAction {
+        override fun getDescription(): String {
+            return "Set Slider value to $value"
+        }
+
+        override fun getConstraints(): Matcher<View> {
+            return ViewMatchers.isAssignableFrom(Slider::class.java)
+        }
+
+        override fun perform(uiController: UiController?, view: View) {
+            val seekBar = view as Slider
+            seekBar.value = value
+        }
+    }
 }
 
 const val treatmentName = "Doliprane"

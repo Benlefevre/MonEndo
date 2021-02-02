@@ -21,7 +21,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
-import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.benlefevre.monendo.MainActivity
@@ -53,7 +52,6 @@ class DoctorFragment : Fragment(R.layout.fragment_doctor), OnMapReadyCallback,
     private val binding get() = _binding!!
     private var isSearchVisible = false
     private lateinit var menuItem: MenuItem
-    private lateinit var navController: NavController
     private lateinit var map: GoogleMap
     private val viewModel: DoctorViewModel by stateViewModel()
     private val doctors = mutableListOf<Doctor>()
@@ -73,7 +71,6 @@ class DoctorFragment : Fragment(R.layout.fragment_doctor), OnMapReadyCallback,
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentDoctorBinding.bind(view)
         setHasOptionsMenu(true)
-        navController = findNavController()
         setOnClickListeners()
         initMap()
         configureViewModelObservers()
@@ -293,7 +290,7 @@ class DoctorFragment : Fragment(R.layout.fragment_doctor), OnMapReadyCallback,
         map.setOnInfoWindowClickListener {
             val doctorDest =
                 DoctorFragmentDirections.actionDoctorFragmentToDoctorDetailFragment(it.tag as Doctor)
-            navController.navigate(doctorDest)
+            findNavController().navigate(doctorDest)
         }
 
         map.setOnMarkerClickListener {
@@ -492,7 +489,7 @@ class DoctorFragment : Fragment(R.layout.fragment_doctor), OnMapReadyCallback,
         } else {
             val doctorDest =
                 DoctorFragmentDirections.actionDoctorFragmentToDoctorDetailFragment(doctor)
-            navController.navigate(doctorDest)
+            findNavController().navigate(doctorDest)
         }
     }
 

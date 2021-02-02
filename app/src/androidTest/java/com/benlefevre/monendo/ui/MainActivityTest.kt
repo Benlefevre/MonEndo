@@ -128,10 +128,12 @@ class MainActivityTest {
         assertDisplayed(R.id.user_name, R.string.anonymous)
         assertDisplayed(R.id.user_mail, "")
         assertHasAnyDrawable(R.id.user_photo)
+        FirebaseAuth.getInstance().signOut()
     }
 
     @Test
     fun bottomBarTest() {
+        removeDataInSharedPreferences(preferences)
         ActivityScenario.launch(MainActivity::class.java)
         assertDisplayed(R.id.main_bottom_bar)
         assertDisplayed(R.id.dashboardFragment)

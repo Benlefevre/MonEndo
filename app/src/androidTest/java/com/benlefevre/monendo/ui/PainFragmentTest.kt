@@ -1,7 +1,6 @@
 package com.benlefevre.monendo.ui
 
 import android.content.Context
-import android.view.View
 import androidx.fragment.app.testing.FragmentScenario
 import androidx.navigation.Navigation
 import androidx.navigation.testing.TestNavHostController
@@ -10,8 +9,6 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onIdle
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
-import androidx.test.espresso.UiController
-import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.idling.CountingIdlingResource
@@ -30,7 +27,6 @@ import com.benlefevre.monendo.utils.NO_PHOTO_URL
 import com.benlefevre.monendo.utils.formatDateWithYear
 import com.benlefevre.monendo.utils.parseStringInDate
 import com.google.android.material.chip.Chip
-import com.google.android.material.slider.Slider
 import com.google.common.truth.Truth.assertThat
 import com.google.firebase.auth.FirebaseAuth
 import com.schibsted.spain.barista.assertion.BaristaHintAssertions.assertHint
@@ -44,7 +40,6 @@ import com.schibsted.spain.barista.interaction.BaristaPickerInteractions.setDate
 import com.schibsted.spain.barista.interaction.BaristaScrollInteractions.scrollTo
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.containsString
-import org.hamcrest.Matcher
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -397,23 +392,6 @@ class PainFragmentTest {
         clickOn(R.id.save_btn)
         scenario.onFragment { fragment ->
             assertThat(fragment.mood?.value).isEqualTo(context.getString(R.string.sad))
-        }
-    }
-
-    fun setValue(value: Float): ViewAction {
-        return object : ViewAction {
-            override fun getDescription(): String {
-                return "Set Slider value to $value"
-            }
-
-            override fun getConstraints(): Matcher<View> {
-                return isAssignableFrom(Slider::class.java)
-            }
-
-            override fun perform(uiController: UiController?, view: View) {
-                val seekBar = view as Slider
-                seekBar.value = value
-            }
         }
     }
 
