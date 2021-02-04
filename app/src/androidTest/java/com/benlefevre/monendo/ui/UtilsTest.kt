@@ -1,10 +1,13 @@
 package com.benlefevre.monendo.ui
 
+import android.content.Context
 import android.content.SharedPreferences
 import android.view.View
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.matcher.ViewMatchers
+import com.benlefevre.monendo.R
+import com.benlefevre.monendo.dashboard.models.*
 import com.benlefevre.monendo.utils.*
 import com.google.android.material.slider.Slider
 import org.hamcrest.Matcher
@@ -22,7 +25,7 @@ fun insertDataInSharedPreferences(preferences: SharedPreferences) {
         putString(DURATION, "28")
         putString(CURRENT_MENS, lastDate)
         putString(NEXT_MENS, nextDate)
-        putString(NUMBER_OF_PILLS,"28")
+        putString(NUMBER_OF_PILLS, "28")
     }.apply()
 }
 
@@ -41,29 +44,163 @@ fun removeDataInSharedPreferences(preferences: SharedPreferences) {
     }.apply()
 }
 
-fun getLastDate(preferences: SharedPreferences) : String{
+fun getLastDate(preferences: SharedPreferences): String {
     val calendar = Calendar.getInstance()
     val lastDate = formatDateWithYear(calendar.apply {
-        add(Calendar.DAY_OF_YEAR,2)
+        add(Calendar.DAY_OF_YEAR, -1)
     }.time)
-    preferences.edit().putString(CURRENT_MENS,lastDate).apply()
+    preferences.edit().putString(CURRENT_MENS, lastDate).apply()
     return lastDate
 }
 
-fun getVeryLastDate(preferences: SharedPreferences) : String{
-    val calendar =  Calendar.getInstance()
+fun getVeryLastDate(preferences: SharedPreferences): String {
+    val calendar = Calendar.getInstance()
     val lastDate = formatDateWithYear(calendar.apply {
-        add(Calendar.DAY_OF_YEAR,-30)
+        add(Calendar.DAY_OF_YEAR, -30)
     }.time)
     val nextDate = formatDateWithYear(calendar.apply {
-        add(Calendar.DAY_OF_YEAR,28)
+        add(Calendar.DAY_OF_YEAR, 28)
     }.time)
     preferences.edit().apply {
-        putString(CURRENT_MENS,lastDate)
-        putString(NEXT_MENS,nextDate)
-        putString(DURATION,"28")
+        putString(CURRENT_MENS, lastDate)
+        putString(NEXT_MENS, nextDate)
+        putString(DURATION, "28")
     }.apply()
     return nextDate
+}
+
+fun getPainsWithRelations(context: Context): List<PainWithRelations> {
+    val calendar = Calendar.getInstance()
+    val date1 = calendar.apply {
+        add(Calendar.DAY_OF_YEAR, -3)
+    }.time
+    val date2 = calendar.apply {
+        add(Calendar.DAY_OF_YEAR, -7)
+    }.time
+    val date3 = calendar.apply {
+        add(Calendar.DAY_OF_YEAR, -14)
+    }.time
+    val date4 = calendar.apply {
+        add(Calendar.DAY_OF_YEAR, -180)
+    }.time
+    val date5 = calendar.apply {
+        add(Calendar.DAY_OF_YEAR, -250)
+    }.time
+    val pain1 = Pain(date1, 8, context.getString(R.string.bladder))
+    pain1.id = 1
+    val pain2 = Pain(date2, 6, context.getString(R.string.back))
+    pain2.id = 2
+    val pain3 = Pain(date3, 4, context.getString(R.string.intestine))
+    pain3.id = 3
+    val pain4 = Pain(date4, 2, context.getString(R.string.head))
+    pain4.id = 4
+    val pain5 = Pain(date5, 0, context.getString(R.string.lower_abdomen))
+    pain5.id = 5
+
+    return listOf(
+        PainWithRelations(
+            pain1,
+            getAllSymptoms(pain1, context),
+            getAllActivities(pain1, context),
+            listOf(
+                Mood(1, context.getString(R.string.sad)),
+            )
+        ),
+        PainWithRelations(
+            pain2,
+            getAllSymptoms(pain2, context),
+            getAllActivities(pain2, context),
+            listOf(
+                Mood(2, context.getString(R.string.sick))
+            )
+        ),
+        PainWithRelations(
+            pain3,
+            getAllSymptoms(pain3, context),
+            getAllActivities(pain3, context),
+            listOf(
+                Mood(3, context.getString(R.string.irritated))
+            )
+        ),
+        PainWithRelations(
+            pain4,
+            getAllSymptoms(pain4, context),
+            getAllActivities(pain4, context),
+            listOf(
+                Mood(4, context.getString(R.string.happy))
+            )
+        ),
+        PainWithRelations(
+            pain5,
+            getAllSymptoms(pain5, context),
+            getAllActivities(pain5, context),
+            listOf(
+                Mood(5, context.getString(R.string.very_happy))
+            )
+        ),
+    )
+}
+
+
+private fun getAllSymptoms(pain : Pain, context: Context): List<Symptom> {
+    return listOf(
+        Symptom(pain.id, context.getString(R.string.bleeding), pain.date),
+        Symptom(pain.id, context.getString(R.string.bloating), pain.date),
+        Symptom(pain.id, context.getString(R.string.cramps), pain.date),
+        Symptom(pain.id, context.getString(R.string.chills), pain.date),
+        Symptom(pain.id, context.getString(R.string.fever), pain.date),
+        Symptom(pain.id, context.getString(R.string.hot_flush), pain.date),
+        Symptom(pain.id, context.getString(R.string.constipation), pain.date),
+        Symptom(pain.id, context.getString(R.string.diarrhea), pain.date),
+        Symptom(pain.id, context.getString(R.string.nausea), pain.date),
+        Symptom(pain.id, context.getString(R.string.burns), pain.date),
+        Symptom(pain.id, context.getString(R.string.tired), pain.date),
+    )
+}
+
+private fun getAllActivities(pain : Pain, context: Context): List<UserActivities> {
+    return listOf(
+        UserActivities(
+            pain.id,
+            "BasketBall",
+            60,
+            7,
+            pain.intensity,
+            pain.date
+        ),
+        UserActivities(
+            pain.id,
+            context.getString(R.string.relaxation),
+            100,
+            4,
+            pain.intensity,
+            pain.date
+        ),
+        UserActivities(
+            pain.id,
+            context.getString(R.string.stress),
+            0,
+            7,
+            pain.intensity,
+            pain.date
+        ),
+        UserActivities(
+            pain.id,
+            context.getString(R.string.sex),
+            60,
+            7,
+            pain.intensity,
+            pain.date
+        ),
+        UserActivities(
+            pain.id,
+            context.getString(R.string.other_activities, "Work"),
+            60,
+            7,
+            pain.intensity,
+            pain.date
+        ),
+    )
 }
 
 fun setValue(value: Float): ViewAction {

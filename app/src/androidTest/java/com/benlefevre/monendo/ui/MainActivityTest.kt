@@ -133,7 +133,7 @@ class MainActivityTest {
 
     @Test
     fun bottomBarTest() {
-        removeDataInSharedPreferences(preferences)
+//        removeDataInSharedPreferences(preferences)
         ActivityScenario.launch(MainActivity::class.java)
         assertDisplayed(R.id.main_bottom_bar)
         assertDisplayed(R.id.dashboardFragment)
@@ -165,8 +165,8 @@ class MainActivityTest {
         onView(withId(R.id.main_bottom_bar)).check(matches(hasDescendant(withContentDescription(R.string.treatment))))
         clickOn(R.id.fertilityFragment)
         onView(withId(R.id.main_bottom_bar)).check(matches(hasDescendant(withContentDescription(R.string.fertility))))
-        clickOn(R.id.doctorFragment)
-        onView(withId(R.id.main_bottom_bar)).check(matches(hasDescendant(withContentDescription(R.string.doctor))))
+//        clickOn(R.id.doctorFragment)
+//        onView(withId(R.id.main_bottom_bar)).check(matches(hasDescendant(withContentDescription(R.string.doctor))))
     }
 
     @Test
@@ -212,22 +212,22 @@ class MainActivityTest {
     }
 
     private fun signInWithAnonymousCredentials() {
-    Timber.i("Auth anonymous process")
-    IdlingRegistry.getInstance().register(idlingResource)
-    if (FirebaseAuth.getInstance().currentUser != null) {
-        FirebaseAuth.getInstance().signOut()
-    }
-    FirebaseAuth.getInstance().signInAnonymously()
-        .addOnCompleteListener {
-            if (it.isSuccessful) {
-                Timber.i("Auth success anonymous: ${it.isSuccessful} / User : ${FirebaseAuth.getInstance().currentUser?.isAnonymous}")
-                idlingResource.decrement()
-            } else {
-                Timber.i("Auth failed")
-            }
+        Timber.i("Auth anonymous process")
+        IdlingRegistry.getInstance().register(idlingResource)
+        if (FirebaseAuth.getInstance().currentUser != null) {
+            FirebaseAuth.getInstance().signOut()
         }
-    idlingResource.increment()
-    onIdle()
-}
+        FirebaseAuth.getInstance().signInAnonymously()
+            .addOnCompleteListener {
+                if (it.isSuccessful) {
+                    Timber.i("Auth success anonymous: ${it.isSuccessful} / User : ${FirebaseAuth.getInstance().currentUser?.isAnonymous}")
+                    idlingResource.decrement()
+                } else {
+                    Timber.i("Auth failed")
+                }
+            }
+        idlingResource.increment()
+        onIdle()
+    }
 
 }
