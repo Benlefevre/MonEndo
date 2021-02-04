@@ -11,7 +11,6 @@ import com.benlefevre.monendo.R
 import com.benlefevre.monendo.login.LoginActivity
 import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertDisplayed
 import com.schibsted.spain.barista.interaction.BaristaClickInteractions.clickOn
-import com.schibsted.spain.barista.interaction.BaristaEditTextInteractions.writeTo
 import com.schibsted.spain.barista.interaction.BaristaSleepInteractions.sleep
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -33,20 +32,11 @@ class LoginActivityTest {
     }
 
     @Test
-    fun loginMailTest() {
+    fun intentToMainActivityTest() {
         Intents.init()
         ActivityScenario.launch(LoginActivity::class.java)
-        clickOn(R.id.login_mail_btn)
-        assertDisplayed(R.id.email)
-        assertDisplayed(R.id.button_next)
-        writeTo(R.id.email, "test@test.fr")
-        clickOn(R.id.button_next)
+        clickOn(R.id.login_anonymous)
         sleep(2000)
-        assertDisplayed(R.id.password)
-        assertDisplayed(R.id.button_done)
-        writeTo(R.id.password, "password")
-        clickOn(R.id.button_done)
-        sleep(4000)
         intended(hasComponent(MainActivity::class.java.name))
         Intents.release()
     }

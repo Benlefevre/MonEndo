@@ -3,15 +3,37 @@ package com.benlefevre.monendo.ui
 import android.content.Context
 import android.content.SharedPreferences
 import android.view.View
+import androidx.test.espresso.Espresso
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
+import androidx.test.espresso.idling.CountingIdlingResource
 import androidx.test.espresso.matcher.ViewMatchers
+import com.benlefevre.monendo.MainActivity
 import com.benlefevre.monendo.R
 import com.benlefevre.monendo.dashboard.models.*
+import com.benlefevre.monendo.login.User
 import com.benlefevre.monendo.utils.*
 import com.google.android.material.slider.Slider
+import com.google.firebase.auth.FirebaseAuth
 import org.hamcrest.Matcher
+import timber.log.Timber
 import java.util.*
+
+fun signInWithCorrectCredentials(idlingResource: CountingIdlingResource) {
+    MainActivity.user =
+        User("yEIvBj0y6CbZgrIoFIjPKxH1Yob2", "Test", "test@test.fr", NO_PHOTO_URL)
+    FirebaseAuth.getInstance().signInWithEmailAndPassword("test@test.fr", "password")
+        .addOnCompleteListener {
+            if (it.isSuccessful) {
+                Timber.i("Auth sucess : ${it.isSuccessful} / User : ${FirebaseAuth.getInstance().currentUser?.email}")
+                idlingResource.decrement()
+            } else {
+                Timber.i("Auth failed")
+            }
+        }
+    idlingResource.increment()
+    Espresso.onIdle()
+}
 
 fun insertDataInSharedPreferences(preferences: SharedPreferences) {
     preferences.edit().apply {
@@ -197,6 +219,14 @@ private fun getAllActivities(pain : Pain, context: Context): List<UserActivities
             context.getString(R.string.other_activities, "Work"),
             60,
             7,
+            pain.intensity,
+            pain.date
+        ),
+        UserActivities(
+            pain.id,
+            context.getString(R.string.sleep),
+            0,
+            4,
             pain.intensity,
             pain.date
         ),

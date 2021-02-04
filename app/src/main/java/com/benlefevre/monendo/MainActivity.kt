@@ -38,6 +38,7 @@ class MainActivity : AppCompatActivity() {
     companion object {
         var isConnected = false
         lateinit var user: User
+        fun userIsInitialized() = ::user.isInitialized
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

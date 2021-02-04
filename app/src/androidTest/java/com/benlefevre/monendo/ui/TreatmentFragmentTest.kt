@@ -7,7 +7,6 @@ import androidx.navigation.Navigation
 import androidx.navigation.testing.TestNavHostController
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.Espresso.onIdle
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions.click
@@ -21,9 +20,7 @@ import androidx.test.internal.runner.junit4.statement.UiThreadStatement
 import androidx.test.platform.app.InstrumentationRegistry
 import com.benlefevre.monendo.MainActivity
 import com.benlefevre.monendo.R
-import com.benlefevre.monendo.login.User
 import com.benlefevre.monendo.treatment.ui.TreatmentFragment
-import com.benlefevre.monendo.utils.NO_PHOTO_URL
 import com.benlefevre.monendo.utils.NUMBER_OF_PILLS
 import com.benlefevre.monendo.utils.PREFERENCES
 import com.google.android.material.chip.Chip
@@ -46,7 +43,6 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import timber.log.Timber
 
 @LargeTest
 @RunWith(AndroidJUnit4::class)
@@ -66,13 +62,15 @@ class TreatmentFragmentTest {
         formatArray = context.resources.getStringArray(R.array.format)
         durationArray = context.resources.getStringArray(R.array.duration)
         pillArray = context.resources.getStringArray(R.array.pill_format)
-        signInWithCorrectCredentials()
+        IdlingRegistry.getInstance().register(idlingResource)
+        if (FirebaseAuth.getInstance().currentUser == null || !MainActivity.userIsInitialized()) {
+            signInWithCorrectCredentials(idlingResource)
+        }
     }
 
     @After
     fun tearDown() {
         removeDataInSharedPreferences(preferences)
-        FirebaseAuth.getInstance().signOut()
         IdlingRegistry.getInstance().unregister(idlingResource)
     }
 
@@ -312,37 +310,37 @@ class TreatmentFragmentTest {
         clickOn(R.id.pill_format)
         onView(withText(pillArray[0])).inRoot(RootMatchers.isPlatformPopup()).perform(click())
         clickDialogPositiveButton()
-        assertThat(preferences.getString(NUMBER_OF_PILLS,"28")).isEqualTo("28")
+        assertThat(preferences.getString(NUMBER_OF_PILLS, "28")).isEqualTo("28")
 
         clickOn(R.id.pill_settings)
         clickOn(R.id.pill_format)
         onView(withText(pillArray[1])).inRoot(RootMatchers.isPlatformPopup()).perform(click())
         clickDialogPositiveButton()
-        assertThat(preferences.getString(NUMBER_OF_PILLS,"28")).isEqualTo("29")
+        assertThat(preferences.getString(NUMBER_OF_PILLS, "28")).isEqualTo("29")
 
         clickOn(R.id.pill_settings)
         clickOn(R.id.pill_format)
         onView(withText(pillArray[2])).inRoot(RootMatchers.isPlatformPopup()).perform(click())
         clickDialogPositiveButton()
-        assertThat(preferences.getString(NUMBER_OF_PILLS,"28")).isEqualTo("21")
+        assertThat(preferences.getString(NUMBER_OF_PILLS, "28")).isEqualTo("21")
 
         clickOn(R.id.pill_settings)
         clickOn(R.id.pill_format)
         onView(withText(pillArray[3])).inRoot(RootMatchers.isPlatformPopup()).perform(click())
         clickDialogPositiveButton()
-        assertThat(preferences.getString(NUMBER_OF_PILLS,"28")).isEqualTo("14")
+        assertThat(preferences.getString(NUMBER_OF_PILLS, "28")).isEqualTo("14")
 
         clickOn(R.id.pill_settings)
         clickOn(R.id.pill_format)
         onView(withText(pillArray[4])).inRoot(RootMatchers.isPlatformPopup()).perform(click())
         clickDialogPositiveButton()
-        assertThat(preferences.getString(NUMBER_OF_PILLS,"28")).isEqualTo("12")
+        assertThat(preferences.getString(NUMBER_OF_PILLS, "28")).isEqualTo("12")
 
         clickOn(R.id.pill_settings)
         clickOn(R.id.pill_format)
         onView(withText(pillArray[5])).inRoot(RootMatchers.isPlatformPopup()).perform(click())
         clickDialogPositiveButton()
-        assertThat(preferences.getString(NUMBER_OF_PILLS,"28")).isEqualTo("10")
+        assertThat(preferences.getString(NUMBER_OF_PILLS, "28")).isEqualTo("10")
     }
 
     @Test
@@ -389,20 +387,4 @@ class TreatmentFragmentTest {
         return scenario
     }
 
-    private fun signInWithCorrectCredentials() {
-        MainActivity.user =
-            User("yEIvBj0y6CbZgrIoFIjPKxH1Yob2", "Test", "test@test.fr", NO_PHOTO_URL)
-        IdlingRegistry.getInstance().register(idlingResource)
-        FirebaseAuth.getInstance().signInWithEmailAndPassword("test@test.fr", "password")
-            .addOnCompleteListener {
-                if (it.isSuccessful) {
-                    Timber.i("Auth sucess : ${it.isSuccessful} / User : ${FirebaseAuth.getInstance().currentUser?.email}")
-                    idlingResource.decrement()
-                } else {
-                    Timber.i("Auth failed")
-                }
-            }
-        idlingResource.increment()
-        onIdle()
-    }
 }

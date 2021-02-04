@@ -10,7 +10,6 @@ import androidx.navigation.Navigation
 import androidx.navigation.testing.TestNavHostController
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions.click
@@ -28,8 +27,6 @@ import com.benlefevre.monendo.MainActivity
 import com.benlefevre.monendo.R
 import com.benlefevre.monendo.doctor.models.Doctor
 import com.benlefevre.monendo.doctor.ui.DoctorDetailFragment
-import com.benlefevre.monendo.login.User
-import com.benlefevre.monendo.utils.NO_PHOTO_URL
 import com.google.firebase.auth.FirebaseAuth
 import com.schibsted.spain.barista.assertion.BaristaRecyclerViewAssertions.assertRecyclerViewItemCount
 import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertDisplayed
@@ -44,7 +41,6 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import timber.log.Timber
 
 @LargeTest
 @RunWith(AndroidJUnit4::class)
@@ -56,13 +52,15 @@ class DoctorFragmentTest {
     @Before
     fun setUp() {
         context = InstrumentationRegistry.getInstrumentation().targetContext
-        signInWithCorrectCredentials()
+        IdlingRegistry.getInstance().register(idlingResource)
+        if(FirebaseAuth.getInstance().currentUser == null || !MainActivity.userIsInitialized()) {
+            signInWithCorrectCredentials(idlingResource)
+        }
         Intents.init()
     }
 
     @After
     fun tearDown() {
-        FirebaseAuth.getInstance().signOut()
         IdlingRegistry.getInstance().unregister(idlingResource)
         Intents.release()
     }
@@ -98,7 +96,6 @@ class DoctorFragmentTest {
 
     @Test
     fun doctorDetailsUiTest() {
-        signInWithCorrectCredentials()
         launchDoctorDetailsFragment()
         assertDisplayed(R.id.detail_name,"Docteur Test")
         assertDisplayed(R.id.detail_spec,"Médecin Généraliste")
@@ -113,7 +110,6 @@ class DoctorFragmentTest {
 
     @Test
     fun callIntentTest(){
-        signInWithCorrectCredentials()
         launchDoctorDetailsFragment()
         clickOn(R.id.doctor_menu_call)
         intended(hasAction(ACTION_DIAL))
@@ -121,7 +117,6 @@ class DoctorFragmentTest {
 
     @Test
     fun webIntentTest(){
-        signInWithCorrectCredentials()
         launchDoctorDetailsFragment()
         clickOn(R.id.doctor_menu_web)
         intended(hasAction(ACTION_VIEW))
@@ -129,7 +124,6 @@ class DoctorFragmentTest {
 
     @Test
     fun commentMenuTest(){
-        signInWithCorrectCredentials()
         launchDoctorDetailsFragment()
         clickOn(R.id.doctor_menu_comment)
         assertDisplayed(R.id.dialog_title)
@@ -138,23 +132,6 @@ class DoctorFragmentTest {
         assertDisplayed(R.id.comment_text_label)
         assertDisplayed(R.id.comment_text)
         clickDialogNegativeButton()
-    }
-
-    private fun signInWithCorrectCredentials() {
-        MainActivity.user =
-            User("yEIvBj0y6CbZgrIoFIjPKxH1Yob2", "Test", "test@test.fr", NO_PHOTO_URL)
-        IdlingRegistry.getInstance().register(idlingResource)
-        FirebaseAuth.getInstance().signInWithEmailAndPassword("test@test.fr", "password")
-            .addOnCompleteListener {
-                if (it.isSuccessful) {
-                    Timber.i("Auth sucess : ${it.isSuccessful} / User : ${FirebaseAuth.getInstance().currentUser?.email}")
-                    idlingResource.decrement()
-                } else {
-                    Timber.i("Auth failed")
-                }
-            }
-        idlingResource.increment()
-        Espresso.onIdle()
     }
 
     private fun launchDoctorDetailsFragment(): FragmentScenario<DoctorDetailFragment> {

@@ -6,7 +6,6 @@ import androidx.fragment.app.testing.FragmentScenario
 import androidx.navigation.Navigation
 import androidx.navigation.testing.TestNavHostController
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.Espresso
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.idling.CountingIdlingResource
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -15,7 +14,6 @@ import androidx.test.internal.runner.junit4.statement.UiThreadStatement
 import androidx.test.platform.app.InstrumentationRegistry
 import com.benlefevre.monendo.MainActivity
 import com.benlefevre.monendo.R
-import com.benlefevre.monendo.login.User
 import com.benlefevre.monendo.settings.SettingsFragment
 import com.benlefevre.monendo.utils.*
 import com.google.common.truth.Truth.assertThat
@@ -30,7 +28,6 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import timber.log.Timber
 
 @LargeTest
 @RunWith(AndroidJUnit4::class)
@@ -45,12 +42,14 @@ class SettingsFragmentTest {
     fun setup() {
         context = InstrumentationRegistry.getInstrumentation().targetContext
         preferences = context.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)
-        signInWithCorrectCredentials()
+        IdlingRegistry.getInstance().register(idlingResource)
+        if (FirebaseAuth.getInstance().currentUser == null || !MainActivity.userIsInitialized()) {
+            signInWithCorrectCredentials(idlingResource)
+        }
     }
 
     @After
     fun tearDown() {
-        FirebaseAuth.getInstance().signOut()
         IdlingRegistry.getInstance().unregister(idlingResource)
         removeDataInSharedPreferences(preferences)
     }
@@ -208,20 +207,4 @@ class SettingsFragmentTest {
         return scenario
     }
 
-    private fun signInWithCorrectCredentials() {
-        MainActivity.user =
-            User("yEIvBj0y6CbZgrIoFIjPKxH1Yob2", "Test", "test@test.fr", NO_PHOTO_URL)
-        IdlingRegistry.getInstance().register(idlingResource)
-        FirebaseAuth.getInstance().signInWithEmailAndPassword("test@test.fr", "password")
-            .addOnCompleteListener {
-                if (it.isSuccessful) {
-                    Timber.i("Auth sucess : ${it.isSuccessful} / User : ${FirebaseAuth.getInstance().currentUser?.email}")
-                    idlingResource.decrement()
-                } else {
-                    Timber.i("Auth failed")
-                }
-            }
-        idlingResource.increment()
-        Espresso.onIdle()
-    }
 }

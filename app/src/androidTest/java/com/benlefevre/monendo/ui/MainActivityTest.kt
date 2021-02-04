@@ -21,10 +21,10 @@ import com.benlefevre.monendo.MainActivity
 import com.benlefevre.monendo.R
 import com.benlefevre.monendo.login.LoginActivity
 import com.benlefevre.monendo.login.User
+import com.benlefevre.monendo.utils.NO_MAIL
 import com.benlefevre.monendo.utils.NO_PHOTO_URL
 import com.benlefevre.monendo.utils.PREFERENCES
 import com.google.firebase.auth.FirebaseAuth
-import com.schibsted.spain.barista.assertion.BaristaDrawerAssertions.assertDrawerIsClosed
 import com.schibsted.spain.barista.assertion.BaristaDrawerAssertions.assertDrawerIsClosedWithGravity
 import com.schibsted.spain.barista.assertion.BaristaDrawerAssertions.assertDrawerIsOpenWithGravity
 import com.schibsted.spain.barista.assertion.BaristaImageViewAssertions.assertHasAnyDrawable
@@ -56,12 +56,14 @@ class MainActivityTest {
     fun setup() {
         context = InstrumentationRegistry.getInstrumentation().targetContext
         preferences = context.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)
-        signInWithCorrectCredentials()
+        IdlingRegistry.getInstance().register(idlingResource)
+        if (FirebaseAuth.getInstance().currentUser == null || !MainActivity.userIsInitialized()) {
+            signInWithCorrectCredentials(idlingResource)
+        }
     }
 
     @After
     fun reset() {
-        FirebaseAuth.getInstance().signOut()
         IdlingRegistry.getInstance().unregister(idlingResource)
     }
 
@@ -108,7 +110,6 @@ class MainActivityTest {
         assertContains(R.string.settings)
         assertContains(R.string.sign_out)
         clickBack()
-        assertDrawerIsClosed(R.id.main_drawer)
     }
 
     @Test
@@ -133,7 +134,6 @@ class MainActivityTest {
 
     @Test
     fun bottomBarTest() {
-//        removeDataInSharedPreferences(preferences)
         ActivityScenario.launch(MainActivity::class.java)
         assertDisplayed(R.id.main_bottom_bar)
         assertDisplayed(R.id.dashboardFragment)
@@ -165,8 +165,6 @@ class MainActivityTest {
         onView(withId(R.id.main_bottom_bar)).check(matches(hasDescendant(withContentDescription(R.string.treatment))))
         clickOn(R.id.fertilityFragment)
         onView(withId(R.id.main_bottom_bar)).check(matches(hasDescendant(withContentDescription(R.string.fertility))))
-//        clickOn(R.id.doctorFragment)
-//        onView(withId(R.id.main_bottom_bar)).check(matches(hasDescendant(withContentDescription(R.string.doctor))))
     }
 
     @Test
@@ -194,26 +192,10 @@ class MainActivityTest {
         Intents.release()
     }
 
-    private fun signInWithCorrectCredentials() {
-        MainActivity.user =
-            User("yEIvBj0y6CbZgrIoFIjPKxH1Yob2", "Test", "test@test.fr", NO_PHOTO_URL)
-        IdlingRegistry.getInstance().register(idlingResource)
-        FirebaseAuth.getInstance().signInWithEmailAndPassword("test@test.fr", "password")
-            .addOnCompleteListener {
-                if (it.isSuccessful) {
-                    Timber.i("Auth sucess : ${it.isSuccessful} / User : ${FirebaseAuth.getInstance().currentUser?.email}")
-                    idlingResource.decrement()
-                } else {
-                    Timber.i("Auth failed")
-                }
-            }
-        idlingResource.increment()
-        onIdle()
-    }
-
     private fun signInWithAnonymousCredentials() {
         Timber.i("Auth anonymous process")
-        IdlingRegistry.getInstance().register(idlingResource)
+        MainActivity.user =
+            User("wC2kVn1AAIfNkQgawjYj06imxSf2", context.getString(R.string.anonymous), NO_MAIL, NO_PHOTO_URL)
         if (FirebaseAuth.getInstance().currentUser != null) {
             FirebaseAuth.getInstance().signOut()
         }
