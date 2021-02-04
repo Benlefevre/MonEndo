@@ -2,6 +2,7 @@ package com.benlefevre.monendo.dashboard.fragments
 
 import android.os.Bundle
 import android.view.View
+import androidx.annotation.VisibleForTesting
 import androidx.core.content.ContextCompat.getColor
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -30,7 +31,8 @@ class ActivitiesDetailFragment : Fragment(R.layout.fragment_activities_detail) {
     private val viewModel: DashboardViewModel by viewModel()
 
     private var _binding : FragmentActivitiesDetailBinding? = null
-    private val binding get() = _binding!!
+    @VisibleForTesting
+    val binding get() = _binding!!
     private val painRelations = mutableListOf<PainWithRelations>()
     private val activities = mutableListOf<UserActivities>()
     private val dates = mutableListOf<String>()
