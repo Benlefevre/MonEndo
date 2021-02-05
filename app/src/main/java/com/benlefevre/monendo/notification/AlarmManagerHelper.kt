@@ -21,7 +21,7 @@ fun createAlarmAtTheUserTime(context: Context, intent: Intent, hour: String, tag
     val pendingIntent =
         PendingIntent.getBroadcast(context, tag, intent, PendingIntent.FLAG_UPDATE_CURRENT)
     val triggeredTime =
-        if (isNeededStop7Days(preferences)) {
+        if (isNeededStop7Days(preferences) && tag == PILL_ID) {
             setTriggeredTimeToNextPill(hour, preferences.getString(NEXT_PILL_DATE, "")!!)
         } else {
             setTriggeredTime(hour)

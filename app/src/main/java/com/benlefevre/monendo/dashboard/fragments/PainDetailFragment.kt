@@ -2,6 +2,7 @@ package com.benlefevre.monendo.dashboard.fragments
 
 import android.os.Bundle
 import android.view.View
+import androidx.annotation.VisibleForTesting
 import androidx.core.content.ContextCompat.getColor
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -25,7 +26,8 @@ class PainDetailFragment : Fragment(R.layout.fragment_pain_detail) {
     private val viewModel: DashboardViewModel by viewModel()
 
     private var _binding : FragmentPainDetailBinding? = null
-    private val binding get() = _binding!!
+    @VisibleForTesting
+    val binding get() = _binding!!
     private val painRelations: MutableList<PainWithRelations> = mutableListOf()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

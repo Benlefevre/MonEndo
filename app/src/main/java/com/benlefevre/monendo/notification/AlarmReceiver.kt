@@ -49,7 +49,7 @@ class AlarmReceiver : BroadcastReceiver() {
      * Checks the intent's extras to get a tag and defines which notification's function needs to
      * be called
      */
-    private fun sendRightNotification(intent: Intent) {
+    fun sendRightNotification(intent: Intent) {
         manager =
             myContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val extras = intent.extras
@@ -78,7 +78,7 @@ class AlarmReceiver : BroadcastReceiver() {
     /**
      * Sends a notification with the rights information about the user's contraceptive pill
      */
-    private fun sendPillNotification(tag: String) {
+    fun sendPillNotification(tag: String) {
         Timber.i("Pill Notif + $tag")
         val pendingIntent = NavDeepLinkBuilder(myContext)
             .setGraph(R.navigation.nav_graph)
@@ -121,7 +121,7 @@ class AlarmReceiver : BroadcastReceiver() {
     /**
      * Sends a notification about the user's treatment
      */
-    private fun sendTreatmentNotification(data: Bundle) {
+    fun sendTreatmentNotification(data: Bundle) {
         Timber.i("Treatment Notif")
         val pendingIntent = NavDeepLinkBuilder(myContext)
             .setGraph(R.navigation.nav_graph)
@@ -148,7 +148,7 @@ class AlarmReceiver : BroadcastReceiver() {
     /**
      * Checks if it's necessary to reset the notifications after a device's reboot
      */
-    private fun resetAllNotifications() {
+    fun resetAllNotifications() {
         if (hourPill.isNotBlank()) {
             resetPillNotification()
             resetPillRepeatNotification()
@@ -162,7 +162,7 @@ class AlarmReceiver : BroadcastReceiver() {
     /**
      * Resets an alarm with the AlarmManager to send notification about user's contraceptive pill
      */
-    private fun resetPillNotification() {
+    fun resetPillNotification() {
         Timber.i("resetPillNotification")
         val intent = Intent(myContext, AlarmReceiver::class.java).apply {
             putExtra(TREATMENT, PILL_TAG)
@@ -173,7 +173,7 @@ class AlarmReceiver : BroadcastReceiver() {
     /**
      * Resets an alarm with the AlarmManager to send notification when user forgets to take her pill
      */
-    private fun resetPillRepeatNotification() {
+    fun resetPillRepeatNotification() {
         Timber.i("resetPillRepeatNotification")
         val hour = parseStringInTime(hourPill)
         val repeatHour: String
@@ -189,7 +189,7 @@ class AlarmReceiver : BroadcastReceiver() {
     /**
      * Resets an alarm with the AlarmManager to send notifications about the user's treatment
      */
-    private fun resetTreatmentNotification() {
+    fun resetTreatmentNotification() {
         Timber.i("resetTreatmentNotification")
         for ((index, treatment) in treatmentList.withIndex()) {
             val intent = Intent(myContext, AlarmReceiver::class.java).apply {

@@ -3,6 +3,7 @@ package com.benlefevre.monendo.dashboard.fragments
 
 import android.os.Bundle
 import android.view.View
+import androidx.annotation.VisibleForTesting
 import androidx.core.content.ContextCompat.getColor
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -29,7 +30,8 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
     private val navController by lazy { findNavController() }
 
     private var _binding : FragmentDashboardBinding? = null
-    private val binding get() = _binding!!
+    @VisibleForTesting
+    val binding get() = _binding!!
     private val pains: MutableList<Pain> = mutableListOf()
     private val symptoms: MutableList<Symptom> = mutableListOf()
     private val activities: MutableList<UserActivities> = mutableListOf()
