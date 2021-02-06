@@ -2,9 +2,10 @@ apply plugin: "org.sonarqube"
 
 sonarqube {
     properties {
-        property "sonar.host.url", "http://localhost:9000"
+        property "sonar.host.url", "https://sonarcloud.io"
         property "sonar.projectName", "MonEndo"
-        property "sonar.projectKey", "4c515da40f546520c3c2fcff3d4a28bcd17095eb"
+        property "sonar.projectKey", "Benlefevre_MonEndo"
+        property "sonar.organization", "benlefevre"
         property "sonar.projectVersion", "${android.defaultConfig.versionName}"
         
         property "sonar.junit.reportPaths", "build/test-results/testDebugUnitTest"

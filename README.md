@@ -1,13 +1,24 @@
-![Coverage](assets/screenshots/measure.svg) ![duplication](assets/screenshots/dup.svg) ![numLines](assets/screenshots/num.svg) ![Maintenability](assets/screenshots/main.svg) ![reliability](assets/screenshots/relia.svg)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Benlefevre_MonEndo&metric=alert_status)](https://sonarcloud.io/dashboard?id=Benlefevre_MonEndo) 
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=Benlefevre_MonEndo&metric=coverage)](https://sonarcloud.io/dashboard?id=Benlefevre_MonEndo) 
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=Benlefevre_MonEndo&metric=ncloc)](https://sonarcloud.io/dashboard?id=Benlefevre_MonEndo) 
+[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=Benlefevre_MonEndo&metric=duplicated_lines_density)](https://sonarcloud.io/dashboard?id=Benlefevre_MonEndo) 
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=Benlefevre_MonEndo&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=Benlefevre_MonEndo) 
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=Benlefevre_MonEndo&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=Benlefevre_MonEndo)
 
-<span style="display:block;text-align:center">
 
 # Mon Endo
 
 My Endo is an android application developed for women with entometriosis.
 The various features of the application are however useful for all women.
 
-</span>
+## Table of contents
+
+- [Features](#Features) </br>
+- [Description](#Description) </br>
+- [Quick start](#Quick-Start) </br>
+- [Documentation](#Documentation) </br>
+- [Screenshots](#Screenshots) </br>
+- [Code Quality](#sonarcloud-results)
 
 ## Features
 
@@ -49,7 +60,7 @@ Technical Stack :
     - Kotlin coroutines for asynchronous work
     - MpAndroidChart for the charts
 
-## Run on
+## Quick start
 
 After downloading or clone the repository, you need to create a new project in Firebase and Google Cloud Platform (think to restrict your apikey with your SHA-1 and the correct API).  
 
@@ -79,15 +90,9 @@ You can find a french presentation of the app here:
 
 [Go to documention](https://github.com/Benlefevre/MonEndoDemo/blob/main/MonEndoDemo.m4v)
 
-<span style="display:block;text-align:center">
-
 ![demo](https://github.com/Benlefevre/MonEndoDemo/blob/main/MonEndo.gif?raw=true)
 
-</span>
-
 ## Screenshots
-
-<span style="display:block;text-align:center">
 
 ### Login
 
@@ -157,8 +162,19 @@ You can find a french presentation of the app here:
 
 ![doctor autocomplete screen](assets/screenshots/ScreenAutocomplete.webp)
 
-</span>
+## SonarCloud results
 
-## SonarQube local results
+I use SonarQube during the development and SonarCloud at the end.  
+You can find sonar.gradle and jacoco.gradle in the project's root directory.
 
-![sonar result](assets/screenshots/sonar1.webp)
+    -app/sonar.gradle
+    -app/jacoco.gradle
+
+Create a new project in SonarCloud or SonarQube and replace in sonar.gradle :
+
+        property "sonar.host.url", "https://sonarcloud.io" or "https://localhost::9000"
+        property "sonar.projectName", "Your_Project_Name"
+        property "sonar.projectKey", "Your_Project_key"
+        property "sonar.organization", "Your_organisation_name"
+
+[SonarCloud results](https://sonarcloud.io/dashboard?id=Benlefevre_MonEndo)

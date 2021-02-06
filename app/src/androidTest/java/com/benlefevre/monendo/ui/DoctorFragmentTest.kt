@@ -69,7 +69,7 @@ class DoctorFragmentTest {
     fun doctorFragmentTest() {
         ActivityScenario.launch(MainActivity::class.java)
         clickOn(R.id.doctorFragment)
-        PermissionGranter.allowPermissionOneTime(Manifest.permission.ACCESS_FINE_LOCATION)
+        PermissionGranter.allowPermissionsIfNeeded(Manifest.permission.ACCESS_FINE_LOCATION)
         sleep(7000)
         assertDisplayed(R.id.mapview)
         assertDisplayed(R.id.doc_chip)
